@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Entity;
 
 use App\Announce\Repository\AnnounceRepository;
@@ -37,7 +39,7 @@ class Announce
     private ?string $status = null;
 
     /**
-     * @var Collection<int, Resource>
+     * @var Collection<int, resource>
      */
     #[ORM\OneToMany(targetEntity: Resource::class, mappedBy: 'announce')]
     private Collection $photos;
@@ -125,7 +127,7 @@ class Announce
     }
 
     /**
-     * @return Collection<int, Resource>
+     * @return Collection<int, resource>
      */
     public function getPhotos(): Collection
     {
@@ -134,7 +136,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (!$this->photos->contains($photo)) {
+        if (! $this->photos->contains($photo)) {
             $this->photos->add($photo);
             $photo->setAnnounce($this);
         }
@@ -144,11 +146,9 @@ class Announce
 
     public function removePhoto(Resource $photo): static
     {
-        if ($this->photos->removeElement($photo)) {
-            // set the owning side to null (unless already changed)
-            if ($photo->getAnnounce() === $this) {
-                $photo->setAnnounce(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->photos->removeElement($photo) && $photo->getAnnounce() === $this) {
+            $photo->setAnnounce(null);
         }
 
         return $this;

@@ -17,7 +17,8 @@ class Fingerprint
             ->writeWithFinder(finder()->in("{$backendFolder}/.docker")->files())
             ->writeWithFinder(finder()->in($frontendFolder)->name(['Dockerfile', 'compose.*'])->files())
             ->writeWithFinder(finder()->in("{$frontendFolder}/.docker")->files())
-            ->finish();
+            ->finish()
+        ;
     }
 
     public function composer(): string
@@ -27,7 +28,8 @@ class Fingerprint
         return hasher()
             ->writeFile("{$folder}/composer.json")
             ->writeFile("{$folder}/composer.lock")
-            ->finish();
+            ->finish()
+        ;
     }
 
     public function yarn(): string
@@ -37,6 +39,7 @@ class Fingerprint
         return hasher()
             ->writeFile("{$folder}/package.json")
             ->writeFile("{$folder}/yarn.lock")
-            ->finish();
+            ->finish()
+        ;
     }
 }

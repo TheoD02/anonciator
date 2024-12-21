@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Entity;
 
 use App\User\Repository\UserRepository;
@@ -72,7 +74,7 @@ class User
 
     public function addGroup(GroupRole $group): static
     {
-        if (!$this->groups->contains($group)) {
+        if (! $this->groups->contains($group)) {
             $this->groups->add($group);
         }
 

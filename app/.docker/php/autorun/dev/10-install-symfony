@@ -46,11 +46,11 @@ echo "📦 Installing dependencies (FrankenPHP)"
 composer require "php:>=8.4" runtime/frankenphp-symfony
 
 echo "📦 Installing setup default configuration"
-composer config --json allow-plugins.bamarni/composer-bin-plugin true
+composer config allow-plugins.bamarni/composer-bin-plugin true
 composer config allow-plugins.ergebnis/composer-normalize true
-composer config --json extra.symfony.docker 'true'
-composer config --json extra.composer-normalize.indent-size 2
-composer config --json extra.composer-normalize.indent-style space
+composer config extra.symfony.docker 'true'
+composer config extra.composer-normalize.indent-size 2
+composer config extra.composer-normalize.indent-style space
 
 echo "📦 Installing Composer plugins"
 composer require --dev bamarni/composer-bin-plugin ergebnis/composer-normalize

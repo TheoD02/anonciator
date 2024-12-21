@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Controller;
 
 use App\Announce\Dto\Payload\CreateAnnouncePayload;
@@ -11,9 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateAnnounceController extends AbstractApiController
 {
     #[Route('', methods: ['POST'])]
-    public function __invoke(
-        #[MapRequestPayload] CreateAnnouncePayload $payload
-    ): JsonResponse
+    public function __invoke(#[MapRequestPayload] CreateAnnouncePayload $payload): JsonResponse
     {
         return $this->json($payload);
     }

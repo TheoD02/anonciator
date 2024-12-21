@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Repository;
 
 use App\Announce\Entity\Announce;
@@ -11,8 +13,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AnnounceRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+    ) {
         parent::__construct($registry, Announce::class);
     }
 }

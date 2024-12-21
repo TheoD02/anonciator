@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Repository;
 
 use App\User\Entity\GroupRole;
@@ -11,8 +13,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GroupRoleRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+    ) {
         parent::__construct($registry, GroupRole::class);
     }
 }

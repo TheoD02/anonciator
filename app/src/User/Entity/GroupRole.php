@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Entity;
 
 use App\User\Repository\GroupRoleRepository;
@@ -56,7 +58,7 @@ class GroupRole
 
     public function addRole(Role $role): static
     {
-        if (!$this->roles->contains($role)) {
+        if (! $this->roles->contains($role)) {
             $this->roles->add($role);
         }
 

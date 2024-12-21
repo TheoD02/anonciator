@@ -15,8 +15,7 @@ class SuccessResponse
         public object|array|bool|null $data,
         public ?ApiMetaInterface $meta = null,
         public bool $success = true,
-    )
-    {
+    ) {
     }
 
     /**
