@@ -1,7 +1,7 @@
 # Development environment override
 services:
     php:
-        container_name: {{PREFIX_CONTAINER}}-php
+        container_name: event-manager-php
         build:
             context: .
             target: frankenphp_dev
@@ -29,22 +29,22 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.network=traefik"
-            - "traefik.http.routers.php-{{PREFIX_CONTAINER}}.rule=Host(`{{PREFIX_URL}}.api.localhost`)"
-            - "traefik.http.routers.php-{{PREFIX_CONTAINER}}.tls=true"
-            - "traefik.http.services.php-{{PREFIX_CONTAINER}}.loadbalancer.server.port=80"
-            - "traefik.http.routers.php-{{PREFIX_CONTAINER}}.middlewares=php-{{PREFIX_CONTAINER}}-cors"
+            - "traefik.http.routers.php-event-manager.rule=Host(`event-manager.api.localhost`)"
+            - "traefik.http.routers.php-event-manager.tls=true"
+            - "traefik.http.services.php-event-manager.loadbalancer.server.port=80"
+            - "traefik.http.routers.php-event-manager.middlewares=php-event-manager-cors"
 
             # CORS and Forward Headers Middleware
-            - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
-            - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.accesscontrolallowheaders=*"
-            - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.accesscontrolalloworiginlist=*"
-            #      - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.accesscontrolmaxage=100"
-            #      - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.addvaryheader=true"
+            - "traefik.http.middlewares.php-event-manager-cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+            - "traefik.http.middlewares.php-event-manager-cors.headers.accesscontrolallowheaders=*"
+            - "traefik.http.middlewares.php-event-manager-cors.headers.accesscontrolalloworiginlist=*"
+            #      - "traefik.http.middlewares.php-event-manager-cors.headers.accesscontrolmaxage=100"
+            #      - "traefik.http.middlewares.php-event-manager-cors.headers.addvaryheader=true"
 
             # Forward Headers from Traefik to Caddy
-        #      - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.customrequestheaders.X-Forwarded-Proto=https"
-        #      - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.customrequestheaders.X-Forwarded-Host={{PLACEHOLDER}}..bruno.localhost"
-        #      - "traefik.http.middlewares.php-{{PREFIX_CONTAINER}}-cors.headers.customrequestheaders.X-Real-IP={client_ip}"
+        #      - "traefik.http.middlewares.php-event-manager-cors.headers.customrequestheaders.X-Forwarded-Proto=https"
+        #      - "traefik.http.middlewares.php-event-manager-cors.headers.customrequestheaders.X-Forwarded-Host={{PLACEHOLDER}}..bruno.localhost"
+        #      - "traefik.http.middlewares.php-event-manager-cors.headers.customrequestheaders.X-Real-IP={client_ip}"
         networks:
             - traefik
 
@@ -53,12 +53,12 @@ services:
 
     ###> doctrine/doctrine-bundle ###
     database:
-        container_name: {{PREFIX_CONTAINER}}-database
+        container_name: event-manager-database
     ###< doctrine/doctrine-bundle ###
 
     pgbouncer: # permit multiple connections to the database
         image: edoburu/pgbouncer:latest
-        container_name: {{PREFIX_CONTAINER}}-pgbouncer
+        container_name: event-manager-pgbouncer
         environment:
             DATABASE_URL: postgres://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-root}@database/${POSTGRES_DB:-app}
         volumes:
