@@ -13,16 +13,11 @@ class Fingerprint
         $frontendFolder = frontend_context()->workingDirectory;
 
         return hasher()
-            ->writeFile("{$backendFolder}/Dockerfile")
-            ->writeFile("{$backendFolder}/compose.override.yaml")
-            ->writeFile("{$backendFolder}/compose.yaml")
+            ->writeWithFinder(finder()->in($backendFolder)->name(['Dockerfile', 'compose.*'])->files())
             ->writeWithFinder(finder()->in("{$backendFolder}/.docker")->files())
-            ->writeFile("{$frontendFolder}/Dockerfile")
-            ->writeFile("{$frontendFolder}/compose.override.yaml")
-            ->writeFile("{$frontendFolder}/compose.yaml")
+            ->writeWithFinder(finder()->in($frontendFolder)->name(['Dockerfile', 'compose.*'])->files())
             ->writeWithFinder(finder()->in("{$frontendFolder}/.docker")->files())
-            ->finish()
-        ;
+            ->finish();
     }
 
     public function composer(): string
@@ -32,8 +27,7 @@ class Fingerprint
         return hasher()
             ->writeFile("{$folder}/composer.json")
             ->writeFile("{$folder}/composer.lock")
-            ->finish()
-        ;
+            ->finish();
     }
 
     public function yarn(): string
@@ -43,7 +37,6 @@ class Fingerprint
         return hasher()
             ->writeFile("{$folder}/package.json")
             ->writeFile("{$folder}/yarn.lock")
-            ->finish()
-        ;
+            ->finish();
     }
 }

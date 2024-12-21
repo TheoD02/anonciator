@@ -1,5 +1,7 @@
-controllers:
+announces_controllers:
+    prefix: /api/announces
     resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+        path: ../src/Announce/Controller
+        namespace: App\Announce\Controller
     type: attribute
+    trailing_slash_on_root: false
