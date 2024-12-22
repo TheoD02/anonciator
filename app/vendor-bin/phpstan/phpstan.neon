@@ -24,7 +24,7 @@ parameters:
     scanFiles:
         - /.castor/.castor.stub.php
     symfony:
-        containerXmlPath: %currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml
+        #containerPhpPath: %currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.php
         # Not working with 7.2 :(
 #        consoleApplicationLoader: ../../tests/console-appliation.php
     doctrine: # see: https://github.com/phpstan/phpstan-doctrine?tab=readme-ov-file#configuration
