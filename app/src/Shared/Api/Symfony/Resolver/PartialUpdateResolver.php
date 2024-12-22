@@ -49,6 +49,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
     private const array CONTEXT_DESERIALIZE = [
         'collect_denormalization_errors' => true,
     ];
+
     private DecoderInterface $jsonDecoder;
 
     public function __construct(
@@ -56,8 +57,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
         private readonly ?ValidatorInterface $validator = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly string $translationDomain = 'validators',
-    )
-    {
+    ) {
         parent::__construct($serializer, $validator, $translator, $translationDomain);
     }
 
@@ -97,7 +97,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
 
             $request = $event->getRequest();
 
-            if (!$argument->metadata->getType()) {
+            if (! $argument->metadata->getType()) {
                 throw new \LogicException(\sprintf(
                     'Could not resolve the "$%s" controller argument: argument should be typed.',
                     $argument->metadata->getName()
@@ -110,8 +110,8 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
                     $payload = $payloadMapper($request, $argument->metadata, $argument);
                 } catch (PartialDenormalizationException $e) {
                     $trans = $this->translator instanceof TranslatorInterface ? $this->translator->trans(
-                    ...
-                    ) : static fn($m, $p): string => strtr($m, $p);
+                        ...
+                    ) : static fn ($m, $p): string => strtr($m, $p);
                     foreach ($e->getErrors() as $error) {
                         $parameters = [];
                         $template = 'This value was of an unexpected type.';
@@ -135,7 +135,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
 
                 if ($payload !== null && \count($violations) === 0) {
                     $constraints = $argument->constraints ?? null;
-                    if (\is_array($payload) && !empty($constraints) && !$constraints instanceof All) {
+                    if (\is_array($payload) && ! empty($constraints) && ! $constraints instanceof All) {
                         $constraints = new All($constraints);
                     }
 
@@ -166,7 +166,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
                         $validationFailedCode,
                         implode(
                             "\n",
-                            array_map(static fn($e): string|\Stringable => $e->getMessage(), iterator_to_array(
+                            array_map(static fn ($e): string|\Stringable => $e->getMessage(), iterator_to_array(
                                 $violations
                             ))
                         ),
@@ -179,7 +179,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
                 } catch (PartialDenormalizationException $e) {
                     throw HttpException::fromStatusCode(
                         $validationFailedCode,
-                        implode("\n", array_map(static fn($e): string => $e->getMessage(), $e->getErrors())),
+                        implode("\n", array_map(static fn ($e): string => $e->getMessage(), $e->getErrors())),
                         $e
                     );
                 }
@@ -219,16 +219,15 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
         Request $request,
         ArgumentMetadata $argument,
         MapRequestPayload $attribute,
-    ): object|array|null
-    {
+    ): object|array|null {
         if (null === $format = $request->getContentTypeFormat()) {
             throw new UnsupportedMediaTypeHttpException('Unsupported format.');
         }
 
-        if ($attribute->acceptFormat && !\in_array($format, (array)$attribute->acceptFormat, true)) {
+        if ($attribute->acceptFormat && ! \in_array($format, (array) $attribute->acceptFormat, true)) {
             throw new UnsupportedMediaTypeHttpException(\sprintf(
                 'Unsupported format, expects "%s", but "%s" given.',
-                implode('", "', (array)$attribute->acceptFormat),
+                implode('", "', (array) $attribute->acceptFormat),
                 $format
             ));
         }
@@ -256,7 +255,12 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
 
         try {
             $encoderType = Type::object($type);
-            return $this->jsonDecoder->decode($data, $encoderType, $attribute->serializationContext + self::CONTEXT_DESERIALIZE);
+
+            return $this->jsonDecoder->decode(
+                $data,
+                $encoderType,
+                $attribute->serializationContext + self::CONTEXT_DESERIALIZE
+            );
         } catch (UnsupportedFormatException $e) {
             throw new UnsupportedMediaTypeHttpException(\sprintf('Unsupported format: "%s".', $format), $e);
         } catch (NotEncodableValueException $e) {
@@ -273,8 +277,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
         Request $request,
         ArgumentMetadata $argument,
         MapUploadedFile $attribute,
-    ): UploadedFile|array|null
-    {
+    ): UploadedFile|array|null {
         return $request->files->get($attribute->name ?? $argument->getName(), []);
     }
 }

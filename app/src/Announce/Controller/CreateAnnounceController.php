@@ -25,23 +25,22 @@ class CreateAnnounceController extends AbstractApiController
     public function create(
         #[MapRequestPayload] CreateAnnouncePayload $payload,
         AnnounceService $announceService,
-    ): Response
-    {
+    ): Response {
         $announce = $announceService->createAnnounceFromPayload($payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [ApiGroups::CREATE]);
     }
 
-
     #[Route('/list', methods: ['GET'])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce created', groups: [ApiGroups::GET_PAGINATED], paginated: true)]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce created', groups: [
+        ApiGroups::GET_PAGINATED,
+    ], paginated: true)]
     public function list(
         AnnounceService $announceService,
         #[MapQueryString] AnnounceFilterQuery $query,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-        Stopwatch $sw
-    ): Response
-    {
+        Stopwatch $sw,
+    ): Response {
         $announces = $announceService->paginate($query, $paginationFilterQuery);
 
         return $this->successResponse($announces, target: AnnounceResponse::class, groups: [ApiGroups::GET_PAGINATED]);

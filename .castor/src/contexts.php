@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Castor\Attribute\AsContext;
 use Castor\Context;
+
 use function Castor\capture;
 
 define('ROOT_DIR', dirname(__DIR__, 2));
@@ -29,7 +30,8 @@ function symfony_context(): Context
         ->withData([
             'registry' => 'docker-registry.theo-corp.fr',
             'image' => 'theod02/demo-app-symfony',
-        ]);
+        ])
+    ;
 }
 
 #[AsContext(name: 'frontend')]
@@ -41,5 +43,6 @@ function frontend_context(): Context
         ->withData([
             'registry' => 'docker-registry.theo-corp.fr',
             'image' => 'theod02/demo-app-frontend',
-        ]);
+        ])
+    ;
 }

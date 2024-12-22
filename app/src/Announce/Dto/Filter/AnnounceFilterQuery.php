@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Dto\Filter;
 
 use App\Shared\Api\Doctrine\Filter\Adapter\FilterQueryDefinitionInterface;
@@ -12,6 +14,7 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
     public function definition(): FilterDefinitionBag
     {
         return new FilterDefinitionBag()
-            ->add(FilterDefinition::create('title', 'title', operators: [ContainOperator::class]));
+            ->add(FilterDefinition::create('title', 'title', operators: [ContainOperator::class]))
+        ;
     }
 }

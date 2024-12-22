@@ -18,12 +18,14 @@ class AnnounceRepository extends AbstractEntityRepository
         return Announce::class;
     }
 
+    #[\Override]
     public function createPaginationQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('e')
             // Optimise query by joining related entities directly
             ->leftJoin('e.category', 'category')
             ->leftJoin('e.photos', 'photos')
-            ->addSelect('category', 'photos');
+            ->addSelect('category', 'photos')
+        ;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Mapper;
 
 use App\Announce\Dto\Payload\CreateAnnouncePayload;
@@ -11,14 +13,12 @@ use AutoMapperPlus\AutoMapperPlusBundle\AutoMapperConfiguratorInterface;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use function array_map;
 
 class AnnounceMapperConfig implements AutoMapperConfiguratorInterface
 {
     public function __construct(
-        private EntityManagerInterface $em
-    )
-    {
+        private readonly EntityManagerInterface $em,
+    ) {
     }
 
     public function configure(AutoMapperConfigInterface $config): void
@@ -30,23 +30,33 @@ class AnnounceMapperConfig implements AutoMapperConfiguratorInterface
     public function announceEntityToAnnounceResponse(AutoMapperConfigInterface $config): void
     {
         $config->registerMapping(Announce::class, AnnounceResponse::class)
-            ->forMember('categoryId', function (Announce $source) {
-                return $source->getCategory()->getId();
-            })
-            ->forMember('photoIds', function (Announce $source) {
-                return $source->getPhotos()->map(fn(Resource $photo) => $photo->getId())->toArray();
-            });
-
+            ->forMember('categoryId', static fn (Announce $source): ?int => $source->getCategory()->getId())
+            ->forMember(
+                'photoIds',
+                static fn (Announce $source) => $source->getPhotos()->map(
+                    static fn (Resource $photo): ?int => $photo->getId()
+                )->toArray()
+            )
+        ;
     }
 
     private function createAnnouncePayloadToAnnounceEntity(AutoMapperConfigInterface $config): void
     {
         $config->registerMapping(CreateAnnouncePayload::class, Announce::class)
-            ->forMember('category', function (CreateAnnouncePayload $source) {
-                return $this->em->getReference(AnnounceCategory::class, $source->categoryId);
-            })
-            ->forMember('photos', function (CreateAnnouncePayload $source) {
-                return new ArrayCollection(array_map(fn(int $photoId) => $this->em->getReference(Resource::class, $photoId), $source->photoIds));
-            });
+            ->forMember(
+                'category',
+                fn (CreateAnnouncePayload $source): ?object => $this->em->getReference(
+                    AnnounceCategory::class,
+                    $source->categoryId
+                )
+            )
+            ->forMember(
+                'photos',
+                fn (CreateAnnouncePayload $source): ArrayCollection => new ArrayCollection(\array_map(
+                    fn (int $photoId): ?object => $this->em->getReference(Resource::class, $photoId),
+                    $source->photoIds
+                ))
+            )
+        ;
     }
 }

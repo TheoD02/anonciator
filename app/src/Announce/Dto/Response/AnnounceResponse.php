@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Dto\Response;
 
 use App\Announce\AnnounceStatus;
@@ -11,7 +13,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class AnnounceResponse
 {
     #[Property(description: 'ID of the announce', example: '1')]
-    #[Groups([ApiGroups::CREATE, ApiGroups::GET_PAGINATED, ApiGroups::GET_ONE, ApiGroups::UPDATE, ApiGroups::DELETE, ApiGroups::PATCH])]
+    #[Groups([
+        ApiGroups::CREATE,
+        ApiGroups::GET_PAGINATED,
+        ApiGroups::GET_ONE,
+        ApiGroups::UPDATE,
+        ApiGroups::DELETE,
+        ApiGroups::PATCH,
+    ])]
     public int $id;
 
     #[Property(description: 'Title of the announce', example: 'This is a title')]

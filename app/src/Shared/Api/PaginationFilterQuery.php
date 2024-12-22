@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Shared\Api;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -12,7 +14,6 @@ class PaginationFilterQuery
         #[Assert\Positive()]
         #[Assert\LessThanOrEqual(100_000)]
         public int $limit = 10,
-    )
-    {
+    ) {
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Service;
 
 use App\Announce\Dto\Filter\AnnounceFilterQuery;
@@ -24,8 +26,7 @@ class AnnounceService implements LoggerAwareInterface
         private readonly AutoMapperInterface $mapper,
         private readonly EntityManagerInterface $em,
         private readonly EventDispatcherInterface $dispatcher,
-    )
-    {
+    ) {
     }
 
     public function createAnnounceFromPayload(CreateAnnouncePayload $payload): Announce

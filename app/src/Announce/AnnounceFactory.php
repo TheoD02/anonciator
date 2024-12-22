@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce;
 
 use App\Announce\Dto\Payload\CreateAnnouncePayload;
@@ -12,8 +14,7 @@ class AnnounceFactory
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-    )
-    {
+    ) {
     }
 
     public function fromCreatePayload(CreateAnnouncePayload $payload): Announce

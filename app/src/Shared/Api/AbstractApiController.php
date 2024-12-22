@@ -20,10 +20,6 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
-use function array_filter;
-use function is_array;
-use function is_iterable;
-use function is_object;
 
 /**
  * @phpstan-type ArrayHeaders array<string, string>
@@ -36,8 +32,7 @@ class AbstractApiController extends AbstractController
         private readonly AutoMapperInterface $mapper,
         private readonly NormalizerInterface $normalizer,
         protected readonly Stopwatch $sw,
-    )
-    {
+    ) {
     }
 
     /**
@@ -50,8 +45,7 @@ class AbstractApiController extends AbstractController
         int $status = 200,
         array $headers = [],
         array $context = [],
-    ): JsonResponse
-    {
+    ): JsonResponse {
         if ($status < 200 || $status > 299) {
             throw new \LogicException('Status code must be between 200 and 299');
         }
@@ -61,9 +55,9 @@ class AbstractApiController extends AbstractController
 
     /**
      * @param object|array<mixed>|bool|null $data
-     * @param class-string $target
-     * @param ArrayHeaders $headers
-     * @param ArrayContext $context
+     * @param class-string                  $target
+     * @param ArrayHeaders                  $headers
+     * @param ArrayContext                  $context
      */
     public function successResponse(
         object|array|bool|null $data,
@@ -73,8 +67,7 @@ class AbstractApiController extends AbstractController
         int $status = 200,
         array $headers = [],
         array $context = [],
-    ): Response
-    {
+    ): Response {
         if ($status < 200 || $status > 299) {
             throw new \LogicException('Status code must be between 200 and 299');
         }
@@ -84,19 +77,15 @@ class AbstractApiController extends AbstractController
         }
 
         $this->sw->start('map_response');
-        if (is_iterable($data)) {
-            $data = $this->mapper->mapMultiple($data, $target);
-        } else {
-            $data = $this->mapper->map($data, $target);
-        }
-        $this->sw->stop('map_response');
+        $data = \is_iterable($data) ? $this->mapper->mapMultiple($data, $target) : $this->mapper->map($data, $target);
 
+        $this->sw->stop('map_response');
 
         $context[AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES] = $context[AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES] ?? false;
         $context[AbstractNormalizer::GROUPS] = [...$groups, ...($context[AbstractNormalizer::GROUPS] ?? [])];
 
-        $dataClass = is_array($data) ? $data[0] : $data;
-        if ($dataClass !== null && (is_array($data) || is_object($data))) {
+        $dataClass = \is_array($data) ? $data[0] : $data;
+        if ($dataClass !== null && (\is_array($data) || \is_object($data))) {
             /** @var array<string> $ignoredAttributes */
             $ignoredAttributes = $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ?? [];
             $ignoredAttributesFromRequest = $this->requestStack->getCurrentRequest()->query->get('ignore', '');
@@ -136,7 +125,7 @@ class AbstractApiController extends AbstractController
             $propertyName = $reflectionProperty->getName();
 
             $sensitiveAttribute = $this->getSensitiveAttribute($reflectionProperty);
-            if ($sensitiveAttribute instanceof Sensitive && !$this->isGranted($sensitiveAttribute->roles)) {
+            if ($sensitiveAttribute instanceof Sensitive && ! $this->isGranted($sensitiveAttribute->roles)) {
                 $ignoredAttributes[] = $propertyName;
             }
 
@@ -159,6 +148,7 @@ class AbstractApiController extends AbstractController
     private function getVisibilityAttribute(\ReflectionProperty $reflectionProperty): Visibility
     {
         $visibilityAttribute = $reflectionProperty->getAttributes(Visibility::class)[0] ?? null;
+
         return $visibilityAttribute?->newInstance() ?? new Visibility();
     }
 
@@ -171,17 +161,16 @@ class AbstractApiController extends AbstractController
         int $status = 200,
         array $headers = [],
         array $context = [],
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $queryParams = $this->requestStack->getCurrentRequest()->query->all();
 
         $ignore = $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ?? [];
         $ignore = array_merge($ignore, explode(',', $queryParams['ignore'] ?? ''));
-        $ignore = array_filter($ignore);
+        $ignore = \array_filter($ignore);
 
         $only = $context[AbstractNormalizer::ATTRIBUTES] ?? [];
         $only = array_merge($only, explode(',', $queryParams['only'] ?? ''));
-        $only = array_filter($only);
+        $only = \array_filter($only);
 
         if ($data instanceof SuccessResponse) {
             $data->data = $this->normalizer->normalize($data->data, context: $context);
@@ -218,8 +207,7 @@ class AbstractApiController extends AbstractController
         int $status = 400,
         array $headers = [],
         array $context = [],
-    ): JsonResponse
-    {
+    ): JsonResponse {
         if ($status < 400) {
             throw new \LogicException('Status code must be 400 or greater');
         }

@@ -22,21 +22,21 @@ class Announce
     public ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    public string $title = "";
+    public string $title = '';
 
     #[ORM\Column(type: Types::TEXT)]
-    public string $description = "";
+    public string $description = '';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Visibility(external: false)]
-    public string $price = "0.00";
+    public string $price = '0.00';
 
     #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
     public AnnounceCategory $category;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 8)]
-    public string $location = "00.00000000";
+    public string $location = '00.00000000';
 
     #[ORM\Column(length: 40, enumType: AnnounceStatus::class)]
     public AnnounceStatus $status = AnnounceStatus::DRAFT;
@@ -158,7 +158,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (!$this->photos->contains($photo)) {
+        if (! $this->photos->contains($photo)) {
             $this->photos->add($photo);
         }
 
