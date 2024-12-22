@@ -6,8 +6,10 @@ namespace App\Shared\Doctrine\Repository;
 
 use App\Shared\Api\Doctrine\Filter\Adapter\FilterQueryDefinitionInterface;
 use App\Shared\Api\Doctrine\Filter\Adapter\ORMQueryBuilderFilterQueryAwareInterface;
-use App\Shared\Api\Doctrine\Paginator;
+use App\Shared\Api\Doctrine\Service\Paginator;
+use App\Shared\Api\PaginationFilterQuery;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -23,16 +25,17 @@ abstract class AbstractEntityRepository extends ServiceEntityRepository
      */
     private Paginator $paginator;
 
+    public function __construct(
+        ManagerRegistry $registry,
+    )
+    {
+        parent::__construct($registry, $this->getEntityFqcn());
+    }
+
     /**
      * @return class-string<T>
      */
     abstract public function getEntityFqcn(): string;
-
-    public function __construct(
-        ManagerRegistry $registry,
-    ) {
-        parent::__construct($registry, $this->getEntityFqcn());
-    }
 
     #[Required]
     public function setPaginator(Paginator $paginator): void
@@ -40,16 +43,18 @@ abstract class AbstractEntityRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
-    /**
-     * @return array<T>
-     */
     public function paginate(
         ORMQueryBuilderFilterQueryAwareInterface|FilterQueryDefinitionInterface|null $queryBuilderFilterQueryAware = null,
-        int $page = 1,
-        int $limit = 30,
-    ): array {
-        $qb = $this->createQueryBuilder('e');
+        PaginationFilterQuery $paginationFilterQuery = new PaginationFilterQuery(),
+    ): \App\Shared\Api\Doctrine\Pagination\Paginator
+    {
+        $qb = $this->createPaginationQueryBuilder();
 
-        return $this->paginator->paginate($qb, $queryBuilderFilterQueryAware, $page, $limit);
+        return $this->paginator->paginate($qb, $queryBuilderFilterQueryAware, $paginationFilterQuery);
+    }
+
+    protected function createPaginationQueryBuilder(): QueryBuilder
+    {
+        return $this->createQueryBuilder('e');
     }
 }

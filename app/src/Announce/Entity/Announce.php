@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Announce\Entity;
 
+use App\Announce\AnnounceStatus;
+use App\Announce\Dto\Visibility;
 use App\Announce\Repository\AnnounceRepository;
 use App\Resource\Entity\Resource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,32 +19,52 @@ class Announce
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    public string $title = "";
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    public string $description = "";
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $price = null;
+    #[Visibility(external: false)]
+    public string $price = "0.00";
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
-    private ?AnnounceCategory $category = null;
+    public AnnounceCategory $category;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 8)]
-    private ?string $location = null;
+    public string $location = "00.00000000";
 
-    #[ORM\Column(length: 40)]
-    private ?string $status = null;
+    #[ORM\Column(length: 40, enumType: AnnounceStatus::class)]
+    public AnnounceStatus $status = AnnounceStatus::DRAFT;
 
     /**
      * @var Collection<int, resource>
      */
-    #[ORM\OneToMany(targetEntity: Resource::class, mappedBy: 'announce')]
-    private Collection $photos;
+    #[ORM\ManyToMany(targetEntity: Resource::class)]
+    #[ORM\JoinTable(
+        name: 'announce_photos',
+        joinColumns: [
+            new ORM\JoinColumn(
+                name: 'announce_id',
+                referencedColumnName: 'id',
+                nullable: false,
+                onDelete: 'CASCADE',
+            ),
+        ],
+        inverseJoinColumns: [
+            new ORM\JoinColumn(
+                name: 'resource_id',
+                referencedColumnName: 'id',
+                nullable: false,
+                onDelete: 'CASCADE',
+            ),
+        ],
+    )]
+    public Collection $photos;
 
     public function __construct()
     {
@@ -54,7 +76,7 @@ class Announce
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -66,7 +88,7 @@ class Announce
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -78,7 +100,7 @@ class Announce
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): string
     {
         return $this->price;
     }
@@ -90,19 +112,19 @@ class Announce
         return $this;
     }
 
-    public function getCategory(): ?AnnounceCategory
+    public function getCategory(): AnnounceCategory
     {
         return $this->category;
     }
 
-    public function setCategory(?AnnounceCategory $category): static
+    public function setCategory(AnnounceCategory $category): static
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getLocation(): ?string
+    public function getLocation(): string
     {
         return $this->location;
     }
@@ -114,12 +136,12 @@ class Announce
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): AnnounceStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(AnnounceStatus $status): static
     {
         $this->status = $status;
 
@@ -136,9 +158,8 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (! $this->photos->contains($photo)) {
+        if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
-            $photo->setAnnounce($this);
         }
 
         return $this;
@@ -146,10 +167,7 @@ class Announce
 
     public function removePhoto(Resource $photo): static
     {
-        // set the owning side to null (unless already changed)
-        if ($this->photos->removeElement($photo) && $photo->getAnnounce() === $this) {
-            $photo->setAnnounce(null);
-        }
+        $this->photos->removeElement($photo);
 
         return $this;
     }

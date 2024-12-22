@@ -53,6 +53,7 @@ ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 COPY --link .docker/php/conf.d/common $PHP_INI_DIR/app.conf.d/
 COPY --link --chmod=755 .docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 COPY --link .docker/php/Caddyfile /etc/caddy/Caddyfile
+RUN mkdir -p /autorun
 
 ENTRYPOINT ["docker-entrypoint"]
 
@@ -103,7 +104,6 @@ RUN if ! getent group ${GROUP_ID} ; then groupadd -g ${GROUP_ID} www-data ; else
 
 RUN chown -R ${USER}:${USER} /home /tmp /app /home/${USER} ${XDG_CONFIG_HOME} ${XDG_DATA_HOME}
 
-RUN mkdir -p /autorun
 COPY .docker/php/autorun/dev /autorun/
 
 RUN chmod +x /autorun/* && chown -R ${USER}:${USER} /autorun
@@ -122,6 +122,8 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 COPY --link .docker/php/conf.d/prod $PHP_INI_DIR/app.conf.d/
 COPY --link .docker/php/worker.Caddyfile /etc/caddy/worker.Caddyfile
+COPY .docker/php/autorun/prod /autorun/
+RUN chmod +x /autorun/*
 
 # prevent the reinstallation of vendors at every changes in the source code
 COPY --link ./composer.* ./symfony.* ./

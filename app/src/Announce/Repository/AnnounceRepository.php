@@ -5,17 +5,25 @@ declare(strict_types=1);
 namespace App\Announce\Repository;
 
 use App\Announce\Entity\Announce;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Shared\Doctrine\Repository\AbstractEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * @extends ServiceEntityRepository<Announce>
+ * @extends AbstractEntityRepository<Announce>
  */
-class AnnounceRepository extends ServiceEntityRepository
+class AnnounceRepository extends AbstractEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-    ) {
-        parent::__construct($registry, Announce::class);
+    public function getEntityFqcn(): string
+    {
+        return Announce::class;
+    }
+
+    public function createPaginationQueryBuilder(): QueryBuilder
+    {
+        return $this->createQueryBuilder('e')
+            // Optimise query by joining related entities directly
+            ->leftJoin('e.category', 'category')
+            ->leftJoin('e.photos', 'photos')
+            ->addSelect('category', 'photos');
     }
 }

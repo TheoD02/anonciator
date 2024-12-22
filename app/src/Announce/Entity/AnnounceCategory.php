@@ -13,10 +13,10 @@ class AnnounceCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = null;
+    public ?string $name = null;
 
     public function getId(): ?int
     {

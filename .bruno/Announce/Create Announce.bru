@@ -4,8 +4,20 @@ meta {
   seq: 1
 }
 
-get {
-  url: {{url}}/api/announces
-  body: none
+post {
+  url: {{url}}/api/announces/create
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "title": "This is a title",
+    "description": "This is a description",
+    "price": "100.00",
+    "categoryId": 12,
+    "location": "41.40338",
+    "status": "draft",
+    "photoIds": []
+  }
 }

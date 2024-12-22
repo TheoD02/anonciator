@@ -1,0 +1,33 @@
+meta {
+  name: Create Announce Encoder
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/api/announces/list?limit=100
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 100
+  ~title[ctn]: Id
+  ~ignore: id
+}
+
+body:json {
+  {
+    "title": "This is a title",
+    "description": "This is a description",
+    "price": "100.00",
+    "categoryId": 1,
+    "location": "41.40338, 2.17403",
+    "status": "published",
+    "photoIds": [
+      1,
+      2,
+      3
+    ]
+  }
+}

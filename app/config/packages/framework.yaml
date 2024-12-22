@@ -7,6 +7,9 @@ framework:
 
     #esi: true
     #fragments: true
+    json_encoder:
+        paths:
+            App\Announce\Encodable\: '%kernel.project_dir%/src/Announce/Encodable/*'
 
 when@test:
     framework:

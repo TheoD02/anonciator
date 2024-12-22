@@ -1,19 +1,19 @@
 # Development environment override
 services:
     front:
-        container_name: event-manager-front
+        container_name: anonciator-front
         build:
             target: dev
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.front-event-manager.rule=Host(`event-manager.web.localhost`)"
-            - "traefik.http.routers.front-event-manager.tls=true"
-            - "traefik.http.services.front-event-manager.loadbalancer.server.port=5173"
-            - "traefik.http.routers.front-event-manager.service=front-event-manager"
-            - "traefik.http.routers.front-event-manager-devtools.rule=Host(`event-manager-front-devtools.web.localhost`)"
-            - "traefik.http.routers.front-event-manager-devtools.tls=true"
-            - "traefik.http.services.front-event-manager-devtools.loadbalancer.server.port=5001"
-            - "traefik.http.routers.front-event-manager-devtools.service=front-event-manager-devtools"
+            - "traefik.http.routers.front-anonciator.rule=Host(`anonciator.web.localhost`)"
+            - "traefik.http.routers.front-anonciator.tls=true"
+            - "traefik.http.services.front-anonciator.loadbalancer.server.port=5173"
+            - "traefik.http.routers.front-anonciator.service=front-anonciator"
+            - "traefik.http.routers.front-anonciator-devtools.rule=Host(`anonciator-front-devtools.web.localhost`)"
+            - "traefik.http.routers.front-anonciator-devtools.tls=true"
+            - "traefik.http.services.front-anonciator-devtools.loadbalancer.server.port=5001"
+            - "traefik.http.routers.front-anonciator-devtools.service=front-anonciator-devtools"
         networks:
             - traefik
 

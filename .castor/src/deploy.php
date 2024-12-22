@@ -8,7 +8,6 @@ use Castor\Attribute\AsOption;
 use Castor\Attribute\AsTask;
 use Castor\Exception\ProblemException;
 use PHLAK\SemVer\Version;
-
 use function Castor\context;
 use function Castor\fs;
 use function Castor\import;
@@ -26,13 +25,13 @@ function deploy_build_image(string $tag = 'latest'): void
 
     docker([
         'build',
+        '--platform', 'linux/amd64',
         '--progress', 'plain',
         '--build-arg', "BUILD_TIME={$buildArgs['BUILD_TIME']}",
         '-t', generate_image_name($tag),
         context()->workingDirectory,
     ])
-        ->run()
-    ;
+        ->run();
 }
 
 #[AsTask(name: 'push-image', description: 'Push the image to the registry')]
@@ -51,19 +50,21 @@ function build_and_push(string $tag = 'latest'): void
 function deploy_both(
     #[AsOption(name: 'override', description: 'Keep the current version, and rebuild the image')]
     bool $override = false,
-): void {
+): void
+{
     io()->title('Deploying Symfony');
-    with(static fn () => deploy($override), context: symfony_context());
+    with(static fn() => deploy($override), context: symfony_context());
 
     io()->title('Deploying Frontend');
-    with(static fn () => deploy($override), context: frontend_context());
+    with(static fn() => deploy($override), context: frontend_context());
 }
 
 #[AsTask(name: 'deploy', namespace: '', description: 'Deploy the application')]
 function deploy(
     #[AsOption(name: 'override', description: 'Keep the current version, and rebuild the image')]
     bool $override = false,
-): void {
+): void
+{
     $rootDirectory = context()->workingDirectory;
     $versionFile = $rootDirectory . '/VERSION';
 
@@ -79,7 +80,7 @@ function deploy(
     if ($override) {
         io()->warning('Version overriden');
         if (io()->confirm('You are sure you want to override the version?')) {
-            build_and_push($version);
+            build_and_push((string)$version);
         }
 
         return;
@@ -113,8 +114,8 @@ function deploy(
 
     io()->writeln(\sprintf('New version is %s', $version));
     if (io()->confirm('Do you want to build and push the image?')) {
-        file_put_contents($versionFile, (string) $version);
-        build_and_push((string) $version);
+        file_put_contents($versionFile, (string)$version);
+        build_and_push((string)$version);
     }
 }
 

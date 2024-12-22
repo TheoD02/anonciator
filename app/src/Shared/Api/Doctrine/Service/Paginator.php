@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Api\Doctrine;
+namespace App\Shared\Api\Doctrine\Service;
 
 use App\Shared\Api\Doctrine\Filter\Adapter\FilterQueryDefinitionInterface;
 use App\Shared\Api\Doctrine\Filter\Adapter\ORMQueryBuilderFilterQueryAwareInterface;
 use App\Shared\Api\Doctrine\Filter\FilterDefinition;
 use App\Shared\Api\Doctrine\Filter\FilterDefinitionBag;
 use App\Shared\Api\Doctrine\Filter\Operator\OperatorInterface;
+use App\Shared\Api\PaginationFilterQuery;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,16 +24,17 @@ class Paginator
 
     public function __construct(
         RequestStack $requestStack,
-    ) {
+    )
+    {
         $this->request = $requestStack->getCurrentRequest();
     }
 
     public function paginate(
         QueryBuilder $qb,
         ORMQueryBuilderFilterQueryAwareInterface|FilterQueryDefinitionInterface|null $queryBuilderFilterQueryAware = null,
-        int $page = 1,
-        int $limit = 30,
-    ): array {
+        PaginationFilterQuery $paginationFilterQuery = new PaginationFilterQuery(),
+    ): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
         if ($queryBuilderFilterQueryAware instanceof ORMQueryBuilderFilterQueryAwareInterface) {
             $queryBuilderFilterQueryAware->applyToORMQueryBuilder($qb);
         }
@@ -41,17 +43,12 @@ class Paginator
             $this->handleFilterQueryDefinition($qb, $queryBuilderFilterQueryAware->definition());
         }
 
-        /**
-         * @var array<T>
-         *
-         * @phpstan-ignore-next-line doctrine.queryBuilderDynamicArgument (Allowed for this case)
-         */
-        return $qb
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb
+            ->setFirstResult(($paginationFilterQuery->page - 1) * $paginationFilterQuery->limit)
+            ->setMaxResults($paginationFilterQuery->limit);
+
+        $query = $qb->getQuery();
+        return new \App\Shared\Api\Doctrine\Pagination\Paginator($query, paginationFilterQuery: $paginationFilterQuery);
     }
 
     /**

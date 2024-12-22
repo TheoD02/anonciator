@@ -4,45 +4,30 @@ declare(strict_types=1);
 
 namespace App\Shared\Api\Dto\Meta;
 
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use App\Shared\Api\Doctrine\Pagination\Paginator;
+use App\Shared\Api\Dto\Adapter\ApiMetaInterface;
+use function ceil;
 
-readonly class PaginationMeta
+readonly class PaginationMeta implements ApiMetaInterface
 {
-    public function __construct(
-        public int $totalItems,
-        public int $currentPage,
-        public int $lastPage,
-        public int $firstPage,
-        public int $maxPerPage,
-    ) {
-    }
+    public int $totalItems;
+    public int $currentPage;
+    public int $lastPage;
+    public int $firstPage;
+    public int $maxPerPage;
 
-    /**
-     * @param PaginationInterface<array-key, mixed> $pagination
-     *
-     * @phpstan-ignore shipmonk.deadMethod (not used yet)
-     */
-    public static function fromPagination(PaginationInterface $pagination): self
+    public static function fromDoctrinePaginator(Paginator $paginator): self
     {
-        $totalItems = $pagination->getTotalItemCount();
-        $currentPage = $pagination->getCurrentPageNumber();
-        $itemsPerPage = $pagination->getItemNumberPerPage();
+        $total = $paginator->count();
 
-        if ($itemsPerPage === 0) {
-            $itemsPerPage = 1;
-        }
+        $meta = new self();
 
-        $lastPage = (int) round($totalItems / $itemsPerPage);
-        if ($lastPage === 0) {
-            $lastPage = 1;
-        }
+        $meta->totalItems = $total;
+        $meta->currentPage = $paginator->getPaginationFilterQuery()->page;
+        $meta->lastPage = (int)ceil($total / $paginator->getPaginationFilterQuery()->limit);
+        $meta->firstPage = 1;
+        $meta->maxPerPage = 100;
 
-        return new self(
-            totalItems: $totalItems,
-            currentPage: $currentPage,
-            lastPage: $lastPage,
-            firstPage: 1,
-            maxPerPage: $itemsPerPage,
-        );
+        return $meta;
     }
 }
