@@ -115,6 +115,7 @@
     "bamarni/composer-bin-plugin": "^1.8.2",
     "ergebnis/composer-normalize": "^2.45",
     "phpunit/phpunit": "^11.5.2",
+    "symfony/browser-kit": "7.3.*",
     "symfony/debug-bundle": "7.3.*",
     "symfony/maker-bundle": "^1.61",
     "symfony/stopwatch": "7.3.*",

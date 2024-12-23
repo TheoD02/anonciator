@@ -30,7 +30,7 @@ class AnnounceService implements LoggerAwareInterface
         private readonly AutoMapperInterface $mapper,
         private readonly EntityManagerInterface $em,
         private readonly EventDispatcherInterface $dispatcher,
-        private RelationResolver $relationResolver,
+        private readonly RelationResolver $relationResolver,
     )
     {
     }
