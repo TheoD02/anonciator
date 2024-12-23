@@ -2,7 +2,7 @@
 
 namespace App\Shared\Api;
 
-class ManyRelation
+class Relation
 {
     public array $set = [];
 

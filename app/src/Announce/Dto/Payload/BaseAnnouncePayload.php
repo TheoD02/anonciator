@@ -3,8 +3,9 @@
 namespace App\Announce\Dto\Payload;
 
 use App\Announce\AnnounceStatus;
-use App\Shared\Api\ManyRelation;
+use App\Shared\Api\MapRelation;
 use App\Shared\Api\OneRelation;
+use App\Shared\Api\Relation;
 use OpenApi\Attributes\Property;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -25,7 +26,8 @@ class BaseAnnouncePayload
 
     #[Property(description: 'Category ID of the announce', example: '1')]
     #[Assert\Valid]
-    public OneRelation $category;
+    #[MapRelation(toProperty: 'category', many: false)]
+    public Relation $category;
 
     #[Property(description: 'Location of the announce', example: '41.40338, 2.17403')]
     #[Assert\NotBlank()]
@@ -37,5 +39,6 @@ class BaseAnnouncePayload
 
     #[Property(description: 'Photo IDs of the announce', example: '[1, 2, 3]')]
     #[Assert\Valid]
-    public ManyRelation $photos;
+    #[MapRelation(toProperty: 'photos', many: true)]
+    public Relation $photos;
 }

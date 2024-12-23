@@ -9,11 +9,11 @@ use App\Announce\Dto\Payload\CreateAnnouncePayload;
 use App\Announce\Dto\Payload\PartialUpdateAnnouncePayload;
 use App\Announce\Dto\Payload\UpdateAnnouncePayload;
 use App\Announce\Entity\Announce;
-use App\Announce\Entity\AnnounceCategory;
 use App\Announce\Event\AnnounceCreatedEvent;
 use App\Announce\Repository\AnnounceRepository;
 use App\Shared\Api\Doctrine\Pagination\Paginator;
 use App\Shared\Api\PaginationFilterQuery;
+use App\Shared\Api\RelationResolver;
 use AutoMapper\AutoMapperInterface;
 use AutoMapper\MapperContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +30,7 @@ class AnnounceService implements LoggerAwareInterface
         private readonly AutoMapperInterface $mapper,
         private readonly EntityManagerInterface $em,
         private readonly EventDispatcherInterface $dispatcher,
+        private RelationResolver $relationResolver,
     )
     {
     }
@@ -38,8 +39,7 @@ class AnnounceService implements LoggerAwareInterface
     {
         $announce = $this->mapper->map($payload, Announce::class);
 
-
-        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->category->set));
+        $this->relationResolver->resolve($payload, $announce);
 
         return $this->createAnnounce($announce);
     }
@@ -72,8 +72,7 @@ class AnnounceService implements LoggerAwareInterface
 
         $this->mapper->map($payload, $announce);
 
-        // TODO: Use Relation object to automatically set the relation
-        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->category->set));
+        $this->relationResolver->resolve($payload, $announce);
 
         return $this->updateAnnounce($announce);
     }
@@ -102,7 +101,7 @@ class AnnounceService implements LoggerAwareInterface
 
         $this->mapper->map($payload, $announce, [MapperContext::SKIP_UNINITIALIZED_VALUES => true]);
 
-        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->category->set));
+        $this->relationResolver->resolve($payload, $announce);
 
         return $this->updateAnnounce($announce);
     }
