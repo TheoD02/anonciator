@@ -38,8 +38,8 @@ class AnnounceService implements LoggerAwareInterface
     {
         $announce = $this->mapper->map($payload, Announce::class);
 
-        // TODO: Use Relation object to automatically set the relation
-        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->categoryId));
+
+        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->category->set));
 
         return $this->createAnnounce($announce);
     }
@@ -73,7 +73,7 @@ class AnnounceService implements LoggerAwareInterface
         $this->mapper->map($payload, $announce);
 
         // TODO: Use Relation object to automatically set the relation
-        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->categoryId));
+        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->category->set));
 
         return $this->updateAnnounce($announce);
     }
@@ -101,6 +101,8 @@ class AnnounceService implements LoggerAwareInterface
         $announce = $this->getAnnounceById($id);
 
         $this->mapper->map($payload, $announce, [MapperContext::SKIP_UNINITIALIZED_VALUES => true]);
+
+        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->category->set));
 
         return $this->updateAnnounce($announce);
     }
