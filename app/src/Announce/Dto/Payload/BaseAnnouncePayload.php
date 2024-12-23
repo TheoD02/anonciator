@@ -4,7 +4,6 @@ namespace App\Announce\Dto\Payload;
 
 use App\Announce\AnnounceStatus;
 use App\Shared\Api\MapRelation;
-use App\Shared\Api\OneRelation;
 use App\Shared\Api\Relation;
 use OpenApi\Attributes\Property;
 use Symfony\Component\Validator\Constraints as Assert;
