@@ -14,6 +14,6 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
     Nelmio\ApiDocBundle\NelmioApiDocBundle::class => ['all' => true],
-    AutoMapperPlus\AutoMapperPlusBundle\AutoMapperPlusBundle::class => ['all' => true],
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
+    AutoMapper\Symfony\Bundle\AutoMapperBundle::class => ['all' => true],
 ];

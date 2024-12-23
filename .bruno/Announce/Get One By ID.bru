@@ -1,19 +1,13 @@
 meta {
-  name: Create Announce Encoder
+  name: Get One By ID
   type: http
   seq: 2
 }
 
 get {
-  url: {{url}}/api/announces/list?limit=100
+  url: {{url}}/api/announces
   body: none
   auth: none
-}
-
-params:query {
-  limit: 100
-  ~title[ctn]: Id
-  ~ignore: id
 }
 
 body:json {

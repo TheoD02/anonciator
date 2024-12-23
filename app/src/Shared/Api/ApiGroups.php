@@ -12,20 +12,20 @@ class ApiGroups
 
     public const string GET_LIST = 'GET_LIST';
 
-    public const string CREATE = 'CREATE';
+    public const string POST = 'POST';
 
-    public const string UPDATE = 'UPDATE';
-
-    public const string DELETE = 'DELETE';
+    public const string PUT = 'PUT';
 
     public const string PATCH = 'PATCH';
+    public const string DELETE = 'DELETE';
+
 
     public const array ALL = [
         self::GET_ONE,
         self::GET_PAGINATED,
         self::GET_LIST,
-        self::CREATE,
-        self::UPDATE,
+        self::POST,
+        self::PUT,
         self::DELETE,
         self::PATCH,
     ];

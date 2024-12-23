@@ -1,0 +1,21 @@
+meta {
+  name: Partial Update
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{url}}/api/announces/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "description": "This is a description 3"
+  }
+}

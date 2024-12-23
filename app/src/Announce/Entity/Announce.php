@@ -19,27 +19,27 @@ class Announce
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    public ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    public string $title = '';
+    private string $title = '';
 
     #[ORM\Column(type: Types::TEXT)]
-    public string $description = '';
+    private string $description = '';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Visibility(external: false)]
-    public string $price = '0.00';
+    private string $price = '0.00';
 
     #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
-    public AnnounceCategory $category;
+    private AnnounceCategory $category;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 8)]
-    public string $location = '00.00000000';
+    private string $location = '00.00000000';
 
     #[ORM\Column(length: 40, enumType: AnnounceStatus::class)]
-    public AnnounceStatus $status = AnnounceStatus::DRAFT;
+    private AnnounceStatus $status = AnnounceStatus::DRAFT;
 
     /**
      * @var Collection<int, resource>
@@ -64,7 +64,7 @@ class Announce
             ),
         ],
     )]
-    public Collection $photos;
+    private Collection $photos;
 
     public function __construct()
     {
@@ -158,7 +158,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (! $this->photos->contains($photo)) {
+        if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
         }
 

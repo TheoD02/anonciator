@@ -1,0 +1,31 @@
+meta {
+  name: List
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/api/announces/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "title": "This is a title",
+    "description": "This is a description",
+    "price": "100.00",
+    "categoryId": 1,
+    "location": "41.40338, 2.17403",
+    "status": "published",
+    "photoIds": [
+      1,
+      2,
+      3
+    ]
+  }
+}

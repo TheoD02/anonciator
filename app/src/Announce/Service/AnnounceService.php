@@ -6,12 +6,16 @@ namespace App\Announce\Service;
 
 use App\Announce\Dto\Filter\AnnounceFilterQuery;
 use App\Announce\Dto\Payload\CreateAnnouncePayload;
+use App\Announce\Dto\Payload\PartialUpdateAnnouncePayload;
+use App\Announce\Dto\Payload\UpdateAnnouncePayload;
 use App\Announce\Entity\Announce;
+use App\Announce\Entity\AnnounceCategory;
 use App\Announce\Event\AnnounceCreatedEvent;
 use App\Announce\Repository\AnnounceRepository;
 use App\Shared\Api\Doctrine\Pagination\Paginator;
 use App\Shared\Api\PaginationFilterQuery;
-use AutoMapperPlus\AutoMapperInterface;
+use AutoMapper\AutoMapperInterface;
+use AutoMapper\MapperContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -26,12 +30,16 @@ class AnnounceService implements LoggerAwareInterface
         private readonly AutoMapperInterface $mapper,
         private readonly EntityManagerInterface $em,
         private readonly EventDispatcherInterface $dispatcher,
-    ) {
+    )
+    {
     }
 
     public function createAnnounceFromPayload(CreateAnnouncePayload $payload): Announce
     {
         $announce = $this->mapper->map($payload, Announce::class);
+
+        // TODO: Use Relation object to automatically set the relation
+        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->categoryId));
 
         return $this->createAnnounce($announce);
     }
@@ -56,5 +64,44 @@ class AnnounceService implements LoggerAwareInterface
     public function paginate(AnnounceFilterQuery $query, PaginationFilterQuery $paginationFilterQuery): Paginator
     {
         return $this->repository->paginate($query, $paginationFilterQuery);
+    }
+
+    public function updateAnnounceFromPayload(int $id, UpdateAnnouncePayload $payload): Announce
+    {
+        $announce = $this->getAnnounceById($id);
+
+        $this->mapper->map($payload, $announce);
+
+        // TODO: Use Relation object to automatically set the relation
+        $announce->setCategory($this->em->getReference(AnnounceCategory::class, $payload->categoryId));
+
+        return $this->updateAnnounce($announce);
+    }
+
+    public function getAnnounceById(int $id): Announce
+    {
+        return $this->repository->find($id);
+    }
+
+    public function updateAnnounce(Announce $announce, bool $flush = true): Announce
+    {
+        if ($flush) {
+            $this->em->flush();
+        }
+
+        $this->logger?->info('Announce updated', [
+            'id' => $announce->getId(),
+        ]);
+
+        return $announce;
+    }
+
+    public function partialUpdateAnnounceFromPayload(int $id, PartialUpdateAnnouncePayload $payload): Announce
+    {
+        $announce = $this->getAnnounceById($id);
+
+        $this->mapper->map($payload, $announce, [MapperContext::SKIP_UNINITIALIZED_VALUES => true]);
+
+        return $this->updateAnnounce($announce);
     }
 }

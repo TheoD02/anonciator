@@ -1,0 +1,27 @@
+meta {
+  name: Full Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}/api/announces/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "title": "This is a title",
+    "description": "This is a description",
+    "price": "100.00",
+    "categoryId": 12,
+    "location": "41.400",
+    "status": "draft",
+    "photoIds": []
+  }
+}

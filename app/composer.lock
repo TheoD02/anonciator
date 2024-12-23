@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0b2b07e16c8aa09af06550ba48fbe9c",
+    "content-hash": "10bca1080d4809acdb42a31adf54b4d0",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -1399,32 +1399,66 @@
             "time": "2024-10-21T18:21:57+00:00"
         },
         {
-            "name": "mark-gerarts/auto-mapper-plus",
-            "version": "1.4.2",
+            "name": "jolicode/automapper",
+            "version": "dev-feature/skip-uninitialized",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mark-gerarts/automapper-plus.git",
-                "reference": "ad644b31f777ba4ba95bc531bed0499e428ed890"
+                "url": "https://github.com/jolicode/automapper.git",
+                "reference": "33a4325e4e4fcaf060080625a8d46636d410ed26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mark-gerarts/automapper-plus/zipball/ad644b31f777ba4ba95bc531bed0499e428ed890",
-                "reference": "ad644b31f777ba4ba95bc531bed0499e428ed890",
+                "url": "https://api.github.com/repos/jolicode/automapper/zipball/33a4325e4e4fcaf060080625a8d46636d410ed26",
+                "reference": "33a4325e4e4fcaf060080625a8d46636d410ed26",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.4.0"
+                "nikic/php-parser": "^4.18 || ^5.0",
+                "php": "^8.2",
+                "phpdocumentor/type-resolver": "^1.7",
+                "symfony/deprecation-contracts": "^3.0",
+                "symfony/event-dispatcher": "^6.4 || ^7.0",
+                "symfony/expression-language": "^6.4 || ^7.0",
+                "symfony/lock": "^6.4 || ^7.0",
+                "symfony/property-access": "^6.4 || ^7.0",
+                "symfony/property-info": "^6.4 || ^7.0"
+            },
+            "conflict": {
+                "api-platform/core": "<3",
+                "symfony/framework-bundle": "<6.4",
+                "symfony/serializer": "<6.4"
             },
             "require-dev": {
-                "mark-gerarts/phpstan-automapper-plus": "^0.1.0",
-                "phpunit/phpunit": "^7.0|^8.0",
-                "symfony/debug": "^3.3",
-                "symfony/var-dumper": "^3.3"
+                "api-platform/core": "^3.0.4",
+                "doctrine/annotations": "~1.0",
+                "doctrine/inflector": "^2.0",
+                "matthiasnoback/symfony-dependency-injection-test": "^5.1",
+                "moneyphp/money": "^3.3.2",
+                "phpunit/phpunit": "^9.0",
+                "symfony/browser-kit": "^6.4 || ^7.0",
+                "symfony/console": "^6.4 || ^7.0",
+                "symfony/filesystem": "^6.4 || ^7.0",
+                "symfony/framework-bundle": "*",
+                "symfony/http-client": "^6.4 || ^7.0",
+                "symfony/http-kernel": "^6.4 || ^7.0",
+                "symfony/serializer": "*",
+                "symfony/stopwatch": "^6.4 || ^7.0",
+                "symfony/twig-bundle": "^6.4 || ^7.0",
+                "symfony/uid": "^6.4 || ^7.0",
+                "symfony/web-profiler-bundle": "^6.4 || ^7.0",
+                "symfony/yaml": "^6.4 || ^7.0",
+                "willdurand/negotiation": "^3.0"
+            },
+            "suggest": {
+                "symfony/serializer": "Allow to use symfony serializer attributes in mapping"
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "src/php-parser.php"
+                ],
                 "psr-4": {
-                    "AutoMapperPlus\\": "src/"
+                    "AutoMapper\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1433,78 +1467,21 @@
             ],
             "authors": [
                 {
-                    "name": "Mark Gerarts",
-                    "email": "mark.gerarts@gmail.com"
-                }
-            ],
-            "description": "An AutoMapper for PHP",
-            "keywords": [
-                "automapper",
-                "converter",
-                "object-to-object"
-            ],
-            "support": {
-                "issues": "https://github.com/mark-gerarts/automapper-plus/issues",
-                "source": "https://github.com/mark-gerarts/automapper-plus/tree/1.4.2"
-            },
-            "time": "2024-11-25T08:32:44+00:00"
-        },
-        {
-            "name": "mark-gerarts/automapper-plus-bundle",
-            "version": "1.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mark-gerarts/automapper-plus-bundle.git",
-                "reference": "fcedf1b9aa1d1c742a511ed9c4d2a943d45560b3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mark-gerarts/automapper-plus-bundle/zipball/fcedf1b9aa1d1c742a511ed9c4d2a943d45560b3",
-                "reference": "fcedf1b9aa1d1c742a511ed9c4d2a943d45560b3",
-                "shasum": ""
-            },
-            "require": {
-                "mark-gerarts/auto-mapper-plus": "^1.3",
-                "php": ">=7.1.0",
-                "symfony/framework-bundle": "^3.4|^4.0|^5.0|^6.0|^7.0"
-            },
-            "require-dev": {
-                "matthiasnoback/symfony-dependency-injection-test": "^3.1|^4.1",
-                "phpunit/phpunit": "^7.5|^8.0|^9.0|^10.0",
-                "symfony/phpunit-bridge": "^5.0|^6.0|^7.0",
-                "symfony/property-access": "^3.4|^4.4|^5.0|^6.0|^7.0"
-            },
-            "suggest": {
-                "symfony/property-access": "^3.4|^4.4|^5.4|^6.0|^7.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "AutoMapperPlus\\AutoMapperPlusBundle\\": [
-                        ""
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
+                    "name": "Joel Wurtz",
+                    "email": "jwurtz@jolicode.com"
+                },
                 {
-                    "name": "Mark Gerarts",
-                    "email": "mark.gerarts@gmail.com"
+                    "name": "Baptiste Leduc",
+                    "email": "baptiste.leduc@gmail.com"
                 }
             ],
-            "description": "A Symfony bundle for AutoMapper+",
-            "keywords": [
-                "automapper",
-                "bundle"
-            ],
+            "description": "JoliCode AutoMapper",
+            "homepage": "https://github.com/jolicode/automapper",
             "support": {
-                "issues": "https://github.com/mark-gerarts/automapper-plus-bundle/issues",
-                "source": "https://github.com/mark-gerarts/automapper-plus-bundle/tree/1.5.0"
+                "issues": "https://github.com/jolicode/automapper/issues",
+                "source": "https://github.com/jolicode/automapper/tree/feature/skip-uninitialized"
             },
-            "time": "2024-04-13T12:58:59+00:00"
+            "time": "2024-10-25T15:07:05+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3422,6 +3399,70 @@
             "time": "2024-09-25T14:20:29+00:00"
         },
         {
+            "name": "symfony/expression-language",
+            "version": "7.3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/expression-language.git",
+                "reference": "26f4884a455e755e630a5fc372df124a3578da2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/expression-language/zipball/26f4884a455e755e630a5fc372df124a3578da2e",
+                "reference": "26f4884a455e755e630a5fc372df124a3578da2e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/cache": "^6.4|^7.0",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/service-contracts": "^2.5|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\ExpressionLanguage\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides an engine that can compile and evaluate expressions",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/expression-language/tree/v7.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-10-15T11:52:45+00:00"
+        },
+        {
             "name": "symfony/filesystem",
             "version": "7.3.x-dev",
             "source": {
@@ -4039,6 +4080,84 @@
                 }
             ],
             "time": "2024-12-18T14:57:57+00:00"
+        },
+        {
+            "name": "symfony/lock",
+            "version": "7.3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/lock.git",
+                "reference": "07212a5994a30e3667e95e5b16b2dda0685aff84"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/07212a5994a30e3667e95e5b16b2dda0685aff84",
+                "reference": "07212a5994a30e3667e95e5b16b2dda0685aff84",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/log": "^1|^2|^3"
+            },
+            "conflict": {
+                "doctrine/dbal": "<3.6",
+                "symfony/cache": "<6.4"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^3.6|^4",
+                "predis/predis": "^1.1|^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Lock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Creates and manages locks, a mechanism to provide exclusive access to a shared resource",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "cas",
+                "flock",
+                "locking",
+                "mutex",
+                "redlock",
+                "semaphore"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/lock/tree/v7.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-10-25T15:34:29+00:00"
         },
         {
             "name": "symfony/monolog-bridge",
@@ -9760,7 +9879,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "jolicode/automapper": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
