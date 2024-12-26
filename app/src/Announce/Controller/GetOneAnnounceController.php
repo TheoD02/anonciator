@@ -16,11 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class GetOneAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_GET])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Get announce by ID', groups: [ApiGroups::GET_ONE])]
-    public function __invoke(
-        AnnounceService $announceService,
-        int $id,
-    ): Response
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Get announce by ID', groups: [
+        ApiGroups::GET_ONE,
+    ])]
+    public function __invoke(AnnounceService $announceService, int $id): Response
     {
         $announce = $announceService->getAnnounceById($id);
 

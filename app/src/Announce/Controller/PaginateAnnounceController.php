@@ -31,8 +31,7 @@ class PaginateAnnounceController extends AbstractApiController
         #[MapQueryString] AnnounceFilterQuery $query,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
         Stopwatch $sw,
-    ): Response
-    {
+    ): Response {
         $announces = $announceService->paginate($query, $paginationFilterQuery);
 
         return $this->successResponse($announces, target: AnnounceResponse::class, groups: [ApiGroups::GET_PAGINATED]);

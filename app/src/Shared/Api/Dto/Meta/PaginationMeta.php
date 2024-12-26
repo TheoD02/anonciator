@@ -27,7 +27,7 @@ readonly class PaginationMeta implements ApiMetaInterface
 
         $meta->totalItems = $total;
         $meta->currentPage = $paginator->getPaginationFilterQuery()->page;
-        $meta->lastPage = (int) \ceil($total / $paginator->getPaginationFilterQuery()->limit);
+        $meta->lastPage = (int) ceil($total / $paginator->getPaginationFilterQuery()->limit);
         $meta->firstPage = 1;
         $meta->maxPerPage = 100;
 

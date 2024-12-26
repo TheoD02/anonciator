@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Service;
 
 use App\Announce\Entity\Announce;

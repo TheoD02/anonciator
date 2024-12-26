@@ -17,8 +17,8 @@ class ApiGroups
     public const string PUT = 'PUT';
 
     public const string PATCH = 'PATCH';
-    public const string DELETE = 'DELETE';
 
+    public const string DELETE = 'DELETE';
 
     public const array ALL = [
         self::GET_ONE,

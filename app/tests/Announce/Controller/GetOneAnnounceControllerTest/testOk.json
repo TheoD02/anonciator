@@ -3,9 +3,9 @@
         "id": 1,
         "title": "Title",
         "description": "Description",
-        "price": "100",
+        "price": "100.00",
         "categoryId": 1,
-        "location": "41.0987",
+        "location": "41.09870000",
         "status": "draft",
         "photoIds": []
     },

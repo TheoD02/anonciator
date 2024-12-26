@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Shared\Api;
 
 use Doctrine\Common\Collections\Collection;
@@ -9,16 +11,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
-use function array_map;
-use function implode;
-use function iterator_to_array;
 
 class RelationResolver
 {
     public function __construct(
-        private readonly EntityManagerInterface $em
-    )
-    {
+        private readonly EntityManagerInterface $em,
+    ) {
     }
 
     /**
@@ -80,7 +78,7 @@ class RelationResolver
             /** @var object|null $collectionInstance */
             $collectionInstance = $isCollection ? $targetPropertyReflection->getValue($target) : null;
 
-            if ($isCollection && !$collectionInstance instanceof Collection) {
+            if ($isCollection && ! $collectionInstance instanceof Collection) {
                 throw new \RuntimeException(\sprintf(
                     'Property "%s::%s" is a collection but the collection instance is not a collection. Type "%s" is not supported yet.',
                     $source::class,
@@ -90,9 +88,12 @@ class RelationResolver
             }
 
             /** @var ?Collection<array-key, object> $collectionInstance */
-
             if ($relation->set === []) {
                 $collectionInstance?->clear();
+
+                if ($mapRelationInstance->allowEmpty === true) {
+                    return $target;
+                }
 
                 if ($targetPropertyReflection->getType()?->allowsNull() === false) {
                     $violations = new ConstraintViolationList([
@@ -110,9 +111,17 @@ class RelationResolver
                         ),
                     ]);
 
-                    throw HttpException::fromStatusCode(422, implode("\n", array_map(static fn($e) => $e->getMessage(), iterator_to_array($violations))), new ValidationFailedException($target, $violations));
+                    throw HttpException::fromStatusCode(
+                        422,
+                        implode(
+                            "\n",
+                            array_map(static fn ($e): string|\Stringable => $e->getMessage(), iterator_to_array(
+                                $violations
+                            ))
+                        ),
+                        new ValidationFailedException($target, $violations)
+                    );
                 }
-
 
                 return $target;
             }
@@ -125,7 +134,7 @@ class RelationResolver
                     'Not possible to define more than one values in "set" field for property "%s::%s". Please input only one id or if is a collection, change the "many" attribute to true.',
                     $source::class,
                     $property->getName(),
-                ),);
+                ), );
             }
 
             if ($many === true && $collectionInstance === null) {
@@ -134,11 +143,51 @@ class RelationResolver
                     $source::class,
                     $property->getName(),
                     Collection::class,
-                ),);
+                ), );
             }
 
             if ($relation->set) {
                 $collectionInstance?->clear();
+
+                $databaseIds = $this->em->getRepository($targetType)
+                    ->createQueryBuilder('t')
+                    ->select('t.id')
+                    ->where('t.id IN (:ids)')
+                    ->setParameter('ids', $relation->set)
+                    ->getQuery()
+                    ->getScalarResult()
+                ;
+                $databaseIds = array_column($databaseIds, 'id');
+                if (\count($databaseIds) !== \count($relation->set)) {
+                    $missingIds = array_diff($relation->set, $databaseIds);
+                    $violations = new ConstraintViolationList([
+                        new ConstraintViolation(
+                            'Some ids does not exist',
+                            null,
+                            [
+                                'ids' => $missingIds,
+                            ],
+                            $target,
+                            $targetProperty,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                        ),
+                    ]);
+
+                    throw HttpException::fromStatusCode(
+                        422,
+                        implode(
+                            "\n",
+                            array_map(static fn ($e): string|\Stringable => $e->getMessage(), iterator_to_array(
+                                $violations
+                            ))
+                        ),
+                        new ValidationFailedException($target, $violations)
+                    );
+                }
 
                 foreach ($relation->set as $id) {
                     $reference = $this->em->getReference($targetType, $id);
@@ -175,8 +224,9 @@ class RelationResolver
 
             // We have all information to set the values in case of "add" and "remove"
             $existingIds = $collectionInstance
-                ->map(fn(object $object): int|string => $this->getDoctrineId($object))
-                ->toArray();
+                ->map(fn (object $object): int|string => $this->getDoctrineId($object))
+                ->toArray()
+            ;
             $idsToAdd = array_diff($relation->add ?? [], $existingIds);
             $idsToRemove = array_intersect($relation->remove ?? [], $existingIds);
 
@@ -232,7 +282,7 @@ class RelationResolver
         $id = $this->em->getClassMetadata($object::class)->getIdentifierValues($object);
 
         $idValue = $id[0] ?? $id['id'];
-        if (!\is_string($idValue) && !\is_int($idValue)) {
+        if (! \is_string($idValue) && ! \is_int($idValue)) {
             throw new \RuntimeException(
                 'Doctrine id is not a string or a int value. Doctrine id must be a string or a int value.'
             );

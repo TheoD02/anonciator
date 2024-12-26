@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Dto\Payload;
 
 use App\Announce\AnnounceStatus;
@@ -39,6 +41,6 @@ class BaseAnnouncePayload
 
     #[Property(description: 'Photo IDs of the announce', example: '[1, 2, 3]')]
     #[Assert\Valid]
-    #[MapRelation(toProperty: 'photos', many: true)]
+    #[MapRelation(toProperty: 'photos', many: true, allowEmpty: true)]
     public ?Relation $photos = null;
 }

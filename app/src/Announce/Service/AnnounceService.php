@@ -31,8 +31,7 @@ class AnnounceService implements LoggerAwareInterface
         private readonly EntityManagerInterface $em,
         private readonly EventDispatcherInterface $dispatcher,
         private readonly RelationResolver $relationResolver,
-    )
-    {
+    ) {
     }
 
     public function createAnnounceFromPayload(CreateAnnouncePayload $payload): Announce
@@ -105,7 +104,9 @@ class AnnounceService implements LoggerAwareInterface
     {
         $announce = $this->getAnnounceById($id);
 
-        $this->mapper->map($payload, $announce, [MapperContext::SKIP_UNINITIALIZED_VALUES => true]);
+        $this->mapper->map($payload, $announce, [
+            MapperContext::SKIP_UNINITIALIZED_VALUES => true,
+        ]);
 
         $this->relationResolver->resolve($payload, $announce);
 

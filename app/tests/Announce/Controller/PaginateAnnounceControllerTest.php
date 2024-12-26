@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Announce\Controller;
 
 use App\Announce\AnnounceStatus;
@@ -8,8 +10,11 @@ use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+/**
+ * @internal
+ */
 #[CoversClass(PaginateAnnounceController::class)]
-class PaginateAnnounceControllerTest extends AbstractApiWebTestCase
+final class PaginateAnnounceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {
@@ -38,7 +43,7 @@ class PaginateAnnounceControllerTest extends AbstractApiWebTestCase
                 'price' => 200,
                 'location' => '41.0987',
                 'status' => AnnounceStatus::DRAFT,
-            ]
+            ],
         ])->create();
 
         // Act

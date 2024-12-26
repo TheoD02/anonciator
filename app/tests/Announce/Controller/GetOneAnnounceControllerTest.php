@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Announce\Controller;
 
 use App\Announce\AnnounceStatus;
@@ -8,8 +10,11 @@ use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+/**
+ * @internal
+ */
 #[CoversClass(GetOneAnnounceController::class)]
-class GetOneAnnounceControllerTest extends AbstractApiWebTestCase
+final class GetOneAnnounceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {
@@ -33,7 +38,9 @@ class GetOneAnnounceControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
-        $this->request('GET', parameters: ['id' => 1]);
+        $this->request('GET', parameters: [
+            'id' => 1,
+        ]);
 
         // Assert
         self::assertResponseIsSuccessful();

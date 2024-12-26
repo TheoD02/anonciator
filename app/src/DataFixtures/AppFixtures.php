@@ -14,8 +14,8 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        \ini_set('memory_limit', '2G');
-        foreach (\range(1, 50) as $i) {
+        ini_set('memory_limit', '2G');
+        foreach (range(1, 50) as $i) {
             flush_after(static fn (): array => AnnounceFactory::new()->createMany(1_000));
         }
 

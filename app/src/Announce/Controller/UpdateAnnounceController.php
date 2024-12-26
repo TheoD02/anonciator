@@ -23,8 +23,7 @@ class UpdateAnnounceController extends AbstractApiController
         #[MapRequestPayload] UpdateAnnouncePayload $payload,
         AnnounceService $announceService,
         int $id,
-    ): Response
-    {
+    ): Response {
         $announce = $announceService->updateAnnounceFromPayload($id, $payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [ApiGroups::PUT]);

@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -12,6 +11,11 @@
 ###> bamarni/composer-bin-plugin ###
 /vendor-bin/**/vendor/
 ###< bamarni/composer-bin-plugin ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
 
 ###> phpunit/phpunit ###
 /phpunit.xml

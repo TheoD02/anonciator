@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Announce\Controller;
 
 use App\Announce\AnnounceStatus;
@@ -8,8 +10,11 @@ use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+/**
+ * @internal
+ */
 #[CoversClass(PartialUpdateAnnounceController::class)]
-class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
+final class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {
@@ -33,7 +38,11 @@ class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
-        $this->request('PATCH', parameters: ['id' => 1], json: ['title' => 'new title']);
+        $this->request('PATCH', parameters: [
+            'id' => 1,
+        ], json: [
+            'title' => 'new title',
+        ]);
 
         // Assert
         self::assertResponseIsSuccessful();
@@ -43,7 +52,11 @@ class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
     public function testWhenNotFound(): void
     {
         // Act
-        $this->request('PATCH', parameters: ['id' => 1], json: ['title' => 'new title']);
+        $this->request('PATCH', parameters: [
+            'id' => 1,
+        ], json: [
+            'title' => 'new title',
+        ]);
 
         // Assert
         self::assertResponseStatusCodeSame(404);
@@ -62,7 +75,9 @@ class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
-        $this->request('PATCH', parameters: ['id' => 1], json: []);
+        $this->request('PATCH', parameters: [
+            'id' => 1,
+        ], json: []);
 
         // Assert
         self::assertResponseIsSuccessful();
