@@ -25,6 +25,7 @@ class BaseAnnouncePayload
 
     #[Property(description: 'Category ID of the announce', example: '1')]
     #[Assert\Valid]
+    #[Assert\NotBlank]
     #[MapRelation(toProperty: 'category', many: false)]
     public Relation $category;
 
@@ -39,5 +40,5 @@ class BaseAnnouncePayload
     #[Property(description: 'Photo IDs of the announce', example: '[1, 2, 3]')]
     #[Assert\Valid]
     #[MapRelation(toProperty: 'photos', many: true)]
-    public Relation $photos;
+    public ?Relation $photos = null;
 }

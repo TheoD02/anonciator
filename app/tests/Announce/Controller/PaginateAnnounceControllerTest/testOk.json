@@ -1,0 +1,33 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "Title 1",
+            "description": "Description 1",
+            "price": "100",
+            "categoryId": 1,
+            "location": "41.0987",
+            "status": "draft",
+            "photoIds": []
+        },
+        {
+            "id": 2,
+            "title": "Title 2",
+            "description": "Description 2",
+            "price": "200",
+            "categoryId": 1,
+            "location": "41.0987",
+            "status": "draft",
+            "photoIds": []
+        }
+    ],
+    "meta": {
+        "type": "pagination",
+        "totalItems": 2,
+        "currentPage": 1,
+        "lastPage": 1,
+        "firstPage": 1,
+        "maxPerPage": 100
+    },
+    "success": true
+}

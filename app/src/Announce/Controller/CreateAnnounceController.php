@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CreateAnnounceController extends AbstractApiController
 {
-    #[Route('', name: __METHOD__, methods: [Request::METHOD_POST])]
+    #[Route('', methods: [Request::METHOD_POST])]
     #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce created', groups: [ApiGroups::POST])]
     public function __invoke(
         #[MapRequestPayload] CreateAnnouncePayload $payload,

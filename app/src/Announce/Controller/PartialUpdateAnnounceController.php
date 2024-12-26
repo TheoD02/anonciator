@@ -19,7 +19,7 @@ class PartialUpdateAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_PATCH])]
     #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce patched', groups: [ApiGroups::PATCH])]
-    public function patch(
+    public function __invoke(
         #[MapRequestPayload] PartialUpdateAnnouncePayload $payload,
         AnnounceService $announceService,
         int $id,

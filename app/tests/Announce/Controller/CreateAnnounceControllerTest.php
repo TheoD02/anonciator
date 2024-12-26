@@ -5,7 +5,9 @@ namespace App\Tests\Announce\Controller;
 use App\Announce\Controller\CreateAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceCategoryFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 
+#[CoversClass(CreateAnnounceController::class)]
 class CreateAnnounceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
@@ -36,6 +38,16 @@ class CreateAnnounceControllerTest extends AbstractApiWebTestCase
 
         // Assert
         self::assertResponseIsSuccessful();
+        $this->assertJsonResponseFile();
+    }
+
+    public function testFullValidationFailed(): void
+    {
+        // Act
+        $this->request('POST', json: []);
+
+        // Assert
+        self::assertResponseStatusCodeSame(422);
         $this->assertJsonResponseFile();
     }
 }

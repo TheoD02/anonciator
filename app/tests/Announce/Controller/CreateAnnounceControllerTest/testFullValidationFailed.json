@@ -1,0 +1,53 @@
+{
+    "type": "https://symfony.com/errors/validation",
+    "title": "Validation Failed",
+    "status": 422,
+    "detail": "title: This value should not be blank.\ndescription: This value should not be blank.\nprice: This value should not be blank.\nlocation: This value should not be blank.\nstatus: This value should not be blank.",
+    "violations": [
+        {
+            "propertyPath": "title",
+            "title": "This value should not be blank.",
+            "template": "This value should not be blank.",
+            "parameters": {
+                "{{ value }}": "null"
+            },
+            "type": "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+        },
+        {
+            "propertyPath": "description",
+            "title": "This value should not be blank.",
+            "template": "This value should not be blank.",
+            "parameters": {
+                "{{ value }}": "null"
+            },
+            "type": "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+        },
+        {
+            "propertyPath": "price",
+            "title": "This value should not be blank.",
+            "template": "This value should not be blank.",
+            "parameters": {
+                "{{ value }}": "null"
+            },
+            "type": "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+        },
+        {
+            "propertyPath": "location",
+            "title": "This value should not be blank.",
+            "template": "This value should not be blank.",
+            "parameters": {
+                "{{ value }}": "null"
+            },
+            "type": "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+        },
+        {
+            "propertyPath": "status",
+            "title": "This value should not be blank.",
+            "template": "This value should not be blank.",
+            "parameters": {
+                "{{ value }}": "null"
+            },
+            "type": "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "data": {
+        "id": 1,
+        "title": "new title",
+        "description": "new description",
+        "price": "200",
+        "categoryId": 1,
+        "location": "41.0987",
+        "status": "published",
+        "photoIds": []
+    },
+    "meta": null,
+    "success": true
+}

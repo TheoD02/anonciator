@@ -4,7 +4,14 @@ namespace App\Shared\Api;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use function array_map;
+use function implode;
+use function iterator_to_array;
 
 class RelationResolver
 {
@@ -35,7 +42,7 @@ class RelationResolver
             if ($property->isInitialized($source) === false) {
                 continue;
             }
-            
+
             /** @var ?Relation $relation */
             $relation = $property->getValue($source);
             if ($relation === null) {
@@ -46,7 +53,7 @@ class RelationResolver
 
             if ($mapRelation === null) {
                 throw new \RuntimeException(\sprintf(
-                    'Property "%s::%s" is not annotated with MapRelation',
+                    'Property "%s::%s" is not annotated with MapRelation attribute',
                     $source::class,
                     $property->getName()
                 ));
@@ -86,6 +93,26 @@ class RelationResolver
 
             if ($relation->set === []) {
                 $collectionInstance?->clear();
+
+                if ($targetPropertyReflection->getType()?->allowsNull() === false) {
+                    $violations = new ConstraintViolationList([
+                        new ConstraintViolation(
+                            'Property is not nullable and no value was set',
+                            null,
+                            [],
+                            $target,
+                            $targetProperty,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                        ),
+                    ]);
+
+                    throw HttpException::fromStatusCode(422, implode("\n", array_map(static fn($e) => $e->getMessage(), iterator_to_array($violations))), new ValidationFailedException($target, $violations));
+                }
+
 
                 return $target;
             }

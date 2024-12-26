@@ -19,7 +19,7 @@ class UpdateAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_PUT])]
     #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce updated', groups: [ApiGroups::PUT])]
-    public function put(
+    public function __invoke(
         #[MapRequestPayload] UpdateAnnouncePayload $payload,
         AnnounceService $announceService,
         int $id,

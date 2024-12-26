@@ -90,7 +90,11 @@ class AbstractApiController extends AbstractController
         $context[AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES] = $context[AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES] ?? false;
         $context[AbstractNormalizer::GROUPS] = [...$groups, ...($context[AbstractNormalizer::GROUPS] ?? [])];
 
-        $dataClass = \is_array($data) ? $data[0] : $data;
+        $dataClass = \is_array($data) ? reset($data) : $data;
+        if ($dataClass === false) {
+            $dataClass = null;
+        }
+        
         if ($dataClass !== null && (\is_array($data) || \is_object($data))) {
             /** @var array<string> $ignoredAttributes */
             $ignoredAttributes = $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ?? [];

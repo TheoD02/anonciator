@@ -77,9 +77,15 @@ class AnnounceService implements LoggerAwareInterface
         return $this->updateAnnounce($announce);
     }
 
-    public function getAnnounceById(int $id): Announce
+    public function getAnnounceById(int $id, bool $fail = true): Announce
     {
-        return $this->repository->find($id);
+        $announce = $this->repository->find($id);
+
+        if ($fail && $announce === null) {
+            throw AnnounceNotFoundException::withId($id);
+        }
+
+        return $announce;
     }
 
     public function updateAnnounce(Announce $announce, bool $flush = true): Announce

@@ -1,17 +1,17 @@
 meta {
   name: List
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: {{url}}/api/announces/:id
+  url: {{url}}/api/announces?limit=100
   body: none
   auth: none
 }
 
-params:path {
-  id: 1
+params:query {
+  limit: 100
 }
 
 body:json {

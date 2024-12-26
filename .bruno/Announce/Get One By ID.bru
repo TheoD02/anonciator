@@ -1,13 +1,17 @@
 meta {
   name: Get One By ID
   type: http
-  seq: 2
+  seq: 4
 }
 
 get {
-  url: {{url}}/api/announces
+  url: {{url}}/api/announces/:id
   body: none
   auth: none
+}
+
+params:path {
+  id: 1
 }
 
 body:json {
