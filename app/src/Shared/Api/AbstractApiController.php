@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shared\Api;
 
-use App\Announce\Dto\Visibility;
 use App\Shared\Api\Doctrine\Pagination\Paginator;
 use App\Shared\Api\Dto\Adapter\ApiMetaInterface;
 use App\Shared\Api\Dto\Meta\PaginationMeta;
@@ -32,7 +31,8 @@ class AbstractApiController extends AbstractController
         private readonly JoliCodeAutoMapperInterface $joliCodeAutoMapper,
         private readonly NormalizerInterface $normalizer,
         protected readonly Stopwatch $sw,
-    ) {
+    )
+    {
     }
 
     /**
@@ -45,7 +45,8 @@ class AbstractApiController extends AbstractController
         int $status = 200,
         array $headers = [],
         array $context = [],
-    ): JsonResponse {
+    ): JsonResponse
+    {
         if ($status < 200 || $status > 299) {
             throw new \LogicException('Status code must be between 200 and 299');
         }
@@ -55,9 +56,9 @@ class AbstractApiController extends AbstractController
 
     /**
      * @param object|array<mixed>|bool|null $data
-     * @param class-string                  $target
-     * @param ArrayHeaders                  $headers
-     * @param ArrayContext                  $context
+     * @param class-string $target
+     * @param ArrayHeaders $headers
+     * @param ArrayContext $context
      */
     public function successResponse(
         object|array|bool|null $data,
@@ -67,7 +68,8 @@ class AbstractApiController extends AbstractController
         int $status = 200,
         array $headers = [],
         array $context = [],
-    ): Response {
+    ): Response
+    {
         if ($status < 200 || $status > 299) {
             throw new \LogicException('Status code must be between 200 and 299');
         }
@@ -81,7 +83,7 @@ class AbstractApiController extends AbstractController
         ];
         $this->sw->start('map_response');
         $data = is_iterable($data) ? array_map(
-            fn ($item): object|array|null => $this->joliCodeAutoMapper->map($item, $target, $ctx),
+            fn($item): object|array|null => $this->joliCodeAutoMapper->map($item, $target, $ctx),
             $data->getIterator()->getArrayCopy()
         ) : $this->joliCodeAutoMapper->map($data, $target, $ctx);
         $this->sw->stop('map_response');
@@ -134,7 +136,7 @@ class AbstractApiController extends AbstractController
             $propertyName = $reflectionProperty->getName();
 
             $sensitiveAttribute = $this->getSensitiveAttribute($reflectionProperty);
-            if ($sensitiveAttribute instanceof Sensitive && ! $this->isGranted($sensitiveAttribute->roles)) {
+            if ($sensitiveAttribute instanceof Sensitive && !$this->isGranted($sensitiveAttribute->roles)) {
                 $ignoredAttributes[] = $propertyName;
             }
 
@@ -170,7 +172,8 @@ class AbstractApiController extends AbstractController
         int $status = 200,
         array $headers = [],
         array $context = [],
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $queryParams = $this->requestStack->getCurrentRequest()->query->all();
 
         $ignore = $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ?? [];
@@ -216,7 +219,8 @@ class AbstractApiController extends AbstractController
         int $status = 400,
         array $headers = [],
         array $context = [],
-    ): JsonResponse {
+    ): JsonResponse
+    {
         if ($status < 400) {
             throw new \LogicException('Status code must be 400 or greater');
         }
