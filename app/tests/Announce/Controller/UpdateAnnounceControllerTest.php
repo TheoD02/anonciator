@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Announce\Controller;
 
 use App\Announce\AnnounceStatus;
-use App\Announce\Controller\UpdateAnnounceController;
+use App\Announce\Controller\Announce\UpdateAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceCategoryFactory;
 use App\Tests\Factory\AnnounceFactory;

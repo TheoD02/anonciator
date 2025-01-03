@@ -1,0 +1,17 @@
+{
+    "type": "https://symfony.com/errors/validation",
+    "title": "Validation Failed",
+    "status": 422,
+    "detail": "name: This value should not be blank.",
+    "violations": [
+        {
+            "propertyPath": "name",
+            "title": "This value should not be blank.",
+            "template": "This value should not be blank.",
+            "parameters": {
+                "{{ value }}": "null"
+            },
+            "type": "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+        }
+    ]
+}

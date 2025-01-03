@@ -84,7 +84,7 @@ class AbstractApiController extends AbstractController
         $this->sw->start('map_response');
         $data = is_iterable($data) ? array_map(
             fn($item): object|array|null => $this->joliCodeAutoMapper->map($item, $target, $ctx),
-            $data->getIterator()->getArrayCopy()
+            $data instanceof Paginator ? $data->getIterator()->getArrayCopy() : $data
         ) : $this->joliCodeAutoMapper->map($data, $target, $ctx);
         $this->sw->stop('map_response');
 

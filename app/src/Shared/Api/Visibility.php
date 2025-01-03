@@ -10,7 +10,6 @@ class Visibility
     public function __construct(
         public bool $external = true,
         public bool $internal = true,
-    )
-    {
+    ) {
     }
 }

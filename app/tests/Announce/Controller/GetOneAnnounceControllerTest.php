@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Announce\Controller;
 
 use App\Announce\AnnounceStatus;
-use App\Announce\Controller\GetOneAnnounceController;
+use App\Announce\Controller\Announce\GetOneAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;

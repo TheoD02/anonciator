@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace App\Resource\Repository;
 
 use App\Resource\Entity\Resource;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Shared\Doctrine\Repository\AbstractEntityRepository;
 
 /**
- * @extends ServiceEntityRepository<Resource>
+ * @extends AbstractEntityRepository<Resource>
  */
-class ResourceRepository extends ServiceEntityRepository
+class ResourceRepository extends AbstractEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-    ) {
-        parent::__construct($registry, Resource::class);
+    public function getEntityFqcn(): string
+    {
+        return Resource::class;
     }
 }

@@ -7,10 +7,11 @@ namespace App\Announce\Dto\Payload;
 use App\Announce\AnnounceStatus;
 use App\Shared\Api\MapRelation;
 use App\Shared\Api\Relation;
+use App\Shared\PayloadInterface;
 use OpenApi\Attributes\Property;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class BaseAnnouncePayload
+class BaseAnnouncePayload implements PayloadInterface
 {
     #[Property(description: 'Title of the announce', example: 'This is a title')]
     #[Assert\NotBlank()]

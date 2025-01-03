@@ -6,6 +6,22 @@ announces_controllers:
     type: attribute
     trailing_slash_on_root: false
 
+messages_controllers:
+    prefix: /api/messages
+    resource:
+        path: ../src/Message/Controller
+        namespace: App\Message\Controller
+    type: attribute
+    trailing_slash_on_root: false
+
+resources_controllers:
+    prefix: /api/resources
+    resource:
+        path: ../src/Resource/Controller
+        namespace: App\Resource\Controller
+    type: attribute
+    trailing_slash_on_root: false
+
 app.swagger_ui:
     path: /api/doc
     methods: GET

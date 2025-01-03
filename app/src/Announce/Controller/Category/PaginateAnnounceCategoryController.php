@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Announce\Controller\Category;
+
+use App\Announce\Dto\Response\AnnounceCategoryResponse;
+use App\Announce\Service\AnnounceCategoryService;
+use App\Shared\Api\AbstractApiController;
+use App\Shared\Api\ApiGroups;
+use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
+use OpenApi\Attributes\Tag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Tag(name: 'AnnounceCategory')]
+class PaginateAnnounceCategoryController extends AbstractApiController
+{
+    #[Route('/categories', methods: [Request::METHOD_GET], priority: 1)]
+    #[SuccessResponse(
+        dataFqcn: AnnounceCategoryResponse::class,
+        description: 'Paginate Announce Categories',
+        groups: [ApiGroups::GET_PAGINATED],
+        paginated: true,
+        statusCode: Response::HTTP_OK
+    )]
+    public function __invoke(AnnounceCategoryService $service): Response
+    {
+        $category = $service->paginateEntities();
+
+        return $this->successResponse(
+            data: $category,
+            target: AnnounceCategoryResponse::class,
+            groups: [ApiGroups::GET_ONE],
+            status: Response::HTTP_OK
+        );
+    }
+}

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Announce\Controller;
 
-use App\Announce\Controller\CreateAnnounceController;
+use App\Announce\Controller\Announce\CreateAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceCategoryFactory;
 use App\Tests\Factory\ResourceFactory;

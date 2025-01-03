@@ -7,7 +7,6 @@ namespace App\DataFixtures;
 use App\Tests\Factory\AnnounceFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-
 use function Zenstruck\Foundry\Persistence\flush_after;
 
 class AppFixtures extends Fixture
@@ -15,9 +14,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         ini_set('memory_limit', '2G');
-        foreach (range(1, 50) as $i) {
-            flush_after(static fn (): array => AnnounceFactory::new()->createMany(1_000));
-        }
+        flush_after(static fn(): array => AnnounceFactory::new()->createMany(100));
 
         // $product = new Product();
         // $manager->persist($product);

@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace App\Announce\Repository;
 
 use App\Announce\Entity\AnnounceCategory;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Shared\Doctrine\Repository\AbstractEntityRepository;
 
 /**
- * @extends ServiceEntityRepository<AnnounceCategory>
+ * @extends AbstractEntityRepository<AnnounceCategory>
  */
-class AnnounceCategoryRepository extends ServiceEntityRepository
+class AnnounceCategoryRepository extends AbstractEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-    ) {
-        parent::__construct($registry, AnnounceCategory::class);
+    public function getEntityFqcn(): string
+    {
+        return AnnounceCategory::class;
     }
 }

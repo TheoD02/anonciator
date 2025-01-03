@@ -8,9 +8,8 @@ use Doctrine\ORM\QueryBuilder;
 
 interface IncludeRelationFilterQuery
 {
-    public array $includes {
+    public array $includee {
         get;
-        set;
     }
 
     public function applyIncludes(QueryBuilder $qb): void;

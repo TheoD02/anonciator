@@ -8,10 +8,11 @@ use App\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -74,7 +75,7 @@ class User
 
     public function addGroup(GroupRole $group): static
     {
-        if (! $this->groups->contains($group)) {
+        if (!$this->groups->contains($group)) {
             $this->groups->add($group);
         }
 
@@ -86,5 +87,27 @@ class User
         $this->groups->removeElement($group);
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = ['ROLE_USER'];
+
+        foreach ($this->groups as $group) {
+            foreach ($group->getRoles() as $role) {
+                $roles[] = $role->getName();
+            }
+        }
+
+        return $roles;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
     }
 }

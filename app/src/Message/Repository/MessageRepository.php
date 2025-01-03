@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace App\Message\Repository;
 
 use App\Message\Entity\Message;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Shared\Doctrine\Repository\AbstractEntityRepository;
 
 /**
- * @extends ServiceEntityRepository<Message>
+ * @extends AbstractEntityRepository<Message>
  */
-class MessageRepository extends ServiceEntityRepository
+class MessageRepository extends AbstractEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-    ) {
-        parent::__construct($registry, Message::class);
+    public function getEntityFqcn(): string
+    {
+        return Message::class;
     }
 }

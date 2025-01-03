@@ -1,0 +1,15 @@
+meta {
+  name: Paginate
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/api/resources
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  files[]: @file(environments/Local.bru|environments/Remote.bru)
+}

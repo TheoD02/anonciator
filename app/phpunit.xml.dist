@@ -7,16 +7,16 @@
     backupGlobals="false"
     colors="true"
     bootstrap="tests/bootstrap.php"
+    convertDeprecationsToExceptions="false"
 >
     <php>
         <ini name="display_errors" value="1"/>
         <ini name="error_reporting" value="-1"/>
         <server name="APP_ENV" value="test" force="true"/>
-        <server name="APP_DEBUG" value="0" force="true"/>
         <server name="SHELL_VERBOSITY" value="-1"/>
         <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
-        <server name="SYMFONY_PHPUNIT_VERSION" value="9.6"/>
-        <server name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
+        <server name="SYMFONY_DEPRECATIONS_HELPER" value="0"/>
     </php>
 
     <testsuites>
@@ -34,7 +34,4 @@
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
     </listeners>
-
-    <extensions>
-    </extensions>
 </phpunit>

@@ -1,18 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 use Symfony\Component\Dotenv\Dotenv;
-use Symfony\Component\Filesystem\Filesystem;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-if (method_exists(Dotenv::class, 'bootEnv')) {
+if (file_exists(dirname(__DIR__) . '/config/bootstrap.php')) {
+    require dirname(__DIR__) . '/config/bootstrap.php';
+} elseif (method_exists(Dotenv::class, 'bootEnv')) {
     (new Dotenv())->bootEnv(dirname(__DIR__) . '/.env');
 }
 
-if ($_SERVER['APP_DEBUG']) {
-    umask(0o000);
+if (is_dir(dirname(__DIR__) . '/var/cache/test')) {
+    $filesystem = new Symfony\Component\Filesystem\Filesystem();
+    $filesystem->remove(dirname(__DIR__) . '/var/cache/test');
 }
-
-new Filesystem()->remove(__DIR__ . '/../var/cache/test');

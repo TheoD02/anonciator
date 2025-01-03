@@ -1,8 +1,13 @@
 headers {
-  Content-Type: application/json
   Cookie: XDEBUG_SESSION=phpstorm
+  ~Content-Type: application/json
 }
 
 auth {
-  mode: none
+  mode: basic
+}
+
+auth:basic {
+  username: admin
+  password: admin
 }
