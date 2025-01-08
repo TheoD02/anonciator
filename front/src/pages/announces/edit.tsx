@@ -4,6 +4,13 @@ import MDEditor from "@uiw/react-md-editor";
 import {Form, Input, InputNumber, Select, Upload} from "antd";
 import {UploadFile} from "antd/lib";
 
+type Photo = {
+  id: string;
+  originalName: string;
+  path: string;
+  bucket: string;
+}
+
 export const AnnounceEdit = () => {
   const {formProps, saveButtonProps, query, formLoading, onFinish} = useForm({});
 
@@ -25,16 +32,11 @@ export const AnnounceEdit = () => {
     onFinish({
       ...values,
       photos: {
-        set: photos.map((photo) => photo.response?.data?.id || photo.uid).filter(Boolean),
+        set: photos.map((photo) => Number(photo.response?.data?.id || photo.uid)).filter(Boolean),
       },
     });
   };
-  type Photo = {
-    id: string;
-    originalName: string;
-    path: string;
-    bucket: string;
-  }
+
   const {data: photos, isLoading: isLoadingPhotos} = useMany<Photo>({
     resource: "resources",
     ids: blogPostsData?.photoIds ?? [],

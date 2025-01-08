@@ -28,7 +28,6 @@ import {AnnounceCreate} from "./pages/announces/create";
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner/>
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>

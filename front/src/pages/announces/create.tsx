@@ -17,7 +17,8 @@ export const AnnounceCreate = () => {
   const handleOnFinish = (values) => {
     onFinish({
       ...values,
-      photos: { set: values.photos?.fileList?.map((photo) => photo.response.data.id) },
+      category: { set: values.category },
+      photos: { set: values.photos?.fileList?.map((photo) => Number(photo.response.data.id)) },
     });
   };
 
@@ -27,6 +28,7 @@ export const AnnounceCreate = () => {
         <Form.Item
           label={"Title"}
           name={["title"]}
+          initialValue={"test"}
           rules={[
             {
               required: true,
@@ -37,7 +39,8 @@ export const AnnounceCreate = () => {
         </Form.Item>
         <Form.Item
           label={"Description"}
-          name="Description"
+          name="description"
+          initialValue={"test"}
           rules={[
             {
               required: true,
@@ -57,10 +60,22 @@ export const AnnounceCreate = () => {
         >
           <Select {...categorySelectProps} />
         </Form.Item>
-
+        <Form.Item
+          label={"Price"}
+          name={["price"]}
+          initialValue={10}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <InputNumber/>
+        </Form.Item>
         <Form.Item
           label={"Location"}
           name={["location"]}
+          initialValue={10}
           rules={[
             {
               required: true,
