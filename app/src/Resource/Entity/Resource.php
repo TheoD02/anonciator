@@ -21,6 +21,9 @@ class Resource
     #[ORM\Column(length: 50)]
     private ?string $bucket = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $originalName = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +49,18 @@ class Resource
     public function setBucket(string $bucket): static
     {
         $this->bucket = $bucket;
+
+        return $this;
+    }
+
+    public function getOriginalName(): ?string
+    {
+        return $this->originalName;
+    }
+
+    public function setOriginalName(string $originalName): static
+    {
+        $this->originalName = $originalName;
 
         return $this;
     }

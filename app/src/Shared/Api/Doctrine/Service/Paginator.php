@@ -24,7 +24,8 @@ class Paginator
 
     public function __construct(
         RequestStack $requestStack,
-    ) {
+    )
+    {
         $this->request = $requestStack->getCurrentRequest();
     }
 
@@ -32,7 +33,8 @@ class Paginator
         QueryBuilder $qb,
         ORMQueryBuilderFilterQueryAwareInterface|FilterQueryDefinitionInterface|null $queryBuilderFilterQueryAware = null,
         PaginationFilterQuery $paginationFilterQuery = new PaginationFilterQuery(),
-    ): \Doctrine\ORM\Tools\Pagination\Paginator {
+    ): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
         if ($queryBuilderFilterQueryAware instanceof ORMQueryBuilderFilterQueryAwareInterface) {
             $queryBuilderFilterQueryAware->applyToORMQueryBuilder($qb);
         }
@@ -42,9 +44,11 @@ class Paginator
         }
 
         $qb
+            ->addOrderBy('e.id', 'ASC');
+
+        $qb
             ->setFirstResult(($paginationFilterQuery->page - 1) * $paginationFilterQuery->limit)
-            ->setMaxResults($paginationFilterQuery->limit)
-        ;
+            ->setMaxResults($paginationFilterQuery->limit);
 
         $query = $qb->getQuery();
 

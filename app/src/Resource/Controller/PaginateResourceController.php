@@ -2,6 +2,7 @@
 
 namespace App\Resource\Controller;
 
+use App\Resource\Dto\Filter\PaginateResourceFilterQuery;
 use App\Resource\Dto\Response\ResourceResponse;
 use App\Resource\Service\ResourceService;
 use App\Shared\Api\AbstractApiController;
@@ -25,11 +26,12 @@ class PaginateResourceController extends AbstractApiController
         statusCode: Response::HTTP_OK
     )]
     public function __invoke(
+        #[MapQueryString] PaginateResourceFilterQuery $filterQuery,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
         ResourceService $resourceService,
     ): Response
     {
-        $resources = $resourceService->paginateEntities(paginationFilterQuery: $paginationFilterQuery);
+        $resources = $resourceService->paginateEntities($filterQuery, paginationFilterQuery: $paginationFilterQuery);
 
         return $this->successResponse(
             data: $resources,

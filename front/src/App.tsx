@@ -1,13 +1,8 @@
-import { Authenticated, GitHubBanner, Refine } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import {Authenticated, GitHubBanner, Refine} from "@refinedev/core";
+import {DevtoolsPanel, DevtoolsProvider} from "@refinedev/devtools";
+import {RefineKbar, RefineKbarProvider} from "@refinedev/kbar";
 
-import {
-  ErrorComponent,
-  ThemedLayoutV2,
-  ThemedSiderV2,
-  useNotificationProvider,
-} from "@refinedev/antd";
+import {ErrorComponent, ThemedLayoutV2, ThemedSiderV2, useNotificationProvider,} from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
 import routerBindings, {
@@ -16,62 +11,44 @@ import routerBindings, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import dataProvider from "@refinedev/simple-rest";
-import { App as AntdApp } from "antd";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
-import { authProvider } from "./authProvider";
-import { Header } from "./components/header";
-import { ColorModeContextProvider } from "./contexts/color-mode";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
-import { ForgotPassword } from "./pages/forgotPassword";
-import { Login } from "./pages/login";
-import { Register } from "./pages/register";
+import {App as AntdApp} from "antd";
+import {BrowserRouter, Outlet, Route, Routes} from "react-router";
+import {authProvider} from "./authProvider";
+import {Header} from "./components/header";
+import {ColorModeContextProvider} from "./contexts/color-mode";
+import {ForgotPassword} from "./pages/forgotPassword";
+import {Login} from "./pages/login";
+import {Register} from "./pages/register";
+import {AnnounceList} from "./pages/announces/list";
+import {apiDataProvider} from "./api";
+import {AnnounceShow} from "./pages/announces/show";
+import {AnnounceEdit} from "./pages/announces/edit";
+import {AnnounceCreate} from "./pages/announces/create";
 
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
+      <GitHubBanner/>
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
             <DevtoolsProvider>
               <Refine
-                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+                dataProvider={apiDataProvider("https://anonciator.api.localhost/api")}
                 notificationProvider={useNotificationProvider}
                 routerProvider={routerBindings}
                 authProvider={authProvider}
                 resources={[
                   {
-                    name: "blog_posts",
-                    list: "/blog-posts",
-                    create: "/blog-posts/create",
-                    edit: "/blog-posts/edit/:id",
-                    show: "/blog-posts/show/:id",
+                    name: "announces",
+                    list: "/announces",
+                    create: "/announces/create",
+                    edit: "/announces/edit/:id",
+                    show: "/announces/show/:id",
                     meta: {
                       canDelete: true,
                     },
-                  },
-                  {
-                    name: "categories",
-                    list: "/categories",
-                    create: "/categories/create",
-                    edit: "/categories/edit/:id",
-                    show: "/categories/show/:id",
-                    meta: {
-                      canDelete: true,
-                    },
-                  },
+                  }
                 ]}
                 options={{
                   syncWithLocation: true,
@@ -85,59 +62,53 @@ function App() {
                     element={
                       <Authenticated
                         key="authenticated-inner"
-                        fallback={<CatchAllNavigate to="/login" />}
+                        fallback={<CatchAllNavigate to="/login"/>}
                       >
                         <ThemedLayoutV2
                           Header={Header}
-                          Sider={(props) => <ThemedSiderV2 {...props} fixed />}
+                          Sider={(props) => <ThemedSiderV2 {...props} fixed/>}
                         >
-                          <Outlet />
+                          <Outlet/>
                         </ThemedLayoutV2>
                       </Authenticated>
                     }
                   >
                     <Route
                       index
-                      element={<NavigateToResource resource="blog_posts" />}
+                      element={<NavigateToResource resource="announces"/>}
                     />
-                    <Route path="/blog-posts">
-                      <Route index element={<BlogPostList />} />
-                      <Route path="create" element={<BlogPostCreate />} />
-                      <Route path="edit/:id" element={<BlogPostEdit />} />
-                      <Route path="show/:id" element={<BlogPostShow />} />
+                    <Route path="/announces">
+                      <Route index element={<AnnounceList/>}/>
+                      <Route path="create" element={<AnnounceCreate/>}/>
+                      <Route path="show/:id" element={<AnnounceShow/>}/>
+                      <Route path="edit/:id" element={<AnnounceEdit/>}/>
                     </Route>
-                    <Route path="/categories">
-                      <Route index element={<CategoryList />} />
-                      <Route path="create" element={<CategoryCreate />} />
-                      <Route path="edit/:id" element={<CategoryEdit />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
-                    </Route>
-                    <Route path="*" element={<ErrorComponent />} />
+                    <Route path="*" element={<ErrorComponent/>}/>
                   </Route>
                   <Route
                     element={
                       <Authenticated
                         key="authenticated-outer"
-                        fallback={<Outlet />}
+                        fallback={<Outlet/>}
                       >
-                        <NavigateToResource />
+                        <NavigateToResource/>
                       </Authenticated>
                     }
                   >
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/register" element={<Register/>}/>
                     <Route
                       path="/forgot-password"
-                      element={<ForgotPassword />}
+                      element={<ForgotPassword/>}
                     />
                   </Route>
                 </Routes>
 
-                <RefineKbar />
-                <UnsavedChangesNotifier />
-                <DocumentTitleHandler />
+                <RefineKbar/>
+                <UnsavedChangesNotifier/>
+                <DocumentTitleHandler/>
               </Refine>
-              <DevtoolsPanel />
+              <DevtoolsPanel/>
             </DevtoolsProvider>
           </AntdApp>
         </ColorModeContextProvider>

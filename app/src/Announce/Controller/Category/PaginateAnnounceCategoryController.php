@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Announce\Controller\Category;
 
+use App\Announce\Dto\Filter\AnnounceCategoryFilterQuery;
 use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\ApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
+use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Tag(name: 'AnnounceCategory')]
@@ -25,9 +28,13 @@ class PaginateAnnounceCategoryController extends AbstractApiController
         paginated: true,
         statusCode: Response::HTTP_OK
     )]
-    public function __invoke(AnnounceCategoryService $service): Response
+    public function __invoke(
+        #[MapQueryString] AnnounceCategoryFilterQuery $filterQuery,
+        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
+        AnnounceCategoryService $service
+    ): Response
     {
-        $category = $service->paginateEntities();
+        $category = $service->paginateEntities($filterQuery, $paginationFilterQuery);
 
         return $this->successResponse(
             data: $category,

@@ -4,10 +4,14 @@ meta {
   seq: 2
 }
 
-post {
-  url: {{url}}/api/resources
+get {
+  url: {{url}}/api/resources?page=4
   body: multipartForm
   auth: none
+}
+
+params:query {
+  page: 4
 }
 
 body:multipart-form {

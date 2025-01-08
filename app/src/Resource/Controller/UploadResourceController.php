@@ -11,7 +11,6 @@ use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Tag(name: 'Resource')]
@@ -25,17 +24,19 @@ class UploadResourceController extends AbstractApiController
         statusCode: Response::HTTP_CREATED
     )]
     public function __invoke(
-        /**
-         * @var array<UploadedFile> $files
-         */
-        #[MapUploadedFile(name: 'files')] array $files,
+        Request $request,
         ResourceService $resourceService,
     ): Response
     {
+        /**
+         * @var array<UploadedFile> $files
+         */
+        $files = [...$request->files->all('files'), $request->files->get('file')];
+        $files = array_filter($files);
         $resources = $resourceService->createManyResources(...$files);
 
         return $this->successResponse(
-            data: $resources,
+            data: $request->files->has('file') ? $resources[0] : $resources,
             target: ResourceResponse::class,
             groups: [ApiGroups::POST],
             status: Response::HTTP_CREATED

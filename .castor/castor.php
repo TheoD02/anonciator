@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Castor\Attribute\AsArgument;
 use Castor\Attribute\AsTask;
-
 use function Castor\fingerprint;
 use function Castor\import;
 use function Castor\io;
@@ -17,8 +17,8 @@ import(__DIR__ . '/src');
 function build(bool $force = false): void
 {
     if (
-        ! fingerprint(
-            callback: static fn () => docker([
+        !fingerprint(
+            callback: static fn() => docker([
                 'compose',
                 '--progress', 'plain',
                 '-f', 'compose.yaml', '-f', 'compose.override.yaml',
@@ -28,7 +28,7 @@ function build(bool $force = false): void
             ])->run(),
             id: 'docker-build',
             fingerprint: fgp()->docker(),
-            force: $force || ! docker()->hasImages(['test-php', 'test-front']),
+            force: $force || !docker()->hasImages(['test-php', 'test-front']),
         )
     ) {
         io()->note(
@@ -42,7 +42,7 @@ function start(bool $force = false): void
 {
     build($force);
 
-    docker(['compose', 'up', '-d', '--wait'])->run();
+    docker(['compose', 'up', '-d', '--wait', '--remove-orphans'])->run();
 }
 
 #[AsTask(description: 'Stop the docker containers')]
@@ -61,7 +61,7 @@ function restart(bool $force = false): void
 #[AsTask(description: 'Install the project dependencies')]
 function install(bool $force = false, bool $noStart = false): void
 {
-    if ($noStart === false && ! docker()->isRunningInDocker()) {
+    if ($noStart === false && !docker()->isRunningInDocker()) {
         start();
     }
 
@@ -80,4 +80,17 @@ function shell(?string $user = null, string $shell = 'fish', bool $front = false
     }
 
     php([$shell], user: $user ?? $defaultUser)->run();
+}
+
+/**
+ * @param array<string> $commands
+ */
+#[AsTask(name: 'console', description: 'Run Symfony console commands')]
+function symfony_console(
+    #[AsArgument(description: 'The Symfony console commands to run')]
+    array $commands = [''],
+    string $user = 'www-data'
+): void
+{
+    console($commands, user: $user)->run();
 }

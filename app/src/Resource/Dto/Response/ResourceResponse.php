@@ -15,4 +15,7 @@ class ResourceResponse
 
     #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
     public string $bucket;
+
+    #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
+    public string $originalName;
 }
