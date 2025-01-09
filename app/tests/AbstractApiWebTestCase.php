@@ -40,7 +40,11 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             'HTTP_ACCEPT' => 'application/json',
             'CONTENT_TYPE' => 'application/json',
         ]);
+
+        $this->_resetDatabaseBeforeEachTest();
     }
+
+
 
     /**
      * @param array<string, int|string>  $parameters
@@ -236,7 +240,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             \DIRECTORY_SEPARATOR,
             $reflection->getShortName(),
             \DIRECTORY_SEPARATOR,
-            u($this->getName())->append($suffix)->camel()->append('.json')->toString(),
+            u($this->name())->append($suffix)->camel()->append('.json')->toString(),
         );
     }
 

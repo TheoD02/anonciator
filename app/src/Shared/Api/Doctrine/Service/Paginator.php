@@ -60,7 +60,7 @@ class Paginator
      */
     private function handleFilterQueryDefinition(QueryBuilder $qb, FilterDefinitionBag $definitionBag): void
     {
-        $queryParameters = $this->request->query->all();
+        $queryParameters = $this->request?->query->all() ?? [];
         $accessor = PropertyAccess::createPropertyAccessor();
 
         foreach ($definitionBag as $definition) {
