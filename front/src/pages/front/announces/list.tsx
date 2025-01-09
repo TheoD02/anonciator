@@ -19,6 +19,7 @@ export const FrontAnnounceList = () => {
   return (
     <div>
       <Row gutter={16}>
+        {announces?.data.length === 0 && <p>No announces found</p>}
         {announces?.data.map((announce) => (
           <Col span={8}>
             <Card

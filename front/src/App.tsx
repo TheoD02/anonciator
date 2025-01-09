@@ -66,7 +66,7 @@ function App() {
             <DevtoolsProvider>
               <Refine
                 dataProvider={apiDataProvider(
-                  "https://anonciator.api.localhost/api"
+                  "https://php.anonciator.orb.local/api"
                 )}
                 notificationProvider={useNotificationProvider}
                 routerProvider={routerBindings}
