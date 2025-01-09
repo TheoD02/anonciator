@@ -16,8 +16,21 @@ import routerBindings, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import { App as AntdApp } from "antd";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import {
+  App as AntdApp,
+  Breadcrumb,
+  Layout,
+  Menu,
+  MenuProps,
+  theme,
+} from "antd";
+import {
+  BrowserRouter,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router";
 import { authProvider } from "./authProvider";
 import { Header } from "./components/header";
 import { ColorModeContextProvider } from "./contexts/color-mode";
@@ -29,9 +42,22 @@ import { apiDataProvider } from "./api";
 import { AnnounceShow } from "./pages/announces/show";
 import { AnnounceEdit } from "./pages/announces/edit";
 import { AnnounceCreate } from "./pages/announces/create";
-import { CategoryCreate, CategoryEdit, CategoryList, CategoryShow } from "./pages/categories";
+import {
+  CategoryCreate,
+  CategoryEdit,
+  CategoryList,
+  CategoryShow,
+} from "./pages/categories";
+import { Content, Footer } from "antd/es/layout/layout";
+import { ItemType } from "antd/lib/menu/interface";
+import AdminHeader from "./components/header/admin";
+import FrontAnnounceList from "./pages/front/announces/list";
 
 function App() {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   return (
     <BrowserRouter>
       <RefineKbarProvider>
@@ -47,23 +73,33 @@ function App() {
                 authProvider={authProvider}
                 resources={[
                   {
-                    name: "announces",
-                    list: "/announces",
-                    create: "/announces/create",
-                    edit: "/announces/edit/:id",
-                    show: "/announces/show/:id",
+                    name: "announces_parent",
                     meta: {
+                      label: "Announces",
+                    },
+                  },
+                  {
+                    name: "announces",
+                    list: "/admin/announces",
+                    create: "/admin/announces/create",
+                    edit: "/admin/announces/edit/:id",
+                    show: "/admin/announces/show/:id",
+                    meta: {
+                      label: "Announces",
                       canDelete: true,
+                      parent: "announces_parent",
                     },
                   },
                   {
                     name: "announces/categories",
-                    list: "/announces/categories",
-                    create: "/announces/categories/create",
-                    edit: "/announces/categories/edit/:id",
-                    show: "/announces/categories/show/:id",
+                    list: "/admin/announces/categories",
+                    create: "/admin/announces/categories/create",
+                    edit: "/admin/announces/categories/edit/:id",
+                    show: "/admin/announces/categories/show/:id",
                     meta: {
+                      label: "Categories",
                       canDelete: true,
+                      parent: "announces_parent",
                     },
                   },
                 ]}
@@ -76,6 +112,22 @@ function App() {
               >
                 <Routes>
                   <Route
+                    path="/*"
+                    element={
+                      <Layout>
+                        <AdminHeader />
+                        <Content
+                          style={{ padding: "0 24px", minHeight: "100vh" }}
+                        >
+                          <Outlet />
+                        </Content>
+                      </Layout>
+                    }
+                  >
+                    <Route path="announces" element={<FrontAnnounceList />} />
+                  </Route>
+                  <Route
+                    path="/admin"
                     element={
                       <Authenticated
                         key="authenticated-inner"
@@ -94,13 +146,13 @@ function App() {
                       index
                       element={<NavigateToResource resource="announces" />}
                     />
-                    <Route path="/announces">
+                    <Route path="/admin/announces">
                       <Route index element={<AnnounceList />} />
                       <Route path="create" element={<AnnounceCreate />} />
                       <Route path="show/:id" element={<AnnounceShow />} />
                       <Route path="edit/:id" element={<AnnounceEdit />} />
                     </Route>
-                    <Route path="/announces/categories">
+                    <Route path="/admin/announces/categories">
                       <Route index element={<CategoryList />} />
                       <Route path="create" element={<CategoryCreate />} />
                       <Route path="show/:id" element={<CategoryShow />} />
