@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Announce\Dto\Filter;
 
 use App\Shared\Api\Doctrine\Filter\Adapter\FilterQueryDefinitionInterface;
@@ -10,7 +12,6 @@ use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\InOperator;
 
 class AnnounceCategoryFilterQuery implements FilterQueryDefinitionInterface
 {
-
     public function definition(): FilterDefinitionBag
     {
         return new FilterDefinitionBag()
@@ -18,11 +19,9 @@ class AnnounceCategoryFilterQuery implements FilterQueryDefinitionInterface
                 FilterDefinition::create(
                     field: 'id',
                     publicName: 'id',
-                    operators: [
-                        EqualOperator::class,
-                        InOperator::class,
-                    ]
+                    operators: [EqualOperator::class, InOperator::class]
                 )
-            );
+            )
+        ;
     }
 }

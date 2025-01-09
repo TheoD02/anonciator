@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Resource\Service;
 
 use App\Announce\Service\EntityCrudServiceTrait;
@@ -7,7 +9,6 @@ use App\Resource\Entity\Resource;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use function sprintf;
 
 class ResourceService
 {
@@ -18,12 +19,11 @@ class ResourceService
     public function __construct(
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
-    )
-    {
+    ) {
     }
 
     /**
-     * @return array<Resource>
+     * @return array<resource>
      */
     public function createManyResources(UploadedFile ...$files): array
     {
@@ -42,12 +42,12 @@ class ResourceService
     {
         $resource = new Resource();
 
-        $destination = "$this->projectDir/public/uploads";
-        $relativeDestination = str_replace("$this->projectDir/public", '', $destination);
+        $destination = "{$this->projectDir}/public/uploads";
+        $relativeDestination = str_replace("{$this->projectDir}/public", '', $destination);
 
-        $filename = sprintf('%s.%s', md5(uniqid()), $file->getClientOriginalExtension());
+        $filename = \sprintf('%s.%s', md5(uniqid()), $file->getClientOriginalExtension());
 
-        $resource->setPath("$relativeDestination/{$filename}");
+        $resource->setPath("{$relativeDestination}/{$filename}");
         $resource->setBucket('localfs');
         $resource->setOriginalName($file->getClientOriginalName());
 
@@ -58,10 +58,10 @@ class ResourceService
 
     public function deleteEntityFromId(int $id): void
     {
-        /** @var Resource $resource */
+        /** @var resource $resource */
         $resource = $this->getEntityById($id, fail: true);
 
-        new Filesystem()->remove("$this->projectDir/public{$resource->getPath()}");
+        new Filesystem()->remove("{$this->projectDir}/public{$resource->getPath()}");
 
         $this->deleteEntity($resource);
     }

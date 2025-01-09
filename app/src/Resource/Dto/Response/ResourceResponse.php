@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Resource\Dto\Response;
 
 use App\Shared\Api\ApiGroups;

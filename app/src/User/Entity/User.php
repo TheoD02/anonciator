@@ -75,7 +75,7 @@ class User implements UserInterface
 
     public function addGroup(GroupRole $group): static
     {
-        if (!$this->groups->contains($group)) {
+        if (! $this->groups->contains($group)) {
             $this->groups->add($group);
         }
 

@@ -14,7 +14,7 @@ class GenericDomainModelNotFoundException extends \RuntimeException
         public string $model,
         string $message,
     ) {
-        parent::__construct(\str_replace(['%model%', '%id%'], [$this->model, $this->id], $message));
+        parent::__construct(str_replace(['%model%', '%id%'], [$this->model, $this->id], $message));
     }
 
     final public static function withId(

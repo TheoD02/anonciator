@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Resource\Controller;
 
 use App\Resource\Dto\Filter\PaginateResourceFilterQuery;
@@ -29,8 +31,7 @@ class PaginateResourceController extends AbstractApiController
         #[MapQueryString] PaginateResourceFilterQuery $filterQuery,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
         ResourceService $resourceService,
-    ): Response
-    {
+    ): Response {
         $resources = $resourceService->paginateEntities($filterQuery, paginationFilterQuery: $paginationFilterQuery);
 
         return $this->successResponse(

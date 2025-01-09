@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Message\Controller;
 
 use App\Message\Dto\Payload\SendMessagePayload;
@@ -27,8 +29,7 @@ class SendMessageController extends AbstractApiController
     public function __invoke(
         #[MapRequestPayload] SendMessagePayload $payload,
         MessageService $messageService,
-    ): Response
-    {
+    ): Response {
         $message = $messageService->createEntityFromPayload($payload);
 
         return $this->successResponse(

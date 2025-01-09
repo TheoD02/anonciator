@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
-use function base64_encode;
+
 use function Symfony\Component\String\u;
 
 /** @phpstan-ignore-next-line shipmonk.invalidClassSuffix (OK for abstract class) */
@@ -43,10 +43,10 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     }
 
     /**
-     * @param array<string, int|string> $parameters
-     * @param array<mixed>|null $json
+     * @param array<string, int|string>  $parameters
+     * @param array<mixed>|null          $json
      * @param array<string, string>|null $headers
-     * @param array<string, mixed>|null $query
+     * @param array<string, mixed>|null  $query
      */
     public function request(
         string $method,
@@ -54,8 +54,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         ?array $json = null,
         ?array $headers = null,
         ?array $query = null,
-    ): Crawler
-    {
+    ): Crawler {
         $uri = $this->buildUrl($parameters);
         if ($query !== null) {
             $uri .= '?' . http_build_query($query);
@@ -75,7 +74,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         );
 
         if ($json !== null) {
-            if (!\in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
+            if (! \in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
                 throw new \InvalidArgumentException('JSON data can only be sent with POST, PUT or PATCH');
             }
 
@@ -102,7 +101,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         $url = $this->getUrl($parameters);
 
         foreach ($parameters as $key => $value) {
-            $url = str_replace("{{$key}}", (string)$value, $url);
+            $url = str_replace("{{$key}}", (string) $value, $url);
         }
 
         return $url;
@@ -244,7 +243,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     protected static function prettifyJson(string $content): string
     {
         $jsonFlags = \JSON_PRETTY_PRINT;
-        if (!isset($_SERVER['ESCAPE_JSON']) || $_SERVER['ESCAPE_JSON'] !== true) {
+        if (! isset($_SERVER['ESCAPE_JSON']) || $_SERVER['ESCAPE_JSON'] !== true) {
             $jsonFlags |= \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
         }
 
@@ -273,8 +272,8 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     {
         $filepath = $this->getFilePath('Payload');
 
-        if (!file_exists($filepath)) {
-            if (!file_exists(\dirname($filepath))) {
+        if (! file_exists($filepath)) {
+            if (! file_exists(\dirname($filepath))) {
                 mkdir(\dirname($filepath), 0o777, true);
             }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Message\Controller;
 
 use App\Message\Dto\Filter\PaginateMessageFilter;
@@ -23,10 +25,7 @@ class GetPaginatedMessageController extends AbstractApiController
         groups: [ApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
-    public function __invoke(
-        int $announceId,
-        MessageService $messageService,
-    ): Response
+    public function __invoke(int $announceId, MessageService $messageService): Response
     {
         $filter = new PaginateMessageFilter();
         $filter->announceId = $announceId;

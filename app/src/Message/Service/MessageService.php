@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Message\Service;
 
 use App\Announce\Entity\Announce;
@@ -16,12 +18,17 @@ class MessageService
     public function __construct(
         private readonly AnnounceService $announceService,
         private readonly Security $security,
-    )
-    {
+    ) {
     }
 
     public function createEntityFromPayload(SendMessagePayload $payload): object
     {
+        $user = $this->security->getUser();
+
+        if ($user === null) {
+            throw new \RuntimeException('User not authenticated');
+        }
+
         /** @var Announce $announce */
         $announce = $this->announceService->getEntityById($payload->announceId, fail: true);
 

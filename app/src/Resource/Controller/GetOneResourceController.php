@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Resource\Controller;
 
 use App\Resource\Entity\Resource;
@@ -14,15 +16,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class GetOneResourceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_GET])]
-    public function __invoke(
-        int $id,
-        KernelInterface $kernel,
-        ResourceService $resourceService
-    ): Response
+    public function __invoke(int $id, KernelInterface $kernel, ResourceService $resourceService): Response
     {
-        /**
-         * @var Resource $resource
-         */
+        /** @var resource $resource */
         $resource = $resourceService->getEntityById($id, fail: true);
 
         return new BinaryFileResponse("{$kernel->getProjectDir()}/public{$resource->getPath()}");

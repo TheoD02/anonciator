@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Resource\Controller;
 
 use App\Resource\Service\ResourceService;
@@ -13,10 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteResourceController extends AbstractApiController
 {
     #[Route('{id}', methods: [Request::METHOD_DELETE])]
-    public function __invoke(
-        int $id,
-        ResourceService $resourceService,
-    ): Response
+    public function __invoke(int $id, ResourceService $resourceService): Response
     {
         $resourceService->deleteEntityFromId($id);
 

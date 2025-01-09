@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Resource\Controller;
 
 use App\Resource\Controller\DeleteResourceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\ResourceFactory;
 
+/**
+ * @internal
+ */
 class DeleteResourceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
@@ -15,7 +20,7 @@ class DeleteResourceControllerTest extends AbstractApiWebTestCase
 
     public function expectedUrl(): string
     {
-        return '/api/resource/{id}';
+        return '/api/resources/{id}';
     }
 
     public function testOk(): void
@@ -24,7 +29,9 @@ class DeleteResourceControllerTest extends AbstractApiWebTestCase
         $resource = ResourceFactory::new()->create();
 
         // Act
-        $this->request('DELETE', parameters: ['id' => $resource->getId()]);
+        $this->request('DELETE', parameters: [
+            'id' => $resource->getId(),
+        ]);
 
         // Assert
         self::assertResponseStatusCodeSame(204);

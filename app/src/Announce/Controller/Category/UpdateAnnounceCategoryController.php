@@ -31,8 +31,7 @@ class UpdateAnnounceCategoryController extends AbstractApiController
         int $id,
         #[MapRequestPayload] UpdateAnnounceCategoryPayload $payload,
         AnnounceCategoryService $service,
-    ): Response
-    {
+    ): Response {
         $category = $service->updateEntityFromPayload($id, $payload);
 
         return $this->successResponse(

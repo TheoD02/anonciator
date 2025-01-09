@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Message\Controller;
 
 use App\Message\Controller\GetPaginatedMessageController;
@@ -7,6 +9,9 @@ use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use App\Tests\Factory\MessageFactory;
 
+/**
+ * @internal
+ */
 class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
@@ -23,7 +28,9 @@ class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
     {
         // Arrange
         [$announce1, $announce2] = AnnounceFactory::new()->many(2)->create();
-        MessageFactory::new(['announce' => $announce1])
+        MessageFactory::new([
+            'announce' => $announce1,
+        ])
             ->sequence([
                 [
                     'content' => 'Hello, is available ?',
@@ -33,12 +40,15 @@ class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
                 ],
                 [
                     'content' => 'Great, I will take it',
-                ]
+                ],
             ])
-            ->create();
+            ->create()
+        ;
 
         // Act
-        $this->request('GET', parameters: ['announceId' => $announce1->getId()]);
+        $this->request('GET', parameters: [
+            'announceId' => $announce1->getId(),
+        ]);
 
         // Assert
         self::assertResponseStatusCodeSame(200);
@@ -49,7 +59,9 @@ class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
     {
         // Arrange
         [$announce1, $announce2] = AnnounceFactory::new()->many(2)->create();
-        MessageFactory::new(['announce' => $announce1])
+        MessageFactory::new([
+            'announce' => $announce1,
+        ])
             ->sequence([
                 [
                     'content' => 'Hello, is available ?',
@@ -59,12 +71,15 @@ class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
                 ],
                 [
                     'content' => 'Great, I will take it',
-                ]
+                ],
             ])
-            ->create();
+            ->create()
+        ;
 
         // Act
-        $this->request('GET', parameters: ['announceId' => $announce2->getId()]);
+        $this->request('GET', parameters: [
+            'announceId' => $announce2->getId(),
+        ]);
 
         // Assert
         self::assertResponseStatusCodeSame(200);

@@ -31,9 +31,8 @@ class PaginateAnnounceCategoryController extends AbstractApiController
     public function __invoke(
         #[MapQueryString] AnnounceCategoryFilterQuery $filterQuery,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-        AnnounceCategoryService $service
-    ): Response
-    {
+        AnnounceCategoryService $service,
+    ): Response {
         $category = $service->paginateEntities($filterQuery, $paginationFilterQuery);
 
         return $this->successResponse(

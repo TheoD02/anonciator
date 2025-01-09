@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Factory;
 
 use App\User\Entity\User;
@@ -19,7 +21,7 @@ final class UserFactory extends PersistentProxyObjectFactory
     {
         return [
             'email' => self::faker()->email(),
-            'username' => self::faker()->userName()
+            'username' => self::faker()->userName(),
         ];
     }
 }

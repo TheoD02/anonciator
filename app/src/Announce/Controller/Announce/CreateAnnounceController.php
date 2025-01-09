@@ -24,8 +24,7 @@ class CreateAnnounceController extends AbstractApiController
     public function __invoke(
         #[MapRequestPayload] CreateAnnouncePayload $payload,
         AnnounceService $announceService,
-    ): Response
-    {
+    ): Response {
         $announce = $announceService->createEntityFromPayload($payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [ApiGroups::POST]);

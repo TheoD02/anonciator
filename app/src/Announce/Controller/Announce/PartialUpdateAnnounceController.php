@@ -25,8 +25,7 @@ class PartialUpdateAnnounceController extends AbstractApiController
         #[MapRequestPayload] PartialUpdateAnnouncePayload $payload,
         AnnounceService $announceService,
         int $id,
-    ): Response
-    {
+    ): Response {
         $announce = $announceService->partialUpdateEntityFromPayload($id, $payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [ApiGroups::PATCH]);

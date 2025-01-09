@@ -10,7 +10,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use function is_string;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
@@ -61,7 +60,7 @@ class Message
 
     public function setSentBy(string|UserInterface $sentBy): static
     {
-        $this->sentTo = is_string($sentBy) ? $sentBy : $sentBy->getUserIdentifier();
+        $this->sentTo = \is_string($sentBy) ? $sentBy : $sentBy->getUserIdentifier();
 
         return $this;
     }
@@ -73,7 +72,7 @@ class Message
 
     public function setSentTo(string|UserInterface $sentTo): static
     {
-        $this->sentTo = is_string($sentTo) ? $sentTo : $sentTo->getUserIdentifier();
+        $this->sentTo = \is_string($sentTo) ? $sentTo : $sentTo->getUserIdentifier();
 
         return $this;
     }

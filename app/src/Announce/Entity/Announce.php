@@ -163,7 +163,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (!$this->photos->contains($photo)) {
+        if (! $this->photos->contains($photo)) {
             $this->photos->add($photo);
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Factory;
 
 use App\Message\Entity\Message;
@@ -45,8 +47,7 @@ final class MessageFactory extends PersistentProxyObjectFactory
      */
     protected function initialize(): static
     {
-        return $this
-            // ->afterInstantiate(function(Message $message): void {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(Message $message): void {})
     }
 }

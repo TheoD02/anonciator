@@ -22,6 +22,7 @@ final class ResourceFactory extends PersistentProxyObjectFactory
         return [
             'bucket' => self::faker()->text(10),
             'path' => self::faker()->text(10),
+            'originalName' => self::faker()->text(10),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Resource\Controller;
 
 use App\Resource\Dto\Response\ResourceResponse;
@@ -23,14 +25,9 @@ class UploadResourceController extends AbstractApiController
         groups: [ApiGroups::POST],
         statusCode: Response::HTTP_CREATED
     )]
-    public function __invoke(
-        Request $request,
-        ResourceService $resourceService,
-    ): Response
+    public function __invoke(Request $request, ResourceService $resourceService): Response
     {
-        /**
-         * @var array<UploadedFile> $files
-         */
+        /** @var array<UploadedFile> $files */
         $files = [...$request->files->all('files'), $request->files->get('file')];
         $files = array_filter($files);
         $resources = $resourceService->createManyResources(...$files);

@@ -30,8 +30,7 @@ class CreateAnnounceCategoryController extends AbstractApiController
     public function __invoke(
         #[MapRequestPayload] CreateAnnounceCategoryPayload $payload,
         AnnounceCategoryService $service,
-    ): Response
-    {
+    ): Response {
         $category = $service->createEntityFromPayload($payload);
 
         return $this->successResponse(

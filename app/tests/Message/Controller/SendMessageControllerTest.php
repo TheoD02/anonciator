@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Message\Controller;
 
 use App\Message\Controller\SendMessageController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 
+/**
+ * @internal
+ */
 class SendMessageControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

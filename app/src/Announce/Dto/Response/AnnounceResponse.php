@@ -59,6 +59,6 @@ class AnnounceResponse
 
     public static function mapPhotoIds(mixed $value, Announce $source, array $context): array
     {
-        return $source->getPhotos()->map(static fn(Resource $photo): ?int => $photo->getId())->toArray();
+        return $source->getPhotos()->map(static fn (Resource $photo): ?int => $photo->getId())->toArray();
     }
 }

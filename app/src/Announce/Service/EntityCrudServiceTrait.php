@@ -90,7 +90,10 @@ trait EntityCrudServiceTrait
             $this->em->flush();
         }
 
-        $this->logger?->info('Entity created', ['entity' => $entity::class, 'id' => $entity->getId()]);
+        $this->logger?->info('Entity created', [
+            'entity' => $entity::class,
+            'id' => $entity->getId(),
+        ]);
 
         // $this->dispatcher->dispatch(new $this->getEntityCreatedEventClass($entity));
 
@@ -152,7 +155,10 @@ trait EntityCrudServiceTrait
             $this->em->flush();
         }
 
-        $this->logger?->info('Entity updated', ['entity' => $entity::class, 'id' => $entity->getId()]);
+        $this->logger?->info('Entity updated', [
+            'entity' => $entity::class,
+            'id' => $entity->getId(),
+        ]);
 
         // $this->dispatcher->dispatch(new $this->getEntityUpdatedEventClass($entity));
 
@@ -189,7 +195,10 @@ trait EntityCrudServiceTrait
         $this->em->remove($entity);
         $this->em->flush();
 
-        $this->logger?->info('Entity deleted', ['entity' => $entity::class, 'id' => $entity->getId()]);
+        $this->logger?->info('Entity deleted', [
+            'entity' => $entity::class,
+            'id' => $entity->getId(),
+        ]);
     }
 
     /**
@@ -198,8 +207,7 @@ trait EntityCrudServiceTrait
     public function paginateEntities(
         ?FilterQueryInterface $filterQuery = null,
         ?PaginationFilterQuery $paginationFilterQuery = null,
-    ): object
-    {
+    ): object {
         return $this->getRepository()->paginate(
             $filterQuery,
             $paginationFilterQuery ?? new PaginationFilterQuery()

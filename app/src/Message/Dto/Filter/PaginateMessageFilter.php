@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Message\Dto\Filter;
 
 use App\Shared\Api\Doctrine\Filter\Adapter\ORMQueryBuilderFilterQueryAwareInterface;
@@ -16,7 +18,8 @@ class PaginateMessageFilter implements ORMQueryBuilderFilterQueryAwareInterface
         if (isset($this->announceId)) {
             $qb->leftJoin('e.announce', 'a');
             $qb->andWhere('a.id = :announceId')
-                ->setParameter('announceId', $this->announceId);
+                ->setParameter('announceId', $this->announceId)
+            ;
         }
     }
 }
