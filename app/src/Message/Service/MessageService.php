@@ -10,6 +10,7 @@ use App\Announce\Service\EntityCrudServiceTrait;
 use App\Message\Dto\Payload\SendMessagePayload;
 use App\Message\Entity\Message;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MessageService
 {
@@ -25,7 +26,7 @@ class MessageService
     {
         $user = $this->security->getUser();
 
-        if ($user === null) {
+        if (! $user instanceof UserInterface) {
             throw new \RuntimeException('User not authenticated');
         }
 

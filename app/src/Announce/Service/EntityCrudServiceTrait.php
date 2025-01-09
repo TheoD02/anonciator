@@ -24,10 +24,15 @@ use Symfony\Contracts\Service\Attribute\Required;
 trait EntityCrudServiceTrait
 {
     protected AutoMapperInterface $mapper;
+
     protected EntityManagerInterface $em;
+
     protected EventDispatcherInterface $dispatcher;
+
     protected RelationResolver $relationResolver;
+
     protected ?LoggerInterface $logger = null;
+
     protected ?AbstractEntityRepository $repository = null;
 
     #[Required]

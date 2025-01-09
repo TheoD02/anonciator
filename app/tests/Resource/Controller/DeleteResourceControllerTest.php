@@ -11,7 +11,7 @@ use App\Tests\Factory\ResourceFactory;
 /**
  * @internal
  */
-class DeleteResourceControllerTest extends AbstractApiWebTestCase
+final class DeleteResourceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

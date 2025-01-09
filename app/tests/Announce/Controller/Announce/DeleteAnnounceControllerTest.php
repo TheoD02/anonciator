@@ -10,7 +10,7 @@ use App\Tests\AbstractApiWebTestCase;
 /**
  * @internal
  */
-class DeleteAnnounceControllerTest extends AbstractApiWebTestCase
+final class DeleteAnnounceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

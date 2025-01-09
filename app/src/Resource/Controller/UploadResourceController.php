@@ -30,6 +30,7 @@ class UploadResourceController extends AbstractApiController
         /** @var array<UploadedFile> $files */
         $files = [...$request->files->all('files'), $request->files->get('file')];
         $files = array_filter($files);
+
         $resources = $resourceService->createManyResources(...$files);
 
         return $this->successResponse(

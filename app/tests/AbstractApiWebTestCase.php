@@ -44,8 +44,6 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         $this->_resetDatabaseBeforeEachTest();
     }
 
-
-
     /**
      * @param array<string, int|string>  $parameters
      * @param array<mixed>|null          $json

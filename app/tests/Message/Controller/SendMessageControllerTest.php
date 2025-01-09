@@ -11,7 +11,7 @@ use App\Tests\Factory\AnnounceFactory;
 /**
  * @internal
  */
-class SendMessageControllerTest extends AbstractApiWebTestCase
+final class SendMessageControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

@@ -12,7 +12,7 @@ use App\Tests\Factory\MessageFactory;
 /**
  * @internal
  */
-class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
+final class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

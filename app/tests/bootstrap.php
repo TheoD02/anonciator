@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\Filesystem\Filesystem;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -13,6 +14,6 @@ if (file_exists(dirname(__DIR__) . '/config/bootstrap.php')) {
 }
 
 if (is_dir(dirname(__DIR__) . '/var/cache/test')) {
-    $filesystem = new Symfony\Component\Filesystem\Filesystem();
+    $filesystem = new Filesystem();
     $filesystem->remove(dirname(__DIR__) . '/var/cache/test');
 }
