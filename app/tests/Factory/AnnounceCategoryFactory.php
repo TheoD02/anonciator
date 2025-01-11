@@ -20,7 +20,7 @@ final class AnnounceCategoryFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'name' => self::faker()->text(10),
+            'name' => self::faker()->randomElement(['Accessories', 'Cars', 'Clothes', 'Electronics', 'Furniture', 'Real Estate']),
         ];
     }
 }

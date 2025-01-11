@@ -7,6 +7,9 @@ RUN corepack enable
 
 FROM base AS dev
 
+RUN apk update && apk upgrade
+RUN apk add --no-cache bash git openssh-client
+
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 

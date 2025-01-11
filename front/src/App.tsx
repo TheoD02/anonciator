@@ -1,81 +1,92 @@
 import { Authenticated, GitHubBanner, Refine } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import {
   ErrorComponent,
-  ThemedLayoutV2,
-  ThemedSiderV2,
   useNotificationProvider,
-} from "@refinedev/antd";
-import "@refinedev/antd/dist/reset.css";
+  RefineThemes,
+  ThemedLayoutV2,
+} from "@refinedev/mantine";
 
+import {
+  type ColorScheme,
+  ColorSchemeProvider,
+  Global,
+  MantineProvider,
+} from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
+import { NotificationsProvider } from "@mantine/notifications";
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import {
-  App as AntdApp,
-  Breadcrumb,
-  Layout,
-  Menu,
-  MenuProps,
-  theme,
-} from "antd";
-import {
-  BrowserRouter,
-  Outlet,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router";
+import { useTranslation } from "react-i18next";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import { authProvider } from "./authProvider";
 import { Header } from "./components/header";
-import { ColorModeContextProvider } from "./contexts/color-mode";
-import { ForgotPassword } from "./pages/forgotPassword";
-import { Login } from "./pages/login";
-import { Register } from "./pages/register";
-import { AnnounceList } from "./pages/announces/list";
-import { apiDataProvider } from "./api";
-import { AnnounceShow } from "./pages/announces/show";
-import { AnnounceEdit } from "./pages/announces/edit";
-import { AnnounceCreate } from "./pages/announces/create";
 import {
   CategoryCreate,
   CategoryEdit,
   CategoryList,
   CategoryShow,
-} from "./pages/categories";
-import { Content, Footer } from "antd/es/layout/layout";
-import { ItemType } from "antd/lib/menu/interface";
-import AdminHeader from "./components/header/admin";
-import FrontAnnounceList from "./pages/front/announces/list";
+} from "./pages/admin/categories";
+import { ForgotPassword } from "./pages/front/forgotPassword";
+import { Login } from "./pages/front/login";
+import { Register } from "./pages/front/register";
+import { apiDataProvider } from "./api";
+import { AnnounceCreate, AnnounceEdit, AnnounceList, AnnounceShow } from "./pages/admin/announces";
+import { IconCategory, IconNews } from "@tabler/icons-react";
+import { AnnounceSearch } from "./pages/front/announces";
 
 function App() {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: "mantine-color-scheme",
+    defaultValue: "light",
+    getInitialValueInEffect: true,
+  });
+  const { t, i18n } = useTranslation();
+
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  const i18nProvider = {
+    translate: (key: string, params: object) => t(key, params),
+    changeLocale: (lang: string) => i18n.changeLanguage(lang),
+    getLocale: () => i18n.language,
+  };
 
   return (
     <BrowserRouter>
       <RefineKbarProvider>
-        <ColorModeContextProvider>
-          <AntdApp>
-            <DevtoolsProvider>
+        <ColorSchemeProvider
+          colorScheme={colorScheme}
+          toggleColorScheme={toggleColorScheme}
+        >
+          {/* You can change the theme colors here. example: theme={{ ...RefineThemes.Magenta, colorScheme:colorScheme }} */}
+          <MantineProvider
+            theme={{
+              ...RefineThemes.Blue,
+              colorScheme: colorScheme,
+            }}
+            withNormalizeCSS
+            withGlobalStyles
+          >
+            <Global styles={{ body: { WebkitFontSmoothing: "auto" } }} />
+            <NotificationsProvider position="top-right">
               <Refine
-                dataProvider={apiDataProvider(
-                  "https://php.anonciator.orb.local/api"
-                )}
+                dataProvider={apiDataProvider("https://php.anonciator.orb.local/api")}
                 notificationProvider={useNotificationProvider}
                 routerProvider={routerBindings}
                 authProvider={authProvider}
+                i18nProvider={i18nProvider}
                 resources={[
                   {
-                    name: "announces_parent",
+                    name: "parent_announces",
                     meta: {
                       label: "Announces",
+                      icon: <IconNews />,
                     },
                   },
                   {
@@ -87,7 +98,8 @@ function App() {
                     meta: {
                       label: "Announces",
                       canDelete: true,
-                      parent: "announces_parent",
+                      parent: "parent_announces",
+                      icon: <IconNews />,
                     },
                   },
                   {
@@ -99,44 +111,35 @@ function App() {
                     meta: {
                       label: "Categories",
                       canDelete: true,
-                      parent: "announces_parent",
+                      parent: "parent_announces",
+                      icon: <IconCategory />,
                     },
                   },
                 ]}
                 options={{
                   syncWithLocation: true,
                   warnWhenUnsavedChanges: true,
-                  useNewQueryKeys: true,
-                  projectId: "553Gaj-ZzupEf-3JY7jD",
                 }}
               >
                 <Routes>
                   <Route
-                    path="/*"
+                    path="/"
                     element={
-                      <Layout>
-                        <AdminHeader />
-                        <Content
-                          style={{ padding: "0 24px", minHeight: "100vh" }}
-                        >
-                          <Outlet />
-                        </Content>
-                      </Layout>
+                      <ThemedLayoutV2 Header={() => <Header sticky />}>
+                        <Outlet />
+                      </ThemedLayoutV2>
                     }
                   >
-                    <Route path="announces" element={<FrontAnnounceList />} />
+                    <Route index element={<AnnounceSearch />} />
                   </Route>
                   <Route
                     path="/admin"
                     element={
                       <Authenticated
-                        key="authenticated-inner"
+                        key="authenticated-routes"
                         fallback={<CatchAllNavigate to="/login" />}
                       >
-                        <ThemedLayoutV2
-                          Header={Header}
-                          Sider={(props) => <ThemedSiderV2 {...props} fixed />}
-                        >
+                        <ThemedLayoutV2 Header={() => <Header sticky />}>
                           <Outlet />
                         </ThemedLayoutV2>
                       </Authenticated>
@@ -149,23 +152,20 @@ function App() {
                     <Route path="/admin/announces">
                       <Route index element={<AnnounceList />} />
                       <Route path="create" element={<AnnounceCreate />} />
-                      <Route path="show/:id" element={<AnnounceShow />} />
                       <Route path="edit/:id" element={<AnnounceEdit />} />
+                      <Route path="show/:id" element={<AnnounceShow />} />
                     </Route>
                     <Route path="/admin/announces/categories">
                       <Route index element={<CategoryList />} />
                       <Route path="create" element={<CategoryCreate />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
                       <Route path="edit/:id" element={<CategoryEdit />} />
+                      <Route path="show/:id" element={<CategoryShow />} />
                     </Route>
                     <Route path="*" element={<ErrorComponent />} />
                   </Route>
                   <Route
                     element={
-                      <Authenticated
-                        key="authenticated-outer"
-                        fallback={<Outlet />}
-                      >
+                      <Authenticated key="auth-pages" fallback={<Outlet />}>
                         <NavigateToResource />
                       </Authenticated>
                     }
@@ -183,10 +183,9 @@ function App() {
                 <UnsavedChangesNotifier />
                 <DocumentTitleHandler />
               </Refine>
-              <DevtoolsPanel />
-            </DevtoolsProvider>
-          </AntdApp>
-        </ColorModeContextProvider>
+            </NotificationsProvider>
+          </MantineProvider>
+        </ColorSchemeProvider>
       </RefineKbarProvider>
     </BrowserRouter>
   );

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Resource\Service;
 
-use App\Announce\Service\EntityCrudServiceTrait;
 use App\Resource\Entity\Resource;
+use App\Shared\Trait\EntityCrudServiceTrait;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

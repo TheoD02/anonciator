@@ -6,9 +6,9 @@ namespace App\Message\Service;
 
 use App\Announce\Entity\Announce;
 use App\Announce\Service\AnnounceService;
-use App\Announce\Service\EntityCrudServiceTrait;
 use App\Message\Dto\Payload\SendMessagePayload;
 use App\Message\Entity\Message;
+use App\Shared\Trait\EntityCrudServiceTrait;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 

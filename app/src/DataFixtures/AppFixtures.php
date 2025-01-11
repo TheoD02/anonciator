@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         ini_set('memory_limit', '2G');
-        flush_after(static fn (): array => AnnounceFactory::new()->createMany(1));
+        flush_after(static fn (): array => AnnounceFactory::new()->createMany(100));
 
         // $product = new Product();
         // $manager->persist($product);

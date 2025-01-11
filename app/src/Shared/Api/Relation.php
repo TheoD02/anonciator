@@ -6,9 +6,10 @@ namespace App\Shared\Api;
 
 class Relation
 {
-    public array $set = [];
-
-    public array $add = [];
-
-    public array $remove = [];
+    public function __construct(
+        public array $set = [],
+        public array $add = [],
+        public array $remove = [],
+    ) {
+    }
 }

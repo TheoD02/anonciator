@@ -1,18 +1,23 @@
-import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
-import { useGetIdentity } from "@refinedev/core";
 import {
-  Layout as AntdLayout,
+  ActionIcon,
   Avatar,
-  Space,
-  Switch,
-  theme,
-  Typography,
-} from "antd";
-import React, { useContext } from "react";
-import { ColorModeContext } from "../../contexts/color-mode";
-
-const { Text } = Typography;
-const { useToken } = theme;
+  Flex,
+  Group,
+  Header as MantineHeader,
+  Menu,
+  type Sx,
+  Title,
+  useMantineColorScheme,
+  useMantineTheme,
+} from "@mantine/core";
+import { useGetIdentity, useGetLocale, useSetLocale } from "@refinedev/core";
+import {
+  HamburgerMenu,
+  type RefineThemedLayoutV2HeaderProps,
+} from "@refinedev/mantine";
+import { IconLanguage, IconMoonStars, IconSun } from "@tabler/icons-react";
+import i18n from "i18next";
+import React from "react";
 
 type IUser = {
   id: number;
@@ -21,41 +26,101 @@ type IUser = {
 };
 
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
-  sticky = true,
+  sticky,
 }) => {
-  const { token } = useToken();
   const { data: user } = useGetIdentity<IUser>();
-  const { mode, setMode } = useContext(ColorModeContext);
 
-  const headerStyles: React.CSSProperties = {
-    backgroundColor: token.colorBgElevated,
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    padding: "0px 24px",
-    height: "64px",
-  };
+  const changeLanguage = useSetLocale();
+  const locale = useGetLocale();
+  const currentLocale = locale();
 
+  const theme = useMantineTheme();
+
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
+
+  const borderColor = dark ? theme.colors.dark[6] : theme.colors.gray[2];
+
+  let stickyStyles: Sx = {};
   if (sticky) {
-    headerStyles.position = "sticky";
-    headerStyles.top = 0;
-    headerStyles.zIndex = 1;
+    stickyStyles = {
+      position: "sticky",
+      top: 0,
+      zIndex: 1,
+    };
   }
 
   return (
-    <AntdLayout.Header style={headerStyles}>
-      <Space>
-        <Switch
-          checkedChildren="🌛"
-          unCheckedChildren="🔆"
-          onChange={() => setMode(mode === "light" ? "dark" : "light")}
-          defaultChecked={mode === "dark"}
-        />
-        <Space style={{ marginLeft: "8px" }} size="middle">
-          {user?.name && <Text strong>{user.name}</Text>}
-          {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
-        </Space>
-      </Space>
-    </AntdLayout.Header>
+    <MantineHeader
+      zIndex={199}
+      height={64}
+      py={6}
+      px="sm"
+      sx={{
+        borderBottom: `1px solid ${borderColor}`,
+        ...stickyStyles,
+      }}
+    >
+      <Flex
+        align="center"
+        justify="space-between"
+        sx={{
+          height: "100%",
+        }}
+      >
+        <HamburgerMenu />
+        <Group>
+          <Menu
+            shadow="md"
+            data-test-id="language-button"
+            aria-label={currentLocale}
+          >
+            <Menu.Target>
+              <ActionIcon variant="outline">
+                <IconLanguage size={18} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {[...(i18n.languages ?? [])].sort().map((lang: string) => (
+                <Menu.Item
+                  key={lang}
+                  onClick={() => {
+                    changeLanguage(lang);
+                  }}
+                  value={lang}
+                  color={lang === currentLocale ? "primary" : undefined}
+                  icon={
+                    <Avatar
+                      src={`/images/flags/${lang}.svg`}
+                      size={18}
+                      radius="lg"
+                    />
+                  }
+                >
+                  {lang === "en" ? "English" : "German"}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+
+          <ActionIcon
+            variant="outline"
+            color={dark ? "yellow" : "primary"}
+            onClick={() => toggleColorScheme()}
+            title="Toggle color scheme"
+          >
+            {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
+          </ActionIcon>
+
+          {(user?.name || user?.avatar) && (
+            <Group spacing="xs">
+              {user?.name && <Title order={6}>{user?.name}</Title>}
+              <Avatar src={user?.avatar} alt={user?.name} radius="xl" />
+            </Group>
+          )}
+        </Group>
+      </Flex>
+    </MantineHeader>
   );
 };
