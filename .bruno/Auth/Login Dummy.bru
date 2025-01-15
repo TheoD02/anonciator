@@ -1,0 +1,18 @@
+meta {
+  name: Login Dummy
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/api/login_check
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "dummy@domain.tld",
+    "password": "demo"
+  }
+}

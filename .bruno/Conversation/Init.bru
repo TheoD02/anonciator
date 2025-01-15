@@ -1,0 +1,17 @@
+meta {
+  name: Init
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/api/conversations/redirect/1
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "announceId": 1
+  }
+}
