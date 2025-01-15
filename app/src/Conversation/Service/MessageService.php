@@ -19,10 +19,9 @@ class MessageService
 
     public function __construct(
         private readonly ConversationService $conversationService,
-        private readonly AnnounceService     $announceService,
-        private readonly UserService         $userService,
-    )
-    {
+        private readonly AnnounceService $announceService,
+        private readonly UserService $userService,
+    ) {
     }
 
     public function createEntityFromPayload(int $id, SendMessagePayload $payload, User $user): Message
@@ -40,7 +39,9 @@ class MessageService
 
         $message = new Message();
         $message->setContent($payload->content);
-        $message->setSentTo($user === $announceCreator ? $conversation->getInitializedBy() : $conversation->getReceiver());
+        $message->setSentTo(
+            $user === $announceCreator ? $conversation->getInitializedBy() : $conversation->getReceiver()
+        );
         $message->setSentBy($user);
         $message->setConversation($conversation);
 

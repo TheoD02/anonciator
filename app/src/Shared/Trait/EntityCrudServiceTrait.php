@@ -200,6 +200,6 @@ trait EntityCrudServiceTrait
         ?PaginationFilterQuery $paginationFilterQuery = null,
     ): object
     {
-        return $this->getRepository()->paginate(null, $paginationFilterQuery ?? new PaginationFilterQuery());
+        return $this->getRepository()->paginate($filterQuery, $paginationFilterQuery ?? new PaginationFilterQuery());
     }
 }

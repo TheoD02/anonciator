@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Service;
 
 use App\Shared\Trait\EntityCrudServiceTrait;
@@ -11,7 +13,9 @@ class UserService
 
     public function getOneByEmail(string $email): ?User
     {
-        return $this->getRepository()->findOneBy(['email' => $email]);
+        return $this->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
     }
 
     protected function getEntityClass(): string

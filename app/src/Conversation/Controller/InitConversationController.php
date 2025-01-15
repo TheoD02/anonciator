@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Conversation\Controller;
 
-use App\Conversation\Dto\Payload\InitConversationPayload;
 use App\Conversation\Dto\Response\InitConversationResponse;
 use App\Conversation\Service\ConversationService;
 use App\Shared\Api\AbstractApiController;
@@ -21,12 +20,11 @@ class InitConversationController extends AbstractApiController
 {
     #[Route('/redirect/{announceId}', methods: [Request::METHOD_GET])]
     public function __invoke(
-        int                  $announceId,
-        ConversationService  $conversationService,
+        int $announceId,
+        ConversationService $conversationService,
         #[CurrentUser] ?User $user = null,
-    ): Response
-    {
-        if ($user === null) {
+    ): Response {
+        if (! $user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 

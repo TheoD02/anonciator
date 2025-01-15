@@ -10,14 +10,14 @@ use App\User\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 use function Zenstruck\Foundry\Persistence\flush_after;
 
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher,
-    )
-    {
+        private readonly UserPasswordHasherInterface $passwordHasher,
+    ) {
     }
 
     public function load(ObjectManager $manager): void
@@ -25,21 +25,27 @@ class AppFixtures extends Fixture
         ini_set('memory_limit', '2G');
 
         $user = UserFactory::new()
-            ->afterInstantiate(fn(User $user) => $user->setPassword($this->passwordHasher->hashPassword($user, 'demo')))
+            ->afterInstantiate(
+                fn (User $user): User => $user->setPassword($this->passwordHasher->hashPassword($user, 'demo'))
+            )
             ->create([
                 'email' => 'dummy@domain.tld',
-            ]);
+            ])
+        ;
 
         // Create announce as dummy user to allow conversation from admin user
-        flush_after(static fn(): array => AnnounceFactory::new()->createMany(100, [
+        flush_after(static fn (): array => AnnounceFactory::new()->createMany(100, [
             'createdBy' => $user->getEmail(),
         ]));
 
         UserFactory::new()
-            ->afterInstantiate(fn(User $user) => $user->setPassword($this->passwordHasher->hashPassword($user, 'admin')))
+            ->afterInstantiate(
+                fn (User $user): User => $user->setPassword($this->passwordHasher->hashPassword($user, 'admin'))
+            )
             ->create([
                 'email' => 'admin@domain.tld',
-            ]);
+            ])
+        ;
 
         // $product = new Product();
         // $manager->persist($product);

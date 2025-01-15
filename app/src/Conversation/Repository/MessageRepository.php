@@ -18,6 +18,7 @@ class MessageRepository extends AbstractEntityRepository
         return Message::class;
     }
 
+    #[\Override]
     protected function createPaginationQueryBuilder(): QueryBuilder
     {
         $qb = parent::createPaginationQueryBuilder();

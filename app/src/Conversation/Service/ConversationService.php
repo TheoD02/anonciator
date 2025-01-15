@@ -6,7 +6,6 @@ namespace App\Conversation\Service;
 
 use App\Announce\Entity\Announce;
 use App\Announce\Service\AnnounceService;
-use App\Conversation\Dto\Payload\InitConversationPayload;
 use App\Conversation\Entity\Conversation;
 use App\Conversation\Repository\ConversationRepository;
 use App\Shared\Trait\EntityCrudServiceTrait;
@@ -18,11 +17,10 @@ class ConversationService
     use EntityCrudServiceTrait;
 
     public function __construct(
-        private readonly AnnounceService        $announceService,
-        private readonly UserService            $userService,
+        private readonly AnnounceService $announceService,
+        private readonly UserService $userService,
         private readonly ConversationRepository $conversationRepository,
-    )
-    {
+    ) {
     }
 
     public function initConversationOrGetExisting(int $announceId, User $loggedUser): Conversation
@@ -48,7 +46,8 @@ class ConversationService
             ->setParameter('userInitiatorId', $loggedUser->getId())
             ->setParameter('userReceiverId', $announceCreator->getId())
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
 
         if ($conversation === null) {
             $conversation = new Conversation();

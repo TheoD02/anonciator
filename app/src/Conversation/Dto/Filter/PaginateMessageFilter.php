@@ -18,7 +18,8 @@ class PaginateMessageFilter implements ORMQueryBuilderFilterQueryAwareInterface
         if (isset($this->announceId)) {
             $qb->leftJoin('e.announce', 'a');
             $qb->andWhere('a.id = :announceId')
-                ->setParameter('announceId', $this->announceId);
+                ->setParameter('announceId', $this->announceId)
+            ;
         }
     }
 }

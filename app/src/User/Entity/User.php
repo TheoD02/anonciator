@@ -7,6 +7,7 @@ namespace App\User\Entity;
 use App\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: GroupRole::class)]
     private Collection $groups;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private string $password;
 
     public function __construct()
@@ -79,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addGroup(GroupRole $group): static
     {
-        if (!$this->groups->contains($group)) {
+        if (! $this->groups->contains($group)) {
             $this->groups->add($group);
         }
 

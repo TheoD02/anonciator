@@ -42,7 +42,8 @@ final class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
                     'content' => 'Great, I will take it',
                 ],
             ])
-            ->create();
+            ->create()
+        ;
 
         // Act
         $this->request('GET', parameters: [
@@ -72,7 +73,8 @@ final class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
                     'content' => 'Great, I will take it',
                 ],
             ])
-            ->create();
+            ->create()
+        ;
 
         // Act
         $this->request('GET', parameters: [
