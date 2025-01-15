@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class LowerThanOrEqualDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return LowerThanOrEqualOperator::class;
@@ -17,7 +19,7 @@ class LowerThanOrEqualDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, LowerThanOrEqualOperator::operator()),
             description: 'Lower Than Or Equal operator',
             in: 'query',

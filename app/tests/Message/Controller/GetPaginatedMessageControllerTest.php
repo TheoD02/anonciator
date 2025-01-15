@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Message\Controller;
 
-use App\Message\Controller\GetPaginatedMessageController;
+use App\Conversation\Controller\GetPaginatedMessageController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use App\Tests\Factory\MessageFactory;
@@ -42,8 +42,7 @@ final class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
                     'content' => 'Great, I will take it',
                 ],
             ])
-            ->create()
-        ;
+            ->create();
 
         // Act
         $this->request('GET', parameters: [
@@ -73,8 +72,7 @@ final class GetPaginatedMessageControllerTest extends AbstractApiWebTestCase
                     'content' => 'Great, I will take it',
                 ],
             ])
-            ->create()
-        ;
+            ->create();
 
         // Act
         $this->request('GET', parameters: [

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Factory;
 
-use App\Message\Entity\Message;
+use App\Conversation\Entity\Message;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -49,6 +49,6 @@ final class MessageFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this;
-        // ->afterInstantiate(function(Message $message): void {})
+        // ->afterInstantiate(function(Conversation $message): void {})
     }
 }

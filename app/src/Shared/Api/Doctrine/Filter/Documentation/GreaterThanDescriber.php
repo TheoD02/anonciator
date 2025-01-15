@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class GreaterThanDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return GreaterThanOperator::class;
@@ -17,7 +19,7 @@ class GreaterThanDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, GreaterThanOperator::operator()),
             description: 'Greater Than operator',
             in: 'query',

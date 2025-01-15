@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Castor\Attribute\AsListener;
 use Castor\Event\BeforeExecuteTaskEvent;
+use Castor\Event\ProcessStartEvent;
 use Symfony\Component\Process\ExecutableFinder;
 
 use function Castor\check;
@@ -34,6 +35,23 @@ function prevent_running_certains_command_inside_docker(): void
     if (in_array($taskName, ['start', 'stop', 'restart', 'build'], true)) {
         docker()->preventRunningInsideDocker();
     }
+}
+
+#[AsListener(ProcessStartEvent::class)]
+function log_process_start(ProcessStartEvent $event): void
+{
+    $commands = $event->process->getCommandLine();
+    $commands = array_map(static fn (string $cmd) => trim($cmd, "'"), explode(' ', $commands));
+    $commands = implode(' ', $commands);
+
+    $silents = ['echo $HOME', 'docker compose images', 'docker compose ps --services'];
+
+    if (in_array($commands, $silents, true)) {
+        return;
+    }
+
+    $prefix = str_contains($commands, 'docker') ? '[docker]' : '[local]';
+    io()->writeln("> <info>{$prefix}</info> <comment>{$commands}</comment>");
 }
 
 #[AsListener(BeforeExecuteTaskEvent::class)]

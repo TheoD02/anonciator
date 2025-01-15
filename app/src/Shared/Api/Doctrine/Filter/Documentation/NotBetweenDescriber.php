@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class NotBetweenDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return NotBetweenOperator::class;
@@ -17,7 +19,7 @@ class NotBetweenDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, NotBetweenOperator::operator()),
             description: 'Not Between operator',
             in: 'query',

@@ -8,14 +8,16 @@ use Castor\Context;
 use function Castor\capture;
 
 define('ROOT_DIR', dirname(__DIR__, 2));
+define('USER_ID', capture(['id', '-u']));
+define('GROUP_ID', capture(['id', '-g']));
 
 #[AsContext(default: true)]
 function root_context(): Context
 {
     return new Context(
         data: [
-            'user.id' => capture(['id', '-u']),
-            'user.group' => capture(['id', '-g']),
+            'user.id' => USER_ID,
+            'user.group' => GROUP_ID,
         ],
         workingDirectory: ROOT_DIR
     );
@@ -28,7 +30,7 @@ function symfony_context(): Context
         ->withName('symfony')
         ->withWorkingDirectory(ROOT_DIR . '/app')
         ->withData([
-            'registry' => 'docker-registry.theo-corp.fr',
+            'registry' => 'registry.theo-corp.fr',
             'image' => 'theod02/demo-app-symfony',
         ])
     ;
@@ -41,7 +43,7 @@ function frontend_context(): Context
         ->withName('frontend')
         ->withWorkingDirectory(ROOT_DIR . '/front')
         ->withData([
-            'registry' => 'docker-registry.theo-corp.fr',
+            'registry' => 'registry.theo-corp.fr',
             'image' => 'theod02/demo-app-frontend',
         ])
     ;

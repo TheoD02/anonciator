@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class NotEndWithDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return NotEndWithOperator::class;
@@ -17,7 +19,7 @@ class NotEndWithDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, NotEndWithOperator::operator()),
             description: 'Not End with operator',
             in: 'query',

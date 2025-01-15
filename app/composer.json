@@ -15,6 +15,7 @@
     "doctrine/doctrine-migrations-bundle": "^3.3.1",
     "doctrine/orm": "^3.3.1",
     "jolicode/automapper": "dev-feature/skip-uninitialized",
+    "lexik/jwt-authentication-bundle": "^3.1",
     "nelmio/api-doc-bundle": "^4.34.0",
     "nelmio/cors-bundle": "^2.5",
     "phpdocumentor/reflection-docblock": "^5.6.1",

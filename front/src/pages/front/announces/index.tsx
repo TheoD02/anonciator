@@ -1,1 +1,2 @@
-export { AnnounceSearch } from "./search";
+export { FrontAnnounceSearch } from "./search";
+export { FrontAnnounceShow } from "./show";

@@ -68,6 +68,8 @@ function install(bool $force = false, bool $noStart = false): void
 
     symfony_install($force);
 
+    console(['lexik:jwt:generate-keypair', '--skip-if-exists'])->run();
+
     ui_install($force);
 }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Message\Controller;
 
-use App\Message\Controller\SendMessageController;
+use App\Conversation\Controller\SendMessageController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 

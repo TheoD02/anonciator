@@ -1,6 +1,7 @@
 import { Carousel } from "@mantine/carousel";
 import { Card, Image, Loader, Text, Title, Button, Box, Group, Divider } from "@mantine/core";
 import { BaseKey, useApiUrl, useMany, useOne } from "@refinedev/core"
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 export const FrontAnnounceShow = () => {
@@ -38,12 +39,27 @@ export const FrontAnnounceShow = () => {
         },
     });
 
+    const [queryConversationEnabled, setQueryConversationEnabled] = useState(false);
+    const { data: conversation, isFetching: isConversationFetching, } = useOne({
+        resource: "conversations/redirect",
+        id: announce?.id,
+        queryOptions: {
+            enabled: queryConversationEnabled,
+        },
+    });
+
+    useEffect(() => {
+        if (conversation) {
+            navigate(`/conversations/${conversation.data.id}/messages`);
+        }
+    }, [conversation]);
+
     return <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
         <div style={{ flex: 1, marginRight: '20px' }}>
             <Title order={2} mb="md">
                 {announce?.title}
             </Title>
-            <Card shadow="sm" padding="lg">
+            <Card shadow="sm" p="lg">
                 <Card.Section>
                     {announce?.photoIds.length === 0 && (
                         <Image src="https://placehold.co/320" height={300} alt="Placeholder" />
@@ -85,7 +101,7 @@ export const FrontAnnounceShow = () => {
             </Card>
         </div>
         <Box style={{ width: '300px' }}>
-            <Card shadow="sm" padding="lg">
+            <Card shadow="sm" p="lg">
                 <Title order={4} mb="md">Posted by</Title>
                 {isUserFetching ? (
                     <Loader size="sm" />
@@ -96,8 +112,12 @@ export const FrontAnnounceShow = () => {
                 <Button
                     fullWidth
                     mt="md"
-                    onClick={() => navigate(`/conversation`)}
-                >Send message</Button>
+                    onClick={() => {
+                        setQueryConversationEnabled(true);
+                    }}
+                >
+                    Send message
+                </Button>
             </Card>
         </Box>
     </div>

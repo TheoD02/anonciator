@@ -38,7 +38,8 @@ import { Register } from "./pages/front/register";
 import { apiDataProvider } from "./api";
 import { AnnounceCreate, AnnounceEdit, AnnounceList, AnnounceShow } from "./pages/admin/announces";
 import { IconCategory, IconNews } from "@tabler/icons-react";
-import { AnnounceSearch } from "./pages/front/announces";
+import { FrontAnnounceSearch, FrontAnnounceShow } from "./pages/front/announces";
+import { FrontMessageConversation } from "./pages/front/messages";
 
 function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -130,7 +131,9 @@ function App() {
                       </ThemedLayoutV2>
                     }
                   >
-                    <Route index element={<AnnounceSearch />} />
+                    <Route index element={<FrontAnnounceSearch />} />
+                    <Route path="/announces/:id" element={<FrontAnnounceShow />} />
+                    <Route path="/conversations/:id/messages" element={<FrontMessageConversation />} />
                   </Route>
                   <Route
                     path="/admin"

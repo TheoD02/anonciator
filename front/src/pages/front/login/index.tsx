@@ -6,8 +6,8 @@ export const Login = () => {
       type="login"
       formProps={{
         initialValues: {
-          email: "demo@refine.dev",
-          password: "demodemo",
+          email: "admin@domain.tld",
+          password: "admin",
         },
       }}
     />

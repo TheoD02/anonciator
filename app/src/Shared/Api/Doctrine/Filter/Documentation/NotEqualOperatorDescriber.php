@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class NotEqualOperatorDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return NotEqualOperator::class;
@@ -17,7 +19,7 @@ class NotEqualOperatorDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, NotEqualOperator::operator()),
             description: 'Not equal operator',
             in: 'query',

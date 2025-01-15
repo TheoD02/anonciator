@@ -8,6 +8,7 @@ use App\Shared\Api\Doctrine\Filter\Adapter\FilterQueryDefinitionInterface;
 use App\Shared\Api\Doctrine\Filter\Adapter\ORMQueryBuilderFilterQueryAwareInterface;
 use App\Shared\Api\Doctrine\Filter\FilterDefinition;
 use App\Shared\Api\Doctrine\Filter\FilterDefinitionBag;
+use App\Shared\Api\Doctrine\Filter\FilterJoin;
 use App\Shared\Api\Doctrine\Filter\Operator\OperatorInterface;
 use App\Shared\Api\PaginationFilterQuery;
 use Doctrine\ORM\QueryBuilder;
@@ -70,7 +71,7 @@ class Paginator
             foreach ($operators as $operator) {
                 /** @var OperatorInterface $operatorInstance */
                 $operatorInstance = new $operator();
-                $queryParameterName = \sprintf('[%s][%s]', $publicName, $operatorInstance->operator());
+                $queryParameterName = \sprintf('[%s][%s]', $publicName, $operatorInstance::operator());
                 $value = $accessor->getValue($queryParameters, $queryParameterName) ?? 'NOT_PRESENT';
 
                 if ($value === 'NOT_PRESENT') {
@@ -79,6 +80,14 @@ class Paginator
 
                 $operatorInstance->apply($qb, $definition, $value);
             }
+
+            if ($definition->join instanceof FilterJoin) {
+                $qb
+                    ->leftJoin("e.{$definition->join->join}", $definition->join->alias)
+                ;
+            }
         }
+
+        dd($qb->getQuery()->getDQL());
     }
 }

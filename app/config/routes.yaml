@@ -1,3 +1,6 @@
+api_login_check:
+    path: /api/login_check
+
 announces_controllers:
     prefix: /api/announces
     resource:
@@ -7,10 +10,10 @@ announces_controllers:
     trailing_slash_on_root: false
 
 messages_controllers:
-    prefix: /api/messages
+    prefix: /api/conversations
     resource:
-        path: ../src/Message/Controller
-        namespace: App\Message\Controller
+        path: ../src/Conversation/Controller
+        namespace: App\Conversation\Controller
     type: attribute
     trailing_slash_on_root: false
 

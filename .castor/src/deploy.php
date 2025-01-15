@@ -40,6 +40,8 @@ function deploy_build_image(string $tag = 'latest'): void
 function deploy_push_image(string $tag = 'latest'): void
 {
     docker(['push', generate_image_name($tag)])->run();
+
+    io()->success(['Image pushed successfully', 'Image: ' . generate_image_name($tag)]);
 }
 
 function build_and_push(string $tag = 'latest'): void

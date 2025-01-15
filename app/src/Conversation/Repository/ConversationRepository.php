@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Message\Repository;
+namespace App\Conversation\Repository;
 
-use App\Message\Entity\Conversation;
+use App\Conversation\Entity\Conversation;
 use App\Shared\Doctrine\Repository\AbstractEntityRepository;
 
 /**

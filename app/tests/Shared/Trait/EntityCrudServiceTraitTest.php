@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Shared\Trait;
 
 use App\Announce\AnnounceStatus;
 use App\Announce\Dto\Payload\CreateAnnouncePayload;
-use App\Announce\Entity\Announce;
-use App\Announce\Service\AnnounceCategoryService;
 use App\Announce\Service\AnnounceService;
 use App\Shared\Api\Relation;
 use App\Tests\Factory\AnnounceCategoryFactory;
 use App\Tests\Factory\AnnounceFactory;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class EntityCrudServiceTraitTest extends KernelTestCase
+/**
+ * @internal
+ */
+final class EntityCrudServiceTraitTest extends KernelTestCase
 {
     use Factories;
     use ResetDatabase;
+    public $instance;
 
     protected function setUp(): void
     {

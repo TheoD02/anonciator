@@ -10,15 +10,21 @@ import { useEffect, useState } from "react";
 import { IconTrash } from "@tabler/icons-react";
 import { z } from 'zod';
 import { zodResolver } from "@mantine/form";
+import { requestApi } from "../../../api";
 
 const schemaValidation = z.object({
   title: z.string().min(3),
   description: z.string().min(10),
   price: z.number(),
-  category: z.array(z.number()),
+  // Skip category for now (Front use Single value, and backend use array, need to improve this)
+  //category: z.object({
+  //  set: z.number(),
+  //}),
   location: z.number(),
   status: z.string(),
-  photos: z.array(z.number()),
+  //photos: z.array(z.object({
+  //  set: z.array(z.number()),
+  //})).min(0),
 });
 
 export const AnnounceCreate = () => {
@@ -28,6 +34,8 @@ export const AnnounceCreate = () => {
     saveButtonProps,
     setFieldValue,
     refineCore: { formLoading },
+    values,
+    errors,
   } = useForm({
     initialValues: {
       title: "Cooul",
@@ -39,6 +47,8 @@ export const AnnounceCreate = () => {
     },
     validate: zodResolver(schemaValidation),
   });
+
+  console.log(values, errors);
 
   const { selectProps: categorySelectProps } = useSelect({
     resource: "announces/categories",
@@ -62,7 +72,13 @@ export const AnnounceCreate = () => {
   </SimpleGrid>
 
   const handleRemove = (index: number) => {
-    fetch(`${apiUrl}/resources/${files[index]}`, {
+    if (!files[index]) {
+      console.error(files, index);
+      console.error("File not found");
+      return;
+    }
+
+    requestApi(`${apiUrl}/resources/${files[index]}`, {
       method: "DELETE",
     });
 
@@ -77,7 +93,7 @@ export const AnnounceCreate = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const res = await fetch(`${apiUrl}/resources`, {
+        const res = await requestApi(`${apiUrl}/resources`, {
           method: "POST",
           body: formData,
         });

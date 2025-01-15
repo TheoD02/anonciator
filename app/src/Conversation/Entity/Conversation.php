@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Message\Entity;
+namespace App\Conversation\Entity;
 
 use App\Announce\Entity\Announce;
-use App\Message\Repository\ConversationRepository;
+use App\Conversation\Repository\ConversationRepository;
 use App\User\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -107,7 +107,7 @@ class Conversation
 
     public function addMessage(Message $message): static
     {
-        if (! $this->messages->contains($message)) {
+        if (!$this->messages->contains($message)) {
             $this->messages->add($message);
             $message->setConversation($this);
         }

@@ -8,11 +8,12 @@ use App\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,6 +31,9 @@ class User implements UserInterface
      */
     #[ORM\ManyToMany(targetEntity: GroupRole::class)]
     private Collection $groups;
+
+    #[ORM\Column(type: 'string')]
+    private string $password;
 
     public function __construct()
     {
@@ -75,7 +79,7 @@ class User implements UserInterface
 
     public function addGroup(GroupRole $group): static
     {
-        if (! $this->groups->contains($group)) {
+        if (!$this->groups->contains($group)) {
             $this->groups->add($group);
         }
 
@@ -108,6 +112,21 @@ class User implements UserInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->username;
+        return $this->email;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
     }
 }

@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Message\Entity;
+namespace App\Conversation\Entity;
 
-use App\Announce\Entity\Announce;
-use App\Message\Repository\MessageRepository;
+use App\Conversation\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -33,8 +32,9 @@ class Message
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $wasReadAt = null;
 
-    #[ORM\ManyToOne]
-    private ?Announce $announce = null;
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Conversation $conversation = null;
 
     public function getId(): ?int
     {
@@ -60,7 +60,7 @@ class Message
 
     public function setSentBy(string|UserInterface $sentBy): static
     {
-        $this->sentTo = \is_string($sentBy) ? $sentBy : $sentBy->getUserIdentifier();
+        $this->sentBy = \is_string($sentBy) ? $sentBy : $sentBy->getUserIdentifier();
 
         return $this;
     }
@@ -89,14 +89,14 @@ class Message
         return $this;
     }
 
-    public function getAnnounce(): ?Announce
+    public function getConversation(): ?Conversation
     {
-        return $this->announce;
+        return $this->conversation;
     }
 
-    public function setAnnounce(?Announce $announce): static
+    public function setConversation(?Conversation $conversation): static
     {
-        $this->announce = $announce;
+        $this->conversation = $conversation;
 
         return $this;
     }

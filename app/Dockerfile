@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1.4
 
 # Versions
-FROM dunglas/frankenphp:1-php8.4.1-bookworm AS frankenphp_upstream
+FROM dunglas/frankenphp:1.4.0-php8.4.2-bookworm AS frankenphp_upstream
 
 ARG SERVER_NAME=":80"
 ENV SERVER_NAME=${SERVER_NAME}

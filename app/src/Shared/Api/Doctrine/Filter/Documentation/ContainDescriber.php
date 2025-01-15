@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class ContainDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return ContainOperator::class;
@@ -17,7 +19,7 @@ class ContainDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, ContainOperator::operator()),
             description: 'Contain operator',
             in: 'query',

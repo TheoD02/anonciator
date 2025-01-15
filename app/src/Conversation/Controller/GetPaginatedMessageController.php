@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Message\Controller;
+namespace App\Conversation\Controller;
 
-use App\Message\Dto\Filter\PaginateMessageFilter;
-use App\Message\Dto\Response\MessageResponse;
-use App\Message\Service\MessageService;
+use App\Conversation\Dto\Filter\PaginateMessageFilter;
+use App\Conversation\Dto\Response\MessageResponse;
+use App\Conversation\Service\MessageService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\ApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
@@ -15,20 +15,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Tag(name: 'Message')]
+#[Tag(name: 'Conversation')]
 class GetPaginatedMessageController extends AbstractApiController
 {
-    #[Route('/{announceId}', methods: [Request::METHOD_GET])]
+    #[Route('/{id}/messages', methods: [Request::METHOD_GET])]
     #[SuccessResponse(
         dataFqcn: MessageResponse::class,
         description: 'Get paginated messages',
         groups: [ApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
-    public function __invoke(int $announceId, MessageService $messageService): Response
+    public function __invoke(int $id, MessageService $messageService): Response
     {
         $filter = new PaginateMessageFilter();
-        $filter->announceId = $announceId;
+        $filter->announceId = $id; // This is conversation ID not announce ID (TODO: Fix this)
         $messages = $messageService->paginateEntities($filter);
 
         return $this->successResponse(

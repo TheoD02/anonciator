@@ -10,6 +10,8 @@ use OpenApi\Attributes\Parameter;
 
 class IsEmptyDescriber implements OperatorDescriber
 {
+    private static ?Parameter $parameter = null;
+
     public static function operator(): string
     {
         return IsEmptyOperator::class;
@@ -17,7 +19,7 @@ class IsEmptyDescriber implements OperatorDescriber
 
     public function parameter(FilterDefinition $definition): Parameter
     {
-        return new Parameter(
+        return self::$parameter ??= new Parameter(
             name: \sprintf('%s[%s]', $definition->publicName, IsEmptyOperator::operator()),
             description: 'Is Empty operator',
             in: 'query',
