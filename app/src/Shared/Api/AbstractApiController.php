@@ -15,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -27,11 +29,13 @@ use Symfony\Component\Stopwatch\Stopwatch;
 class AbstractApiController extends AbstractController
 {
     public function __construct(
-        private readonly RequestStack $requestStack,
+        private readonly RequestStack                $requestStack,
         private readonly JoliCodeAutoMapperInterface $joliCodeAutoMapper,
-        private readonly NormalizerInterface $normalizer,
-        protected readonly Stopwatch $sw,
-    ) {
+        private readonly NormalizerInterface         $normalizer,
+        protected readonly Stopwatch                 $sw,
+        protected HubInterface                       $hub,
+    )
+    {
     }
 
     /**
@@ -39,12 +43,13 @@ class AbstractApiController extends AbstractController
      * @param ArrayContext $context
      */
     public function booleanResponse(
-        bool $data,
+        bool              $data,
         ?ApiMetaInterface $meta = null,
-        int $status = 200,
-        array $headers = [],
-        array $context = [],
-    ): JsonResponse {
+        int               $status = 200,
+        array             $headers = [],
+        array             $context = [],
+    ): JsonResponse
+    {
         if ($status < 200 || $status > 299) {
             throw new \LogicException('Status code must be between 200 and 299');
         }
@@ -54,19 +59,21 @@ class AbstractApiController extends AbstractController
 
     /**
      * @param object|array<mixed>|bool|null $data
-     * @param class-string                  $target
-     * @param ArrayHeaders                  $headers
-     * @param ArrayContext                  $context
+     * @param class-string $target
+     * @param ArrayHeaders $headers
+     * @param ArrayContext $context
      */
     public function successResponse(
         object|array|bool|null $data,
-        string $target,
-        array $groups = [],
-        ?ApiMetaInterface $meta = null,
-        int $status = 200,
-        array $headers = [],
-        array $context = [],
-    ): Response {
+        string                 $target,
+        array                  $groups = [],
+        ?ApiMetaInterface      $meta = null,
+        int                    $status = 200,
+        array                  $headers = [],
+        array                  $context = [],
+        ?string                $topics = 'resources/conversations/$id/messages',
+    ): Response
+    {
         if ($status < 200 || $status > 299) {
             throw new \LogicException('Status code must be between 200 and 299');
         }
@@ -80,7 +87,7 @@ class AbstractApiController extends AbstractController
         ];
         $this->sw->start('map_response');
         $data = is_iterable($data) ? array_map(
-            fn ($item): object|array|null => $this->joliCodeAutoMapper->map($item, $target, $ctx),
+            fn($item): object|array|null => $this->joliCodeAutoMapper->map($item, $target, $ctx),
             $data instanceof Paginator ? $data->getIterator()->getArrayCopy() : $data
         ) : $this->joliCodeAutoMapper->map($data, $target, $ctx);
         $this->sw->stop('map_response');
@@ -110,6 +117,7 @@ class AbstractApiController extends AbstractController
             status: $status,
             headers: $headers,
             context: $context,
+            topics: $topics,
         );
     }
 
@@ -133,7 +141,7 @@ class AbstractApiController extends AbstractController
             $propertyName = $reflectionProperty->getName();
 
             $sensitiveAttribute = $this->getSensitiveAttribute($reflectionProperty);
-            if ($sensitiveAttribute instanceof Sensitive && ! $this->isGranted($sensitiveAttribute->roles)) {
+            if ($sensitiveAttribute instanceof Sensitive && !$this->isGranted($sensitiveAttribute->roles)) {
                 $ignoredAttributes[] = $propertyName;
             }
 
@@ -166,10 +174,12 @@ class AbstractApiController extends AbstractController
      */
     private function jsonResponse(
         SuccessResponse|ErrorResponse $data,
-        int $status = 200,
-        array $headers = [],
-        array $context = [],
-    ): JsonResponse {
+        int                           $status = 200,
+        array                         $headers = [],
+        array                         $context = [],
+        ?string                       $topics = null,
+    ): JsonResponse
+    {
         $queryParams = $this->requestStack->getCurrentRequest()->query->all();
 
         $ignore = $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ?? [];
@@ -182,6 +192,14 @@ class AbstractApiController extends AbstractController
 
         if ($data instanceof SuccessResponse) {
             $data->data = $this->normalizer->normalize($data->data, context: $context);
+            if ($topics) {
+                $this->hub->publish(
+                    new Update(
+                        [$topics],
+                        json_encode($data->data, JSON_THROW_ON_ERROR),
+                    )
+                );
+            }
         }
 
         return $this->json(
@@ -212,10 +230,11 @@ class AbstractApiController extends AbstractController
      */
     public function errorResponse(
         array $errors = [],
-        int $status = 400,
+        int   $status = 400,
         array $headers = [],
         array $context = [],
-    ): JsonResponse {
+    ): JsonResponse
+    {
         if ($status < 400) {
             throw new \LogicException('Status code must be 400 or greater');
         }

@@ -8,7 +8,7 @@ use App\Announce\Dto\Payload\PartialUpdateAnnouncePayload;
 use App\Announce\Dto\Response\AnnounceResponse;
 use App\Announce\Service\AnnounceService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,14 +20,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class PartialUpdateAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_PATCH])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce patched', groups: [ApiGroups::PATCH])]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce patched', groups: [GlobalApiGroups::PATCH])]
     public function __invoke(
         #[MapRequestPayload] PartialUpdateAnnouncePayload $payload,
-        AnnounceService $announceService,
-        int $id,
-    ): Response {
+        AnnounceService                                   $announceService,
+        int                                               $id,
+    ): Response
+    {
         $announce = $announceService->partialUpdateEntityFromPayload($id, $payload);
 
-        return $this->successResponse($announce, target: AnnounceResponse::class, groups: [ApiGroups::PATCH]);
+        return $this->successResponse($announce, target: AnnounceResponse::class, groups: [GlobalApiGroups::PATCH]);
     }
 }

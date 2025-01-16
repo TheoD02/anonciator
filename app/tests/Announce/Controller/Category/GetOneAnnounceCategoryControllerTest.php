@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Announce\Controller;
+namespace App\Tests\Announce\Controller\Category;
 
 use App\Announce\Controller\Category\GetOneAnnounceCategoryController;
 use App\Tests\AbstractApiWebTestCase;
@@ -31,6 +31,7 @@ final class GetOneAnnounceCategoryControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
+        $this->authenticate();
         $this->request('GET', parameters: [
             'id' => 1,
         ]);

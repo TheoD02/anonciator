@@ -29,6 +29,7 @@
     "symfony/flex": "^2.4.7",
     "symfony/framework-bundle": "7.3.*",
     "symfony/json-encoder": "7.3.*",
+    "symfony/mercure-bundle": "^0.3.9",
     "symfony/mime": "7.3.*",
     "symfony/monolog-bundle": "^3.10",
     "symfony/property-access": "7.3.*",
@@ -98,7 +99,9 @@
     "phpmd": "phpmd src/ text codesize",
     "rector": "rector process --ansi --config vendor-bin/rector/rector.php --clear-cache --dry-run",
     "rector-fix": "rector process --ansi --config vendor-bin/rector/rector.php --clear-cache",
-    "class-leak-check": "class-leak check bin src translations --skip-suffix=\"Command\" --skip-suffix=\"Controller\" --skip-suffix=\"Kernel\""
+    "class-leak-check": "class-leak check bin src translations --skip-suffix=\"Command\" --skip-suffix=\"Controller\" --skip-suffix=\"Kernel\"",
+    "phpunit": "phpunit --colors=always",
+    "phpunit-coverage": "XDEBUG_MODE=debug phpunit --colors=always --coverage-html=coverage"
   },
   "conflict": {
     "symfony/symfony": "*"

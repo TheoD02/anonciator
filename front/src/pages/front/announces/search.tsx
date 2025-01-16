@@ -3,18 +3,18 @@ import { BaseKey, useApiUrl, useList, useMany } from "@refinedev/core";
 import { Carousel } from '@mantine/carousel';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 
 export const FrontAnnounceSearch = () => {
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
-        current: 18,
+        current: 1,
         pageSize: 6,
     });
 
-    const [filters, setFilters] = useState<{ field: string; operator: string; value: string }[]>([]);
+    const [filters, setFilters] = useDebouncedState<{ field: string; operator: string; value: string }[]>([], 500);
 
-    const { data, isFetching, overtime } = useList({
+    const { data, overtime } = useList({
         resource: "announces",
         pagination: pagination,
         filters: filters,
@@ -40,12 +40,11 @@ export const FrontAnnounceSearch = () => {
         },
     });
 
-    const categoryIds: BaseKey[] = data?.data.map((announce) => announce.categoryId) || [];
-    const { data: categories, isFetching: isCategoriesFetching } = useMany({
+    const { data: categories } = useList({
         resource: "announces/categories",
-        ids: categoryIds,
-        queryOptions: {
-            enabled: !!categoryIds.length,
+        filters: [],
+        pagination: {
+            pageSize: 100,
         },
     });
     const apiUrl = useApiUrl();
@@ -58,28 +57,32 @@ export const FrontAnnounceSearch = () => {
         <TextInput
             label="Search"
             placeholder="Search..."
-            value={filters.find((filter) => filter.field === 'search')?.value || ''}
-            onChange={(event) => setFilters([{ field: 'search', operator: 'like', value: event.currentTarget.value }])}
+            onChange={(event) => setFilters([{ field: 'title', operator: 'ctn', value: event.currentTarget.value }])}
             mb="20px"
         />
 
         <Flex>
-            <Box style={{ width: '250px', marginRight: '20px' }}>
+            <Box style={{ width: '250px', marginRight: '35px' }}>
                 <Title order={4} mb="10px">Filters</Title>
                 <Select
                     label="Category"
                     placeholder="Category"
                     data={categories?.data.map((category) => ({ value: category.id, label: category.name })) || []}
-                    value={filters.find((filter) => filter.field === 'categoryId')?.value || ''}
                     onChange={(value) => setFilters([{ field: 'categoryId', operator: 'eq', value: value?.toString() || '' }])}
                     mb="10px"
                 />
                 <RangeSlider
                     min={0}
-                    max={1000}
-                    value={filters.find((filter) => filter.field === 'price')?.value || [0, 1000]}
-                    onChange={(value) => setFilters([{ field: 'price', operator: 'between', value: value.join(',') }])}
+                    max={2000}
+                    onChangeEnd={(value) => setFilters([{ field: 'price', operator: 'btw', value: value.join(',') }])}
                     mb="10px"
+                    label={(value) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value)}
+                    step={10}
+                    defaultValue={[0, 2000]}
+                    marks={[
+                        { value: 0, label: new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(0) },
+                        { value: 2000, label: new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(2000) },
+                    ]}
                 />
             </Box>
 

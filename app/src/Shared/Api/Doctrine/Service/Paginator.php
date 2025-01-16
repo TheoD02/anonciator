@@ -25,15 +25,17 @@ class Paginator
 
     public function __construct(
         RequestStack $requestStack,
-    ) {
+    )
+    {
         $this->request = $requestStack->getCurrentRequest();
     }
 
     public function paginate(
-        QueryBuilder $qb,
+        QueryBuilder                                                                 $qb,
         ORMQueryBuilderFilterQueryAwareInterface|FilterQueryDefinitionInterface|null $queryBuilderFilterQueryAware = null,
-        PaginationFilterQuery $paginationFilterQuery = new PaginationFilterQuery(),
-    ): \Doctrine\ORM\Tools\Pagination\Paginator {
+        PaginationFilterQuery                                                        $paginationFilterQuery = new PaginationFilterQuery(),
+    ): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
         if ($queryBuilderFilterQueryAware instanceof ORMQueryBuilderFilterQueryAwareInterface) {
             $queryBuilderFilterQueryAware->applyToORMQueryBuilder($qb);
         }
@@ -43,13 +45,11 @@ class Paginator
         }
 
         $qb
-            ->addOrderBy('e.id', 'ASC')
-        ;
+            ->addOrderBy('e.id', 'ASC');
 
         $qb
             ->setFirstResult(($paginationFilterQuery->page - 1) * $paginationFilterQuery->limit)
-            ->setMaxResults($paginationFilterQuery->limit)
-        ;
+            ->setMaxResults($paginationFilterQuery->limit);
 
         $query = $qb->getQuery();
 
@@ -83,11 +83,8 @@ class Paginator
 
             if ($definition->join instanceof FilterJoin) {
                 $qb
-                    ->leftJoin("e.{$definition->join->join}", $definition->join->alias)
-                ;
+                    ->leftJoin("e.{$definition->join->join}", $definition->join->alias);
             }
         }
-
-        dd($qb->getQuery()->getDQL());
     }
 }

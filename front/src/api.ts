@@ -26,17 +26,27 @@ export const requestApi = async (url: string, options?: RequestInit) => {
   }
 
   const response = await fetch(url, options);
+
+  if (response.status === 401) {
+    const json = await response.json();
+    if (json.message === "Invalid JWT Token") {
+      // Redirect to login page
+      window.location.href = "/login";
+    }
+  }
+
   return response;
 }
 
 export const apiDataProvider: DataProvider = (url: string) => ({
   getList: async ({ resource, pagination, sorters, filters, meta }: GetListParams) => {
-    if (!pagination) {
-      pagination = {
-        current: 1,
-        pageSize: 10,
-      };
+    if (!pagination?.current) {
+      pagination.current = 1;
     }
+    if (!pagination?.pageSize) {
+      pagination.pageSize = 10;
+    }
+
     const computedUrl = new URL(`${url}/${resource}`);
     computedUrl.searchParams.append("page", pagination.current.toString());
     computedUrl.searchParams.append("limit", pagination.pageSize.toString());

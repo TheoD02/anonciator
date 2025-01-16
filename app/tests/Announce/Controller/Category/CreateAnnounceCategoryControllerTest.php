@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Announce\Controller;
+namespace App\Tests\Announce\Controller\Category;
 
 use App\Announce\Controller\Category\CreateAnnounceCategoryController;
 use App\Tests\AbstractApiWebTestCase;
@@ -25,6 +25,7 @@ final class CreateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
     public function testOk(): void
     {
         // Act
+        $this->authenticate();
         $this->request('POST', json: [
             'name' => 'Category name',
             'description' => 'Category description',

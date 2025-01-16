@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Announce\Controller;
+namespace App\Tests\Announce\Controller\Category;
 
 use App\Announce\Controller\Category\DeleteAnnounceCategoryController;
 use App\Tests\AbstractApiWebTestCase;
@@ -29,6 +29,7 @@ final class DeleteAnnounceCategoryControllerTest extends AbstractApiWebTestCase
         AnnounceCategoryFactory::new()->create();
 
         // Act
+        $this->authenticate();
         $this->request('DELETE', parameters: [
             'id' => 1,
         ]);

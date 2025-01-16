@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Resource\Dto\Response;
 
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 class ResourceResponse
 {
-    #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
+    #[Groups([GlobalApiGroups::GET_PAGINATED, GlobalApiGroups::POST])]
     public string $id;
 
-    #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
+    #[Groups([GlobalApiGroups::GET_PAGINATED, GlobalApiGroups::POST])]
     public string $path;
 
-    #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
+    #[Groups([GlobalApiGroups::GET_PAGINATED, GlobalApiGroups::POST])]
     public string $bucket;
 
-    #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
+    #[Groups([GlobalApiGroups::GET_PAGINATED, GlobalApiGroups::POST])]
     public string $originalName;
 }

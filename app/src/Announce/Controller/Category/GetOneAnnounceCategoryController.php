@@ -7,7 +7,7 @@ namespace App\Announce\Controller\Category;
 use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +21,7 @@ class GetOneAnnounceCategoryController extends AbstractApiController
     #[SuccessResponse(
         dataFqcn: AnnounceCategoryResponse::class,
         description: 'Get one announce category',
-        groups: [ApiGroups::GET_ONE],
+        groups: [GlobalApiGroups::GET_ONE],
         paginated: false,
         statusCode: 200
     )]
@@ -32,7 +32,7 @@ class GetOneAnnounceCategoryController extends AbstractApiController
         return $this->successResponse(
             data: $category,
             target: AnnounceCategoryResponse::class,
-            groups: [ApiGroups::GET_ONE],
+            groups: [GlobalApiGroups::GET_ONE],
             status: Response::HTTP_OK
         );
     }

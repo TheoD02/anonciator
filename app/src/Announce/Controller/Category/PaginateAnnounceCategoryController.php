@@ -8,7 +8,7 @@ use App\Announce\Dto\Filter\AnnounceCategoryFilterQuery;
 use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
@@ -24,21 +24,22 @@ class PaginateAnnounceCategoryController extends AbstractApiController
     #[SuccessResponse(
         dataFqcn: AnnounceCategoryResponse::class,
         description: 'Paginate Announce Categories',
-        groups: [ApiGroups::GET_PAGINATED],
+        groups: [GlobalApiGroups::GET_PAGINATED],
         paginated: true,
         statusCode: Response::HTTP_OK
     )]
     public function __invoke(
         #[MapQueryString] AnnounceCategoryFilterQuery $filterQuery,
-        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-        AnnounceCategoryService $service,
-    ): Response {
+        #[MapQueryString] PaginationFilterQuery       $paginationFilterQuery,
+        AnnounceCategoryService                       $service,
+    ): Response
+    {
         $category = $service->paginateEntities($filterQuery, $paginationFilterQuery);
 
         return $this->successResponse(
             data: $category,
             target: AnnounceCategoryResponse::class,
-            groups: [ApiGroups::GET_ONE],
+            groups: [GlobalApiGroups::GET_ONE],
             status: Response::HTTP_OK
         );
     }

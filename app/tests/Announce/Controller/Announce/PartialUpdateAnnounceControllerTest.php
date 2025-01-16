@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Announce\Controller;
+namespace App\Tests\Announce\Controller\Announce;
 
 use App\Announce\AnnounceStatus;
 use App\Announce\Controller\Announce\PartialUpdateAnnounceController;
@@ -38,6 +38,7 @@ final class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
+        $this->authenticate();
         $this->request('PATCH', parameters: [
             'id' => 1,
         ], json: [

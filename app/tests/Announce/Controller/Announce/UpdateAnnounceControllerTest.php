@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Announce\Controller;
+namespace App\Tests\Announce\Controller\Announce;
 
 use App\Announce\AnnounceStatus;
 use App\Announce\Controller\Announce\UpdateAnnounceController;
@@ -43,6 +43,7 @@ final class UpdateAnnounceControllerTest extends AbstractApiWebTestCase
         ])->_real();
 
         // Act
+        $this->authenticate();
         $this->request('PUT', parameters: [
             'id' => 1,
         ], json: [

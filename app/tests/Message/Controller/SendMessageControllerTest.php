@@ -7,6 +7,9 @@ namespace App\Tests\Message\Controller;
 use App\Conversation\Controller\SendMessageController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
+use App\Tests\Factory\ConversationFactory;
+use App\Tests\Factory\UserFactory;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @internal
@@ -20,21 +23,38 @@ final class SendMessageControllerTest extends AbstractApiWebTestCase
 
     public function expectedUrl(): string
     {
-        return '/api/messages';
+        return '/api/conversations/{id}/messages';
     }
 
     public function testOk(): void
     {
         // Arrange
-        AnnounceFactory::new([
-            'createdBy' => 'admin',
+        $this->authenticate();
+
+        $sender = $this->user;
+        $receiver = UserFactory::new()->create([
+            'username' => 'receiver',
+            'email' => 'receiver@domain.tld',
+        ]);
+        $announce = AnnounceFactory::new([
+            'createdBy' => $this->user->getEmail(),
         ])->create();
+        $conversation = ConversationFactory::new()->create([
+            'announce' => $announce,
+            'initializedBy' => $sender,
+            'receiver' => $receiver,
+        ]);
 
         // Act
-        $this->request('POST', json: [
-            'content' => 'Hello',
-            'announceId' => 1,
-        ]);
+        $this->request(
+            method: Request::METHOD_POST,
+            parameters: [
+                'id' => $conversation->getId(),
+            ],
+            json: [
+                'content' => 'Hello',
+            ]
+        );
 
         // Assert
         self::assertResponseStatusCodeSame(201);

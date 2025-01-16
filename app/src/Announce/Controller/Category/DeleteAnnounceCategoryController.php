@@ -7,7 +7,7 @@ namespace App\Announce\Controller\Category;
 use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
@@ -22,7 +22,7 @@ class DeleteAnnounceCategoryController extends AbstractApiController
     #[SuccessResponse(
         dataFqcn: AnnounceCategoryResponse::class,
         description: 'Announce category deleted',
-        groups: [ApiGroups::DELETE],
+        groups: [GlobalApiGroups::DELETE],
         paginated: false,
         statusCode: 204
     )]

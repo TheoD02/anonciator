@@ -7,7 +7,7 @@ namespace App\Announce\Controller\Announce;
 use App\Announce\Dto\Response\AnnounceResponse;
 use App\Announce\Service\AnnounceService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_DELETE])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce deleted', groups: [ApiGroups::DELETE])]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce deleted', groups: [GlobalApiGroups::DELETE])]
     public function __invoke(AnnounceService $announceService, int $id): Response
     {
         $announceService->deleteEntityFromId($id);

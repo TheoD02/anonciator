@@ -24,7 +24,7 @@ final class AnnounceFactory extends PersistentProxyObjectFactory
             'category' => AnnounceCategoryFactory::randomOrCreate(),
             'description' => self::faker()->text(50),
             'location' => '10.00',
-            'price' => (string) self::faker()->randomFloat(2, 0, 1000),
+            'price' => (string)self::faker()->randomFloat(2, 0, 1000),
             'status' => self::faker()->randomElement(AnnounceStatus::cases()),
             'title' => self::faker()->text(30),
         ];

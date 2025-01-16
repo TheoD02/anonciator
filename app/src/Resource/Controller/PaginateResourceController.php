@@ -8,7 +8,7 @@ use App\Resource\Dto\Filter\PaginateResourceFilterQuery;
 use App\Resource\Dto\Response\ResourceResponse;
 use App\Resource\Service\ResourceService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
@@ -24,20 +24,21 @@ class PaginateResourceController extends AbstractApiController
     #[SuccessResponse(
         dataFqcn: ResourceResponse::class,
         description: 'Paginate resources',
-        groups: [ApiGroups::GET_PAGINATED],
+        groups: [GlobalApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
     public function __invoke(
         #[MapQueryString] PaginateResourceFilterQuery $filterQuery,
-        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-        ResourceService $resourceService,
-    ): Response {
+        #[MapQueryString] PaginationFilterQuery       $paginationFilterQuery,
+        ResourceService                               $resourceService,
+    ): Response
+    {
         $resources = $resourceService->paginateEntities($filterQuery, paginationFilterQuery: $paginationFilterQuery);
 
         return $this->successResponse(
             data: $resources,
             target: ResourceResponse::class,
-            groups: [ApiGroups::GET_PAGINATED],
+            groups: [GlobalApiGroups::GET_PAGINATED],
         );
     }
 }

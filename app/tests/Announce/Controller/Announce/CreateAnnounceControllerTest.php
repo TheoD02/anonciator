@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Announce\Controller;
+namespace App\Tests\Announce\Controller\Announce;
 
 use App\Announce\Controller\Announce\CreateAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
@@ -33,6 +33,7 @@ final class CreateAnnounceControllerTest extends AbstractApiWebTestCase
         AnnounceCategoryFactory::new()->create();
 
         // Act
+        $this->authenticate();
         $this->request('POST', json: [
             'title' => 'Title',
             'description' => 'Description',
@@ -55,6 +56,7 @@ final class CreateAnnounceControllerTest extends AbstractApiWebTestCase
     public function testFullValidationFailed(): void
     {
         // Act
+        $this->authenticate();
         $this->request('POST', json: []);
 
         // Assert

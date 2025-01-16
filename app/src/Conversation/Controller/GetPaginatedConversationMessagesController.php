@@ -8,33 +8,36 @@ use App\Conversation\Dto\Filter\PaginateMessageFilter;
 use App\Conversation\Dto\Response\MessageResponse;
 use App\Conversation\Service\MessageService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
+use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Tag(name: 'Conversation')]
-class GetPaginatedMessageController extends AbstractApiController
+class GetPaginatedConversationMessagesController extends AbstractApiController
 {
     #[Route('/{id}/messages', methods: [Request::METHOD_GET])]
     #[SuccessResponse(
         dataFqcn: MessageResponse::class,
-        description: 'Get paginated messages',
-        groups: [ApiGroups::GET_PAGINATED],
+        description: 'Get paginated conversation messages',
+        groups: [GlobalApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
-    public function __invoke(int $id, MessageService $messageService): Response
+    public function __invoke(int $id, MessageService $service, #[MapQueryString] PaginationFilterQuery $paginationFilterQuery): Response
     {
-        $filter = new PaginateMessageFilter();
-        $filter->announceId = $id; // This is conversation ID not announce ID (TODO: Fix this)
-        $messages = $messageService->paginateEntities($filter);
+        $conversation = $service->getMessagesForConversation(
+            $id,
+            $paginationFilterQuery
+        );
 
         return $this->successResponse(
-            data: $messages,
+            data: $conversation,
             target: MessageResponse::class,
-            groups: [ApiGroups::GET_PAGINATED],
+            groups: [GlobalApiGroups::GET_PAGINATED],
             status: Response::HTTP_OK
         );
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Api;
 
-class ApiGroups
+class GlobalApiGroups
 {
     public const string GET_ONE = 'GET_ONE';
 

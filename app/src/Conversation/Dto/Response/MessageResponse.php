@@ -5,28 +5,35 @@ declare(strict_types=1);
 namespace App\Conversation\Dto\Response;
 
 use App\Conversation\Entity\Message;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use AutoMapper\Attribute\MapFrom;
+use OpenApi\Attributes\Property;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 class MessageResponse
 {
-    #[Groups([ApiGroups::GET_PAGINATED, ApiGroups::POST])]
+    #[Property(description: 'Message ID')]
+    #[Groups([GlobalApiGroups::GET_PAGINATED, GlobalApiGroups::POST])]
     public int $id;
 
-    #[Groups([ApiGroups::GET_PAGINATED])]
+    #[Property(description: 'Message content')]
+    #[Groups([GlobalApiGroups::GET_PAGINATED])]
     public string $content;
 
+    #[Property(description: 'Message was sent at')]
     #[MapFrom(Message::class, property: 'createdAt')]
-    #[Groups([ApiGroups::GET_PAGINATED])]
+    #[Groups([GlobalApiGroups::GET_PAGINATED])]
     public \DateTimeImmutable $sentAt;
 
-    #[Groups([ApiGroups::GET_PAGINATED])]
+    #[Property(description: 'Message was read at')]
+    #[Groups([GlobalApiGroups::GET_PAGINATED])]
     public ?\DateTimeImmutable $wasReadAt = null;
 
-    #[Groups([ApiGroups::GET_PAGINATED])]
+    #[Property(description: 'Email of the user that sent the message')]
+    #[Groups([GlobalApiGroups::GET_PAGINATED])]
     public string $sentBy;
 
-    #[Groups([ApiGroups::GET_PAGINATED])]
+    #[Property(description: 'Email of the user that received the message')]
+    #[Groups([GlobalApiGroups::GET_PAGINATED])]
     public string $sentTo;
 }

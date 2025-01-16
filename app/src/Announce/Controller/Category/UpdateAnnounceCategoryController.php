@@ -8,7 +8,7 @@ use App\Announce\Dto\Payload\UpdateAnnounceCategoryPayload;
 use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\ApiGroups;
+use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,21 +23,22 @@ class UpdateAnnounceCategoryController extends AbstractApiController
     #[SuccessResponse(
         dataFqcn: AnnounceCategoryResponse::class,
         description: 'Announce category updated',
-        groups: [ApiGroups::PUT],
+        groups: [GlobalApiGroups::PUT],
         paginated: false,
         statusCode: 200
     )]
     public function __invoke(
-        int $id,
+        int                                                $id,
         #[MapRequestPayload] UpdateAnnounceCategoryPayload $payload,
-        AnnounceCategoryService $service,
-    ): Response {
+        AnnounceCategoryService                            $service,
+    ): Response
+    {
         $category = $service->updateEntityFromPayload($id, $payload);
 
         return $this->successResponse(
             data: $category,
             target: AnnounceCategoryResponse::class,
-            groups: [ApiGroups::POST],
+            groups: [GlobalApiGroups::POST],
             status: Response::HTTP_OK
         );
     }
