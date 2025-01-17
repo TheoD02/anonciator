@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class SendMessagePayload implements PayloadInterface
 {
-    #[Property(description: 'Message content')]
+    #[Property(description: 'Message content', example: 'Hello, how are you?')]
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 255)]
     public string $content;

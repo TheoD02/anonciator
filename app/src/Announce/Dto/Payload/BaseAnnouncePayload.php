@@ -26,7 +26,7 @@ class BaseAnnouncePayload implements PayloadInterface
     #[Assert\NotBlank()]
     public string $price;
 
-    #[Property(description: 'Category ID of the announce', example: '1')]
+    #[Property(description: 'Category ID of the announce')]
     #[Assert\Valid]
     #[Assert\NotBlank]
     #[MapRelation(toProperty: 'category', many: false)]

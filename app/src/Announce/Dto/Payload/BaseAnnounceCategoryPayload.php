@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class BaseAnnounceCategoryPayload implements PayloadInterface
 {
-    #[Property(description: 'Category name')]
+    #[Property(description: 'Category name', example: 'Cars')]
     #[Assert\NotBlank()]
     public string $name;
 }
