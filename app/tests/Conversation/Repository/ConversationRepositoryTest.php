@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Conversation\Repository;
 
 use App\Conversation\Repository\ConversationRepository;
@@ -11,11 +13,14 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * @internal
+ */
 #[CoversClass(ConversationRepository::class)]
-class ConversationRepositoryTest extends KernelTestCase
+final class ConversationRepositoryTest extends KernelTestCase
 {
-    use ResetDatabase;
     use Factories;
+    use ResetDatabase;
 
     public function testGetConversationMatchingAnnounceAndUserWhenAnythingExists(): void
     {
@@ -27,7 +32,7 @@ class ConversationRepositoryTest extends KernelTestCase
         );
 
         // Assert
-        $this->assertNull($result);
+        self::assertNull($result);
     }
 
     public function testGetConversationMatchingAnnounceAndUserWhenConversationExists(): void
@@ -39,7 +44,7 @@ class ConversationRepositoryTest extends KernelTestCase
         ConversationFactory::new()->create([
             'announce' => $announce,
             'initializedBy' => $loggedUser,
-            'receiver' => $announceCreator
+            'receiver' => $announceCreator,
         ]);
 
         // Act
@@ -50,7 +55,7 @@ class ConversationRepositoryTest extends KernelTestCase
         );
 
         // Assert
-        $this->assertNotNull($result);
+        self::assertNotNull($result);
         self::assertSame($announce->getId(), $result->getAnnounce()->getId());
         self::assertSame($loggedUser->getId(), $result->getInitializedBy()->getId());
         self::assertSame($announceCreator->getId(), $result->getReceiver()->getId());

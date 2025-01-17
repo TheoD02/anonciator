@@ -21,7 +21,9 @@ final class AnnounceFactory extends PersistentProxyObjectFactory
 
     public function withCreator(User $user): self
     {
-        return $this->with(['createdBy' => $user->getUserIdentifier()]);
+        return $this->with([
+            'createdBy' => $user->getUserIdentifier(),
+        ]);
     }
 
     protected function defaults(): array
@@ -30,7 +32,7 @@ final class AnnounceFactory extends PersistentProxyObjectFactory
             'category' => AnnounceCategoryFactory::randomOrCreate(),
             'description' => self::faker()->text(50),
             'location' => '10.00',
-            'price' => (string)self::faker()->randomFloat(2, 0, 1000),
+            'price' => (string) self::faker()->randomFloat(2, 0, 1000),
             'status' => self::faker()->randomElement(AnnounceStatus::cases()),
             'title' => self::faker()->text(30),
             'createdBy' => UserFactory::new()->createOne()->getUserIdentifier(),

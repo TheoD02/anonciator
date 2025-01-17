@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Conversation\Controller;
 
 use App\Conversation\Service\ConversationService;

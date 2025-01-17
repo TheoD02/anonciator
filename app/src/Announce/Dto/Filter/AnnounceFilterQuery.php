@@ -21,11 +21,7 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
     {
         return new FilterDefinitionBag()
             ->add(
-                FilterDefinition::create(
-                    field: 'title',
-                    publicName: 'title',
-                    operators: [ContainOperator::class]
-                )
+                FilterDefinition::create(field: 'title', publicName: 'title', operators: [ContainOperator::class])
             )
             ->add(FilterDefinition::create(
                 field: 'category',
@@ -44,6 +40,7 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
                         BetweenOperator::class,
                     ]
                 )
-            );
+            )
+        ;
     }
 }

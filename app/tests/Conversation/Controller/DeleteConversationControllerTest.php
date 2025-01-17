@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Conversation\Controller;
 
 use App\Conversation\Controller\DeleteConversationController;
@@ -8,10 +10,12 @@ use App\Tests\Factory\ConversationFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @internal
+ */
 #[CoversClass(DeleteConversationController::class)]
-class DeleteConversationControllerTest extends AbstractApiWebTestCase
+final class DeleteConversationControllerTest extends AbstractApiWebTestCase
 {
-
     public function getAction(): string
     {
         return DeleteConversationController::class;
@@ -23,7 +27,9 @@ class DeleteConversationControllerTest extends AbstractApiWebTestCase
         $conversation = ConversationFactory::new()->create();
 
         // Act
-        $this->request(Request::METHOD_DELETE, parameters: ['id' => $conversation->getId()]);
+        $this->request(Request::METHOD_DELETE, parameters: [
+            'id' => $conversation->getId(),
+        ]);
 
         // Assert
         self::assertResponseStatusCodeSame(204);
@@ -32,7 +38,9 @@ class DeleteConversationControllerTest extends AbstractApiWebTestCase
     public function testNotFound(): void
     {
         // Act
-        $this->request(Request::METHOD_DELETE, parameters: ['id' => 1]);
+        $this->request(Request::METHOD_DELETE, parameters: [
+            'id' => 1,
+        ]);
 
         // Assert
         self::assertResponseStatusCodeSame(404);

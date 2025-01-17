@@ -22,9 +22,7 @@ class GetOneResourceController extends AbstractApiController
     #[OA\Response(
         response: 200,
         description: 'Get resource by ID (file download)',
-        content: new OA\MediaType(
-            mediaType: 'application/octet-stream',
-        )
+        content: new OA\MediaType(mediaType: 'application/octet-stream')
     )]
     #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
     #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]

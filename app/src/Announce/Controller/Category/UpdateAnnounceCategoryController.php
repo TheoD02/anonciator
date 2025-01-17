@@ -34,11 +34,10 @@ class UpdateAnnounceCategoryController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        int                                                $id,
+        int $id,
         #[MapRequestPayload] UpdateAnnounceCategoryPayload $payload,
-        AnnounceCategoryService                            $service,
-    ): Response
-    {
+        AnnounceCategoryService $service,
+    ): Response {
         $category = $service->updateEntityFromPayload($id, $payload);
 
         return $this->successResponse(

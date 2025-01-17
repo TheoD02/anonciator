@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Conversation\Builder;
 
+use App\Announce\Entity\Announce;
 use App\Conversation\Entity\Conversation;
 use App\User\Entity\User;
 
 class ConversationBuilder
 {
-    private Conversation $instance;
+    private readonly Conversation $instance;
 
     public function __construct()
     {
@@ -19,7 +22,7 @@ class ConversationBuilder
         return new self();
     }
 
-    public function withAnnounce($announce): self
+    public function withAnnounce(?Announce $announce): self
     {
         $this->instance->setAnnounce($announce);
         $this->withName($announce->getTitle());

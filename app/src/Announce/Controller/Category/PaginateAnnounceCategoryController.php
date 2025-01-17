@@ -35,10 +35,9 @@ class PaginateAnnounceCategoryController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
         #[MapQueryString] AnnounceCategoryFilterQuery $filterQuery,
-        #[MapQueryString] PaginationFilterQuery       $paginationFilterQuery,
-        AnnounceCategoryService                       $service,
-    ): Response
-    {
+        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
+        AnnounceCategoryService $service,
+    ): Response {
         $category = $service->paginateEntities($filterQuery, $paginationFilterQuery);
 
         return $this->successResponse(

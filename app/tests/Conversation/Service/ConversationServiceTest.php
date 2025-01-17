@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Conversation\Service;
 
 use App\Announce\Service\AnnounceService;
@@ -21,15 +23,22 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Zenstruck\Foundry\Test\Factories;
 
+/**
+ * @internal
+ */
 #[CoversClass(ConversationService::class)]
-class ConversationServiceTest extends TestCase
+final class ConversationServiceTest extends TestCase
 {
     use Factories;
 
     private UserService&MockObject $userServiceMock;
+
     private AnnounceService&MockObject $announceServiceMock;
+
     private ConversationRepository&MockObject $conversationRepositoryMock;
+
     private EntityManagerInterface&MockObject $emMock;
+
     private ConversationService $conversationService;
 
     public function testInitConversationWithoutExistingConversation(): void
@@ -40,35 +49,41 @@ class ConversationServiceTest extends TestCase
         $announce = AnnounceFactory::new()
             ->withCreator($userAnnounceCreator->_real())
             ->create()
-            ->_set('id', 1);
+            ->_set('id', 1)
+        ;
 
         $this->announceServiceMock
             ->expects($this->once())
             ->method('getEntityById')
             ->with(1, true)
-            ->willReturn($announce);
+            ->willReturn($announce)
+        ;
 
         $this->userServiceMock
             ->expects($this->once())
             ->method('getOneByEmail')
             ->with($userAnnounceCreator->getEmail())
-            ->willReturn($userAnnounceCreator);
+            ->willReturn($userAnnounceCreator)
+        ;
 
         $this->conversationRepositoryMock
             ->expects($this->once())
             ->method('getConversationMatchingAnnounceAndUser')
             ->with(1, $loggedUser->getId())
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this
             ->emMock
             ->expects($this->once())
-            ->method('persist');
+            ->method('persist')
+        ;
 
         $this
             ->emMock
             ->expects($this->once())
-            ->method('flush');
+            ->method('flush')
+        ;
 
         // Act
         $conversation = $this->conversationService->initConversationOrGetExisting(
@@ -77,7 +92,7 @@ class ConversationServiceTest extends TestCase
         );
 
         // Assert
-        $this->assertNotNull($conversation);
+        self::assertNotNull($conversation);
     }
 
     public function testInitConversationWhenAnnounceCreatorDoesNotExist(): void
@@ -90,13 +105,15 @@ class ConversationServiceTest extends TestCase
             ->expects($this->once())
             ->method('getEntityById')
             ->with(1, true)
-            ->willReturn($announce);
+            ->willReturn($announce)
+        ;
 
         $this->userServiceMock
             ->expects($this->once())
             ->method('getOneByEmail')
             ->with($announce->getCreatedBy())
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         // Assert
         $this->expectException(NotFoundHttpException::class);
@@ -116,19 +133,22 @@ class ConversationServiceTest extends TestCase
         $announce = AnnounceFactory::new()
             ->withCreator($userAnnounceCreator->_real())
             ->create()
-            ->_set('id', 1);
+            ->_set('id', 1)
+        ;
 
         $this->announceServiceMock
             ->expects($this->once())
             ->method('getEntityById')
             ->with(1, true)
-            ->willReturn($announce);
+            ->willReturn($announce)
+        ;
 
         $this->userServiceMock
             ->expects($this->once())
             ->method('getOneByEmail')
             ->with($userAnnounceCreator->getEmail())
-            ->willReturn($userAnnounceCreator);
+            ->willReturn($userAnnounceCreator)
+        ;
 
         $this->expectException(UnprocessableEntityHttpException::class);
         $this->expectExceptionMessage('Cannot create conversation to self');
@@ -148,40 +168,47 @@ class ConversationServiceTest extends TestCase
         $announce = AnnounceFactory::new()
             ->withCreator($userAnnounceCreator->_real())
             ->create()
-            ->_set('id', 1);
+            ->_set('id', 1)
+        ;
         $existingConversation = ConversationBuilder::new()
             ->withAnnounce($announce)
             ->withInitializedBy($loggedUser->_real())
             ->withReceiver($userAnnounceCreator->_real())
-            ->build();
+            ->build()
+        ;
 
         $this->announceServiceMock
             ->expects($this->once())
             ->method('getEntityById')
             ->with(1, true)
-            ->willReturn($announce);
+            ->willReturn($announce)
+        ;
 
         $this->userServiceMock
             ->expects($this->once())
             ->method('getOneByEmail')
             ->with($userAnnounceCreator->getEmail())
-            ->willReturn($userAnnounceCreator);
+            ->willReturn($userAnnounceCreator)
+        ;
 
         $this->conversationRepositoryMock
             ->expects($this->once())
             ->method('getConversationMatchingAnnounceAndUser')
             ->with(1, $loggedUser->getId())
-            ->willReturn($existingConversation);
+            ->willReturn($existingConversation)
+        ;
 
         $this
             ->emMock
             ->expects($this->never())
-            ->method('persist');
+            ->method('persist')
+        ;
 
         $this
             ->emMock
             ->expects($this->never())
-            ->method('flush');
+            ->method('flush')
+        ;
 
         // Act
         $conversation = $this->conversationService->initConversationOrGetExisting(
@@ -190,7 +217,7 @@ class ConversationServiceTest extends TestCase
         );
 
         // Assert
-        $this->assertSame($existingConversation, $conversation);
+        self::assertSame($existingConversation, $conversation);
     }
 
     protected function setUp(): void
@@ -213,7 +240,8 @@ class ConversationServiceTest extends TestCase
                 dispatcher: $this->createMock(EventDispatcherInterface::class),
                 relationResolver: $this->createMock(RelationResolver::class),
                 logger: $this->createMock(LoggerInterface::class),
-            );
+            )
+        ;
 
         parent::setUp();
     }

@@ -34,9 +34,8 @@ class CreateAnnounceCategoryController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
         #[MapRequestPayload] CreateAnnounceCategoryPayload $payload,
-        AnnounceCategoryService                            $service,
-    ): Response
-    {
+        AnnounceCategoryService $service,
+    ): Response {
         $category = $service->createEntityFromPayload($payload);
 
         return $this->successResponse(

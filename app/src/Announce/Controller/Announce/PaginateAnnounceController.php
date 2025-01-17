@@ -33,11 +33,10 @@ class PaginateAnnounceController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        AnnounceService                         $announceService,
-        #[MapQueryString] AnnounceFilterQuery   $query,
+        AnnounceService $announceService,
+        #[MapQueryString] AnnounceFilterQuery $query,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-    ): Response
-    {
+    ): Response {
         $announces = $announceService->paginateEntities($query, $paginationFilterQuery);
 
         return $this->successResponse(

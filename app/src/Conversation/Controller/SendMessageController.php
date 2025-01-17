@@ -36,14 +36,13 @@ class SendMessageController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        int                                     $id,
+        int $id,
         #[MapRequestPayload] SendMessagePayload $payload,
-        MessageService                          $messageService,
-        SerializerInterface                     $serializer,
-        #[CurrentUser] ?User                    $user = null,
-    ): Response
-    {
-        if (!$user instanceof User) {
+        MessageService $messageService,
+        SerializerInterface $serializer,
+        #[CurrentUser] ?User $user = null,
+    ): Response {
+        if (! $user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 

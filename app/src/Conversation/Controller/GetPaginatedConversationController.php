@@ -32,10 +32,9 @@ class GetPaginatedConversationController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        ConversationService                     $service,
+        ConversationService $service,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-    ): Response
-    {
+    ): Response {
         $conversations = $service->paginateEntities(paginationFilterQuery: $paginationFilterQuery);
 
         return $this->successResponse(

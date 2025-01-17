@@ -25,11 +25,10 @@ class ConversationService
     use EntityCrudServiceTrait;
 
     public function __construct(
-        private readonly AnnounceService        $announceService,
-        private readonly UserService            $userService,
+        private readonly AnnounceService $announceService,
+        private readonly UserService $userService,
         private readonly ConversationRepository $conversationRepository,
-    )
-    {
+    ) {
     }
 
     public function initConversationOrGetExisting(int $announceId, User $loggedUser): Conversation
@@ -54,12 +53,13 @@ class ConversationService
             userReceiverId: $announceCreator->getId()
         );
 
-        if ($conversation === null) {
+        if (! $conversation instanceof Conversation) {
             $conversation = ConversationBuilder::new()
                 ->withAnnounce($announce)
                 ->withInitializedBy($loggedUser)
                 ->withReceiver($announceCreator)
-                ->build();
+                ->build()
+            ;
 
             $this->em->persist($conversation);
             $this->em->flush();

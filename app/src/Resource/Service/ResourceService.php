@@ -24,8 +24,7 @@ class ResourceService
     public function __construct(
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
-    )
-    {
+    ) {
     }
 
     /**

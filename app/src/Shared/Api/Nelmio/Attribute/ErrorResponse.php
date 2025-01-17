@@ -16,11 +16,10 @@ class ErrorResponse extends Response
 {
     public function __construct(
         // TODO: Find a way to allow user to set custom default errorFqcn from config.yaml
-        string  $errorFqcn = ApiError::class,
-        int     $statusCode = 400,
+        string $errorFqcn = ApiError::class,
+        int $statusCode = 400,
         ?string $description = null,
-    )
-    {
+    ) {
         $properties = [new Property(property: 'success', type: 'boolean', example: false)];
 
         $properties[] = new Property(property: 'message', type: 'string', example: 'An error occurred');
