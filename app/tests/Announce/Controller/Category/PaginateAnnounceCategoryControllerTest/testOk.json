@@ -1,0 +1,25 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Category 1"
+        },
+        {
+            "id": 2,
+            "name": "Category 2"
+        },
+        {
+            "id": 3,
+            "name": "Category 3"
+        }
+    ],
+    "meta": {
+        "type": "pagination",
+        "totalItems": 3,
+        "currentPage": 1,
+        "lastPage": 1,
+        "firstPage": 1,
+        "maxPerPage": 100
+    },
+    "success": true
+}

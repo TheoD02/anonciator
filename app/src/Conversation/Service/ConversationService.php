@@ -68,6 +68,9 @@ class ConversationService
         return $conversation;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function getEntityClass(): string
     {
         return Conversation::class;

@@ -1,0 +1,31 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Conversation 1",
+            "initializedBy": "creator@mail.com",
+            "receivedBy": "receiver@mail.com"
+        },
+        {
+            "id": 2,
+            "name": "Conversation 2",
+            "initializedBy": "creator@mail.com",
+            "receivedBy": "receiver@mail.com"
+        },
+        {
+            "id": 3,
+            "name": "Conversation 3",
+            "initializedBy": "creator@mail.com",
+            "receivedBy": "receiver@mail.com"
+        }
+    ],
+    "meta": {
+        "type": "pagination",
+        "totalItems": 3,
+        "currentPage": 1,
+        "lastPage": 1,
+        "firstPage": 1,
+        "maxPerPage": 100
+    },
+    "success": true
+}

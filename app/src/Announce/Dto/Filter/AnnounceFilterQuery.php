@@ -7,13 +7,13 @@ namespace App\Announce\Dto\Filter;
 use App\Shared\Api\Doctrine\Filter\Adapter\FilterQueryDefinitionInterface;
 use App\Shared\Api\Doctrine\Filter\FilterDefinition;
 use App\Shared\Api\Doctrine\Filter\FilterDefinitionBag;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\BetweenOperator;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\ContainOperator;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\EqualOperator;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\GreaterThanOperator;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\GreaterThanOrEqualOperator;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\LowerThanOperator;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\LowerThanOrEqualOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\BetweenOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\ContainOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\EqualOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\GreaterThanOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\GreaterThanOrEqualOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\LowerThanOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\LowerThanOrEqualOperator;
 
 class AnnounceFilterQuery implements FilterQueryDefinitionInterface
 {
@@ -40,7 +40,6 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
                         BetweenOperator::class,
                     ]
                 )
-            )
-        ;
+            );
     }
 }

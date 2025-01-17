@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -26,7 +27,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     use Factories;
     use ResetDatabase;
 
-    private static KernelBrowser $client;
+    protected static KernelBrowser $client;
 
     protected ?User $user = null;
 
@@ -46,55 +47,56 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         ]);
     }
 
+    public function testExpectedUrl(): void
+    {
+        $action = $this->getAction();
+
+        /** @var RouterInterface $router */
+        $router = self::getContainer()->get(RouterInterface::class);
+
+        $route = $router->getRouteCollection()->get($action);
+
+        if ($route === null) {
+            throw new \RuntimeException('No route found');
+        }
+
+        self::assertSame($this->expectedUrl(), u($route->getPath())->ensureStart('/')->trimEnd('/')->toString());
+    }
+
     /**
-     * @param array<string, int|string>  $parameters
-     * @param array<mixed>|null          $json
-     * @param array<string, string>|null $headers
-     * @param array<string, mixed>|null  $query
+     * @return class-string
      */
-    public function request(
-        string $method,
-        array $parameters = [],
-        ?array $json = null,
-        ?array $headers = null,
-        ?array $query = null,
-    ): Crawler {
-        $this->initToken();
-        $uri = $this->buildUrl($parameters);
-        if ($query !== null) {
-            $uri .= '?' . http_build_query($query);
-        }
+    abstract public function getAction(): string;
 
-        if ($headers === null) {
-            $headers = [];
-        }
+    abstract public function expectedUrl(): string;
 
-        $headers = array_merge(
-            $headers,
-            [
-                'HTTP_ACCEPT' => 'application/json',
-                'CONTENT_TYPE' => 'application/json',
-            ],
+    public function upload(string $filename, string $mimeType = 'application/octet-stream'): void
+    {
+        file_put_contents($filename, 'test');
+        $uploadedFile = new UploadedFile(
+            $filename,
+            'test-file.txt',
+            'text/plain',
+            null,
+            true // Set the last parameter to true to indicate this file was uploaded
         );
 
-        if ($json !== null) {
-            if (! \in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
-                throw new \InvalidArgumentException('JSON data can only be sent with POST, PUT or PATCH');
-            }
+        $headers = [
+            'HTTP_ACCEPT' => 'application/json',
+        ];
 
-            try {
-                return self::$client->request(
-                    method: $method,
-                    uri: $uri,
-                    server: $headers,
-                    content: json_encode($json, \JSON_THROW_ON_ERROR),
-                );
-            } catch (\JsonException $e) {
-                throw new \InvalidArgumentException('Invalid JSON data provided', $e->getCode(), previous: $e);
-            }
-        }
+        $this->initToken();
 
-        return self::$client->request(method: $method, uri: $uri, server: $headers);
+        self::$client->request(
+            method: Request::METHOD_POST,
+            uri: $this->getUrl(),
+            files: [
+                'file' => $uploadedFile,
+            ],
+            server: $headers,
+        );
+
+        unlink($filename);
     }
 
     private function initToken(): void
@@ -154,6 +156,58 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     }
 
     /**
+     * @param array<string, int|string>  $parameters
+     * @param array<mixed>|null          $json
+     * @param array<string, string>|null $headers
+     * @param array<string, mixed>|null  $query
+     */
+    public function request(
+        string $method,
+        array $parameters = [],
+        ?array $json = null,
+        ?array $headers = null,
+        ?array $query = null,
+        bool $noParse = false,
+    ): Crawler {
+        $this->initToken();
+        $uri = $this->buildUrl($parameters);
+        if ($query !== null) {
+            $uri .= '?' . http_build_query($query);
+        }
+
+        if ($headers === null) {
+            $headers = [];
+        }
+
+        $headers = array_merge(
+            $headers,
+            [
+                'HTTP_ACCEPT' => 'application/json, application/octet-stream',
+                'CONTENT_TYPE' => 'application/json',
+            ],
+        );
+
+        if ($json !== null) {
+            if (! \in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
+                throw new \InvalidArgumentException('JSON data can only be sent with POST, PUT or PATCH');
+            }
+
+            try {
+                return self::$client->request(
+                    method: $method,
+                    uri: $uri,
+                    server: $headers,
+                    content: json_encode($json, \JSON_THROW_ON_ERROR),
+                );
+            } catch (\JsonException $e) {
+                throw new \InvalidArgumentException('Invalid JSON data provided', $e->getCode(), previous: $e);
+            }
+        }
+
+        return self::$client->request(method: $method, uri: $uri, server: $headers);
+    }
+
+    /**
      * @param array<string, int|string> $parameters
      */
     private function buildUrl(array $parameters = []): string
@@ -199,30 +253,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         ;
     }
 
-    /**
-     * @return class-string
-     */
-    abstract public function getAction(): string;
-
-    public function testExpectedUrl(): void
-    {
-        $action = $this->getAction();
-
-        /** @var RouterInterface $router */
-        $router = self::getContainer()->get(RouterInterface::class);
-
-        $route = $router->getRouteCollection()->get($action);
-
-        if ($route === null) {
-            throw new \RuntimeException('No route found');
-        }
-
-        self::assertSame($this->expectedUrl(), u($route->getPath())->ensureStart('/')->trimEnd('/')->toString());
-    }
-
-    abstract public function expectedUrl(): string;
-
-    protected function assertJsonResponseFile(): void
+    protected function assertJsonResponseFile(array $replacers = []): void
     {
         $response = self::getResponse(json: false);
 
@@ -256,6 +287,8 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             '/"updatedAt":\s*"[0-9T:+-]+"/' => '"updatedAt": "auto-generated-date"',
             '/"lastUpdatedAt":\s*"[0-9T:+-]+"/' => '"updatedAt": "auto-generated-date"',
             '/"deletedAt":\s*"[0-9T:+-]+"/' => '"deletedAt": "auto-generated-date"',
+            '/"sentAt":\s*"[0-9T:+-]+"/' => '"sentAt": "auto-generated-date"',
+            ...$replacers,
         ];
 
         $responseContent = preg_replace(array_keys($replacers), array_values($replacers), $responseContent);

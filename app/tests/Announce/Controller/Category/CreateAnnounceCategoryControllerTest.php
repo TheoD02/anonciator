@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(CreateAnnounceCategoryControllerTest::class)]
+#[CoversClass(CreateAnnounceCategoryController::class)]
 final class CreateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

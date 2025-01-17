@@ -12,26 +12,12 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class MessageFactory extends PersistentProxyObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
-    public function __construct()
-    {
-    }
-
     public static function class(): string
     {
         return Message::class;
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'content' => self::faker()->text(),
@@ -40,15 +26,5 @@ final class MessageFactory extends PersistentProxyObjectFactory
             'sentTo' => self::faker()->text(),
             'updatedAt' => self::faker()->dateTime(),
         ];
-    }
-
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
-    #[\Override]
-    protected function initialize(): static
-    {
-        return $this;
-        // ->afterInstantiate(function(Conversation $message): void {})
     }
 }

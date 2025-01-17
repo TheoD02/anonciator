@@ -16,6 +16,9 @@ class AnnounceCategoryService
 {
     use EntityCrudServiceTrait;
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function getEntityClass(): string
     {
         return AnnounceCategory::class;

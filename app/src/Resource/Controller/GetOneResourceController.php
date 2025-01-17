@@ -12,6 +12,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -34,6 +35,11 @@ class GetOneResourceController extends AbstractApiController
         /** @var resource $resource */
         $resource = $resourceService->getEntityById($id, fail: true);
 
-        return new BinaryFileResponse("{$kernel->getProjectDir()}/public{$resource->getPath()}");
+        $file = "{$kernel->getProjectDir()}/public{$resource->getPath()}";
+        if (! file_exists($file)) {
+            throw new NotFoundHttpException('Resource not found');
+        }
+
+        return new BinaryFileResponse($file);
     }
 }

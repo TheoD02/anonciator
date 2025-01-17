@@ -12,6 +12,9 @@ use App\Shared\Doctrine\Repository\AbstractEntityRepository;
  */
 class ConversationRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return Conversation::class;

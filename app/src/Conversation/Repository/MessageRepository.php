@@ -15,6 +15,9 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class MessageRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return Message::class;

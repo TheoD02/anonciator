@@ -12,6 +12,9 @@ use App\Shared\Doctrine\Repository\AbstractEntityRepository;
  */
 class ResourceRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return Resource::class;

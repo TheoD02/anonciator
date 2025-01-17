@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Shared\Api\Doctrine\Filter\Documentation;
 
 use App\Shared\Api\Doctrine\Filter\FilterDefinition;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\EqualOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\EqualOperator;
 use OpenApi\Attributes\Parameter;
 
 class EqualDescriber implements OperatorDescriber
 {
     private static ?Parameter $parameter = null;
-
-    public static function operator(): string
-    {
-        return EqualOperator::class;
-    }
 
     public function parameter(FilterDefinition $definition): Parameter
     {
@@ -24,5 +19,10 @@ class EqualDescriber implements OperatorDescriber
             description: 'Equal operator',
             in: 'query',
         );
+    }
+
+    public static function operator(): string
+    {
+        return EqualOperator::class;
     }
 }

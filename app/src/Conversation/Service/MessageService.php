@@ -31,10 +31,13 @@ class MessageService
     ) {
     }
 
-    public function createEntityFromPayload(int $id, SendMessagePayload $payload, User $user): Message
-    {
+    public function createMessageFromPayload(
+        int $conversationId,
+        SendMessagePayload $payload,
+        User $loggedUser,
+    ): Message {
         /** @var Conversation $conversation */
-        $conversation = $this->conversationService->getEntityById($id, fail: true);
+        $conversation = $this->conversationService->getEntityById($conversationId, fail: true);
 
         /** @var ?Announce $announce */
         $announce = $conversation->getAnnounce();
@@ -44,12 +47,16 @@ class MessageService
 
         $announceCreator = $this->userService->getOneByEmail($announce->getCreatedBy());
 
+        if ($announceCreator === null) {
+            throw new NotFoundHttpException('Announce creator not found');
+        }
+
         $message = new Message();
         $message->setContent($payload->content);
         $message->setSentTo(
-            $user === $announceCreator ? $conversation->getInitializedBy() : $conversation->getReceiver()
+            $loggedUser->getUserIdentifier() === $announceCreator->getUserIdentifier() ? $conversation->getInitializedBy() : $conversation->getReceiver()
         );
-        $message->setSentBy($user);
+        $message->setSentBy($loggedUser);
         $message->setConversation($conversation);
 
         return $this->createEntity($message);
@@ -62,6 +69,9 @@ class MessageService
         ;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function getEntityClass(): string
     {
         return Message::class;

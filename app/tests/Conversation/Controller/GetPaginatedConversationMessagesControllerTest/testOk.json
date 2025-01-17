@@ -1,0 +1,37 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "content": "Bonjour, comment ça va ?",
+            "sentAt": "auto-generated-date",
+            "wasReadAt": null,
+            "sentBy": "creator@mail.com",
+            "sentTo": "receiver@mail.com"
+        },
+        {
+            "id": 2,
+            "content": "Ça va bien, merci.",
+            "sentAt": "auto-generated-date",
+            "wasReadAt": null,
+            "sentBy": "receiver@mail.com",
+            "sentTo": "creator@mail.com"
+        },
+        {
+            "id": 3,
+            "content": "Et toi ?",
+            "sentAt": "auto-generated-date",
+            "wasReadAt": null,
+            "sentBy": "creator@mail.com",
+            "sentTo": "receiver@mail.com"
+        }
+    ],
+    "meta": {
+        "type": "pagination",
+        "totalItems": 3,
+        "currentPage": 1,
+        "lastPage": 1,
+        "firstPage": 1,
+        "maxPerPage": 100
+    },
+    "success": true
+}

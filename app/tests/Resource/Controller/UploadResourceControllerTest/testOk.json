@@ -1,0 +1,10 @@
+{
+  "data": {
+    "id": 1,
+    "path": "/uploads/random-name.txt",
+    "bucket": "localfs",
+    "originalName": "test-file.txt"
+  },
+  "meta": null,
+  "success": true
+}

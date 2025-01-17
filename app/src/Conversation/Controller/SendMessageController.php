@@ -46,7 +46,7 @@ class SendMessageController extends AbstractApiController
             throw new NotFoundHttpException('User not found');
         }
 
-        $message = $messageService->createEntityFromPayload($id, $payload, $user);
+        $message = $messageService->createMessageFromPayload($id, $payload, $user);
 
         return $this->successResponse(
             data: $message,

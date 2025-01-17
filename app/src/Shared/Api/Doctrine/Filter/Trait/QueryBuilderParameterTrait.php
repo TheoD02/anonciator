@@ -9,9 +9,11 @@ use Doctrine\ORM\QueryBuilder;
 
 trait QueryBuilderParameterTrait
 {
+    private static int $internalCounter = 0;
+
     protected function generateRandomParameterName(): string
     {
-        return uniqid('param_');
+        return 'param' . ++self::$internalCounter;
     }
 
     private function getAlias(QueryBuilder $qb, FilterDefinition $definition): string

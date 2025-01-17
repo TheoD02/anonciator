@@ -1,0 +1,10 @@
+{
+    "data": {
+        "id": 1,
+        "name": "Conversation 1",
+        "initializedBy": "creator@mail.com",
+        "receivedBy": "receiver@mail.com"
+    },
+    "meta": null,
+    "success": true
+}

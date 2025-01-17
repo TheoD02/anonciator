@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Shared\Api\Doctrine\Filter\Documentation;
 
 use App\Shared\Api\Doctrine\Filter\FilterDefinition;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\NotEqualOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\NotEqualOperator;
 use OpenApi\Attributes\Parameter;
 
 class NotEqualOperatorDescriber implements OperatorDescriber
 {
     private static ?Parameter $parameter = null;
-
-    public static function operator(): string
-    {
-        return NotEqualOperator::class;
-    }
 
     public function parameter(FilterDefinition $definition): Parameter
     {
@@ -24,5 +19,10 @@ class NotEqualOperatorDescriber implements OperatorDescriber
             description: 'Not equal operator',
             in: 'query',
         );
+    }
+
+    public static function operator(): string
+    {
+        return NotEqualOperator::class;
     }
 }

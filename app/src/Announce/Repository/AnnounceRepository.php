@@ -13,6 +13,9 @@ use Doctrine\ORM\QueryBuilder;
  */
 class AnnounceRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return Announce::class;

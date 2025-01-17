@@ -33,6 +33,7 @@
             <directory>src/**/Exception</directory>
             <directory>src/**/Dto</directory>
             <directory>src/**/Enum</directory>
+            <directory>src/**/Entity</directory>
         </exclude>
     </source>
 </phpunit>

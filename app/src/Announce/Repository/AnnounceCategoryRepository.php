@@ -12,6 +12,9 @@ use App\Shared\Doctrine\Repository\AbstractEntityRepository;
  */
 class AnnounceCategoryRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return AnnounceCategory::class;

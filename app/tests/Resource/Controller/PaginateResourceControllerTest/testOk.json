@@ -1,0 +1,31 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "path": "/uploads/image-abc1.jpg",
+            "bucket": "images",
+            "originalName": "image-1.jpg"
+        },
+        {
+            "id": 2,
+            "path": "/uploads/image-def2.jpg",
+            "bucket": "images",
+            "originalName": "image-2.jpg"
+        },
+        {
+            "id": 3,
+            "path": "/uploads/image-ghi3.jpg",
+            "bucket": "images",
+            "originalName": "image-3.jpg"
+        }
+    ],
+    "meta": {
+        "type": "pagination",
+        "totalItems": 3,
+        "currentPage": 1,
+        "lastPage": 1,
+        "firstPage": 1,
+        "maxPerPage": 100
+    },
+    "success": true
+}

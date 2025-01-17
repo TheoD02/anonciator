@@ -12,6 +12,13 @@ use App\User\Entity\GroupRole;
  */
 class GroupRoleRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
+
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return GroupRole::class;

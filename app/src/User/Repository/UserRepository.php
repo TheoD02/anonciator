@@ -12,6 +12,9 @@ use App\User\Entity\User;
  */
 class UserRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return User::class;

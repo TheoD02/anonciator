@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Shared\Api\Doctrine\Filter\Documentation;
 
 use App\Shared\Api\Doctrine\Filter\FilterDefinition;
-use App\Shared\Api\Doctrine\Filter\Operator\ComparisonOperator\InOperator;
+use App\Shared\Api\Doctrine\Filter\Operator\InOperator;
 use OpenApi\Attributes\Parameter;
 
 class InOperatorDescriber implements OperatorDescriber
 {
     private static ?Parameter $parameter = null;
-
-    public static function operator(): string
-    {
-        return InOperator::class;
-    }
 
     public function parameter(FilterDefinition $definition): Parameter
     {
@@ -25,5 +20,10 @@ class InOperatorDescriber implements OperatorDescriber
             in: 'query',
             allowEmptyValue: false,
         );
+    }
+
+    public static function operator(): string
+    {
+        return InOperator::class;
     }
 }

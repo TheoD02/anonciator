@@ -12,6 +12,9 @@ use App\User\Entity\Role;
  */
 class RoleRepository extends AbstractEntityRepository
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getEntityFqcn(): string
     {
         return Role::class;

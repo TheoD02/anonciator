@@ -71,6 +71,9 @@ class ResourceService
         $this->deleteEntity($resource);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function getEntityClass(): string
     {
         return Resource::class;
