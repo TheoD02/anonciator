@@ -8,6 +8,7 @@ use App\Conversation\Dto\Response\ConversationResponse;
 use App\Conversation\Enum\ApiGroups;
 use App\Conversation\Service\ConversationService;
 use App\Shared\Api\AbstractApiController;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\User\Entity\User;
 use OpenApi\Attributes\Tag;
@@ -27,12 +28,17 @@ class InitiateConversationController extends AbstractApiController
         groups: [ApiGroups::INIT],
         statusCode: Response::HTTP_OK,
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_NOT_FOUND, description: 'Resource not found')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        int $announceId,
-        ConversationService $conversationService,
+        int                  $announceId,
+        ConversationService  $conversationService,
         #[CurrentUser] ?User $user = null,
-    ): Response {
-        if (! $user instanceof User) {
+    ): Response
+    {
+        if (!$user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 

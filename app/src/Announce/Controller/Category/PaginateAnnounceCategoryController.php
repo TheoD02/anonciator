@@ -9,6 +9,7 @@ use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
@@ -28,11 +29,16 @@ class PaginateAnnounceCategoryController extends AbstractApiController
         paginated: true,
         statusCode: Response::HTTP_OK
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
         #[MapQueryString] AnnounceCategoryFilterQuery $filterQuery,
-        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-        AnnounceCategoryService $service,
-    ): Response {
+        #[MapQueryString] PaginationFilterQuery       $paginationFilterQuery,
+        AnnounceCategoryService                       $service,
+    ): Response
+    {
         $category = $service->paginateEntities($filterQuery, $paginationFilterQuery);
 
         return $this->successResponse(

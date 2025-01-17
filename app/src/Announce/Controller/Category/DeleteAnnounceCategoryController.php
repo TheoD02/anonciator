@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Announce\Controller\Category;
 
-use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
-use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
-use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
+use App\Shared\Api\Nelmio\Attribute\NoContentResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,14 +17,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteAnnounceCategoryController extends AbstractApiController
 {
     #[Route('/categories/{id}', methods: [Request::METHOD_DELETE])]
-    #[SuccessResponse(
-        dataFqcn: AnnounceCategoryResponse::class,
-        description: 'Announce category deleted',
-        groups: [GlobalApiGroups::DELETE],
-        paginated: false,
-        statusCode: 204
-    )]
-    #[ErrorResponse(statusCode: 404)]
+    #[NoContentResponse(description: 'Resource deleted')]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_NOT_FOUND, description: 'Resource not found')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(int $id, AnnounceCategoryService $service): Response
     {
         $service->deleteEntityFromId($id);

@@ -8,6 +8,7 @@ use App\Conversation\Dto\Response\MessageResponse;
 use App\Conversation\Service\MessageService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
@@ -26,11 +27,16 @@ class GetPaginatedConversationMessagesController extends AbstractApiController
         groups: [GlobalApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        int $id,
-        MessageService $service,
+        int                                     $id,
+        MessageService                          $service,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-    ): Response {
+    ): Response
+    {
         $conversation = $service->getMessagesForConversation($id, $paginationFilterQuery);
 
         return $this->successResponse(

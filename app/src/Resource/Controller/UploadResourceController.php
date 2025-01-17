@@ -8,6 +8,7 @@ use App\Resource\Dto\Response\ResourceResponse;
 use App\Resource\Service\ResourceService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -25,6 +26,9 @@ class UploadResourceController extends AbstractApiController
         groups: [GlobalApiGroups::POST],
         statusCode: Response::HTTP_CREATED
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(Request $request, ResourceService $resourceService): Response
     {
         /** @var array<UploadedFile> $files */

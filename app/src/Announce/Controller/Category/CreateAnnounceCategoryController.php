@@ -9,6 +9,7 @@ use App\Announce\Dto\Response\AnnounceCategoryResponse;
 use App\Announce\Service\AnnounceCategoryService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use OpenApi\Attributes\Tag;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,12 +26,17 @@ class CreateAnnounceCategoryController extends AbstractApiController
         description: 'Announce category created',
         groups: [GlobalApiGroups::POST],
         paginated: false,
-        statusCode: 201
+        statusCode: Response::HTTP_CREATED
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
         #[MapRequestPayload] CreateAnnounceCategoryPayload $payload,
-        AnnounceCategoryService $service,
-    ): Response {
+        AnnounceCategoryService                            $service,
+    ): Response
+    {
         $category = $service->createEntityFromPayload($payload);
 
         return $this->successResponse(

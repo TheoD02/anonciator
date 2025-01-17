@@ -9,6 +9,7 @@ use App\Conversation\Dto\Response\MessageResponse;
 use App\Conversation\Service\MessageService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\User\Entity\User;
 use OpenApi\Attributes\Tag;
@@ -30,14 +31,19 @@ class SendMessageController extends AbstractApiController
         groups: [GlobalApiGroups::POST],
         statusCode: Response::HTTP_CREATED
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        int $id,
+        int                                     $id,
         #[MapRequestPayload] SendMessagePayload $payload,
-        MessageService $messageService,
-        SerializerInterface $serializer,
-        #[CurrentUser] ?User $user = null,
-    ): Response {
-        if (! $user instanceof User) {
+        MessageService                          $messageService,
+        SerializerInterface                     $serializer,
+        #[CurrentUser] ?User                    $user = null,
+    ): Response
+    {
+        if (!$user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 

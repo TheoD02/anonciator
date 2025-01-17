@@ -9,6 +9,7 @@ use App\Resource\Dto\Response\ResourceResponse;
 use App\Resource\Service\ResourceService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
@@ -27,11 +28,15 @@ class PaginateResourceController extends AbstractApiController
         groups: [GlobalApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
         #[MapQueryString] PaginateResourceFilterQuery $filterQuery,
-        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-        ResourceService $resourceService,
-    ): Response {
+        #[MapQueryString] PaginationFilterQuery       $paginationFilterQuery,
+        ResourceService                               $resourceService,
+    ): Response
+    {
         $resources = $resourceService->paginateEntities($filterQuery, paginationFilterQuery: $paginationFilterQuery);
 
         return $this->successResponse(

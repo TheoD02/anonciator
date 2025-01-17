@@ -9,6 +9,7 @@ use App\Announce\Dto\Response\AnnounceResponse;
 use App\Announce\Service\AnnounceService;
 use App\Shared\Api\AbstractApiController;
 use App\Shared\Api\GlobalApiGroups;
+use App\Shared\Api\Nelmio\Attribute\ErrorResponse;
 use App\Shared\Api\Nelmio\Attribute\SuccessResponse;
 use App\Shared\Api\PaginationFilterQuery;
 use OpenApi\Attributes\Tag;
@@ -27,17 +28,22 @@ class PaginateAnnounceController extends AbstractApiController
         groups: [GlobalApiGroups::GET_PAGINATED],
         paginated: true
     )]
+    #[ErrorResponse(statusCode: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized')]
+    #[ErrorResponse(statusCode: Response::HTTP_FORBIDDEN, description: 'Forbidden')]
+    #[ErrorResponse(statusCode: Response::HTTP_UNPROCESSABLE_ENTITY, description: 'Invalid input')]
+    #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(
-        AnnounceService $announceService,
-        #[MapQueryString] AnnounceFilterQuery $query,
+        AnnounceService                         $announceService,
+        #[MapQueryString] AnnounceFilterQuery   $query,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-    ): Response {
+    ): Response
+    {
         $announces = $announceService->paginateEntities($query, $paginationFilterQuery);
 
         return $this->successResponse(
-            $announces,
+            data: $announces,
             target: AnnounceResponse::class,
-            groups: [GlobalApiGroups::GET_PAGINATED]
+            groups: [GlobalApiGroups::GET_PAGINATED],
         );
     }
 }
