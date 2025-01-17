@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(UploadResourceController::class)]
-class UploadResourceControllerTest extends AbstractApiWebTestCase
+final class UploadResourceControllerTest extends AbstractApiWebTestCase
 {
     public function testOk(): void
     {
@@ -28,7 +28,7 @@ class UploadResourceControllerTest extends AbstractApiWebTestCase
 
         $response = self::getResponse();
         $filepath = "{$kernelProjectDir}/public{$response['data']['path']}";
-        $this->assertFileExists($filepath);
+        self::assertFileExists($filepath);
 
         // Cleanup
         unlink($filepath);

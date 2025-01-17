@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
  * @internal
  */
 #[CoversClass(InitiateConversationController::class)]
-class InitiateConversationControllerTest extends AbstractApiWebTestCase
+final class InitiateConversationControllerTest extends AbstractApiWebTestCase
 {
     public function testOk(): void
     {
         // Arrange
-        $loggedUser = UserFactory::admin();
+        UserFactory::admin();
         $announceCreator = UserFactory::new()->create([
             'email' => 'creator@mail.com',
         ]);

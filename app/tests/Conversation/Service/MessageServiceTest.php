@@ -16,6 +16,7 @@ use App\User\Service\UserService;
 use AutoMapper\AutoMapperInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,9 +26,14 @@ use Zenstruck\Foundry\Test\Factories;
  * @internal
  */
 #[CoversClass(MessageService::class)]
-class MessageServiceTest extends TestCase
+final class MessageServiceTest extends TestCase
 {
     use Factories;
+    public MockObject $conversationServiceMock;
+
+    public MockObject $userServiceMock;
+
+    public $messageService;
 
     public function testCreateEntityFromPayloadLoggedUserToAnnounceCreator(): void
     {
@@ -73,9 +79,9 @@ class MessageServiceTest extends TestCase
         );
 
         // Assert
-        $this->assertSame($messagePayload->content, $message->getContent());
-        $this->assertSame($loggedUser->getUserIdentifier(), $message->getSentBy());
-        $this->assertSame($announceCreator->getUserIdentifier(), $message->getSentTo());
+        self::assertSame($messagePayload->content, $message->getContent());
+        self::assertSame($loggedUser->getUserIdentifier(), $message->getSentBy());
+        self::assertSame($announceCreator->getUserIdentifier(), $message->getSentTo());
     }
 
     public function testCreateEntityFromPayloadAnnounceCreatorToConversationInitiator(): void
@@ -122,20 +128,20 @@ class MessageServiceTest extends TestCase
         );
 
         // Assert
-        $this->assertSame($messagePayload->content, $message->getContent());
-        $this->assertSame($loggedUser->getUserIdentifier(), $message->getSentTo());
-        $this->assertSame($announceCreator->getUserIdentifier(), $message->getSentBy());
+        self::assertSame($messagePayload->content, $message->getContent());
+        self::assertSame($loggedUser->getUserIdentifier(), $message->getSentTo());
+        self::assertSame($announceCreator->getUserIdentifier(), $message->getSentBy());
     }
 
     protected function setUp(): void
     {
         $this->conversationServiceMock = $this->createMock(ConversationService::class);
-        $this->announceServiceMock = $this->createMock(AnnounceService::class);
+        $announceServiceMock = $this->createMock(AnnounceService::class);
         $this->userServiceMock = $this->createMock(UserService::class);
 
         $this->messageService = new MessageService(
             conversationService: $this->conversationServiceMock,
-            announceService: $this->announceServiceMock,
+            announceService: $announceServiceMock,
             userService: $this->userServiceMock,
         );
 

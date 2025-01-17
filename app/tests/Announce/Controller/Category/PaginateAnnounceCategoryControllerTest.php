@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @internal
  */
 #[CoversClass(PaginateAnnounceCategoryController::class)]
-class PaginateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
+final class PaginateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

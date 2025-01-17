@@ -22,12 +22,12 @@ use Zenstruck\Foundry\Test\Factories;
  * @internal
  */
 #[CoversClass(UserService::class)]
-class UserServiceTest extends TestCase
+final class UserServiceTest extends TestCase
 {
     use Factories;
 
     private UserService $userService;
-    private EntityManagerInterface&MockObject $emMock;
+
     private UserRepository&MockObject $userRepositoryMock;
 
     public function testGetOneByEmail(): void
@@ -48,7 +48,7 @@ class UserServiceTest extends TestCase
         $user = $this->userService->getOneByEmail($user->getEmail());
 
         // Assert
-        $this->assertInstanceOf(User::class, $user);
+        self::assertInstanceOf(User::class, $user);
     }
 
     public function testGetOneByEmailWithNonExistingUser(): void
@@ -64,22 +64,22 @@ class UserServiceTest extends TestCase
         $user = $this->userService->getOneByEmail('unknown@mail.com');
 
         // Assert
-        $this->assertNull($user);
+        self::assertNull($user);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->emMock = $this->createMock(EntityManagerInterface::class);
+        $emMock = $this->createMock(EntityManagerInterface::class);
         $this->userRepositoryMock = $this->createMock(UserRepository::class);
-        $this->emMock->method('getRepository')->willReturn($this->userRepositoryMock);
+        $emMock->method('getRepository')->willReturn($this->userRepositoryMock);
 
         $this->userService = new UserService();
         $this->userService
             ->setEntityCrudServiceDependencies(
                 mapper: $this->createMock(AutoMapperInterface::class),
-                em: $this->emMock,
+                em: $emMock,
                 dispatcher: $this->createMock(EventDispatcherInterface::class),
                 relationResolver: $this->createMock(RelationResolver::class),
                 logger: $this->createMock(LoggerInterface::class),

@@ -21,6 +21,7 @@ class AnnounceCategoryFilterQuery implements FilterQueryDefinitionInterface
                     publicName: 'id',
                     operators: [EqualOperator::class, InOperator::class]
                 )
-            );
+            )
+        ;
     }
 }

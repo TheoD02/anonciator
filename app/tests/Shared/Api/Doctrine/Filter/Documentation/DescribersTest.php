@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Shared\Api\Doctrine\Filter\Documentation;
 
 use App\Shared\Api\Doctrine\Filter\Documentation\BetweenDescriber;
@@ -43,6 +45,9 @@ use App\Shared\Api\Doctrine\Filter\Operator\StartWithOperator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 #[CoversClass(OperatorDescriber::class)]
 #[CoversClass(BetweenDescriber::class)]
 #[CoversClass(ContainDescriber::class)]
@@ -62,44 +67,53 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(NotInOperatorDescriber::class)]
 #[CoversClass(NotStartWithDescriber::class)]
 #[CoversClass(StartWithDescriber::class)]
-class DescribersTest extends TestCase
+final class DescribersTest extends TestCase
 {
-    public static function describerProvider(): array
+    public static function provideDescriberCases(): iterable
     {
-        return [
-            [new BetweenDescriber(), BetweenOperator::class, 'publicName[btw]', 'Between operator'],
-            [new ContainDescriber(), ContainOperator::class, 'publicName[ctn]', 'Contain operator'],
-            [new EndWithDescriber(), EndWithOperator::class, 'publicName[end]', 'End with operator'],
-            [new EqualDescriber(), EqualOperator::class, 'publicName[eq]', 'Equal operator'],
-            [new GreaterThanDescriber(), GreaterThanOperator::class, 'publicName[gt]', 'Greater than operator'],
-            [new GreaterThanOrEqualDescriber(), GreaterThanOrEqualOperator::class, 'publicName[gte]', 'Greater than or equal operator'],
-            [new IsEmptyDescriber(), IsEmptyOperator::class, 'publicName[empty]', 'Is empty operator'],
-            [new IsNullDescriber(), IsNullOperator::class, 'publicName[isnull]', 'Is null operator'],
-            [new LowerThanDescriber(), LowerThanOperator::class, 'publicName[lt]', 'Lower than operator'],
-            [new LowerThanOrEqualDescriber(), LowerThanOrEqualOperator::class, 'publicName[lte]', 'Lower than or equal operator'],
-            [new NotBetweenDescriber(), NotBetweenOperator::class, 'publicName[nbtw]', 'Not between operator'],
-            [new NotContainDescriber(), NotContainOperator::class, 'publicName[nctn]', 'Not contain operator'],
-            [new NotEndWithDescriber(), NotEndWithOperator::class, 'publicName[nend]', 'Not end with operator'],
-            [new NotEqualOperatorDescriber(), NotEqualOperator::class, 'publicName[neq]', 'Not equal operator'],
-            [new NotInOperatorDescriber(), NotInOperator::class, 'publicName[nin]', 'Not in operator'],
-            [new NotStartWithDescriber(), NotStartWithOperator::class, 'publicName[nstw]', 'Not start with operator'],
-            [new StartWithDescriber(), StartWithOperator::class, 'publicName[stw]', 'Start with operator'],
-            [new InOperatorDescriber(), InOperator::class, 'publicName[in]', 'In operator'],
+        yield [new BetweenDescriber(), BetweenOperator::class, 'publicName[btw]', 'Between operator'];
+        yield [new ContainDescriber(), ContainOperator::class, 'publicName[ctn]', 'Contain operator'];
+        yield [new EndWithDescriber(), EndWithOperator::class, 'publicName[end]', 'End with operator'];
+        yield [new EqualDescriber(), EqualOperator::class, 'publicName[eq]', 'Equal operator'];
+        yield [new GreaterThanDescriber(), GreaterThanOperator::class, 'publicName[gt]', 'Greater than operator'];
+        yield [
+            new GreaterThanOrEqualDescriber(),
+            GreaterThanOrEqualOperator::class,
+            'publicName[gte]',
+            'Greater than or equal operator',
         ];
+        yield [new IsEmptyDescriber(), IsEmptyOperator::class, 'publicName[empty]', 'Is empty operator'];
+        yield [new IsNullDescriber(), IsNullOperator::class, 'publicName[isnull]', 'Is null operator'];
+        yield [new LowerThanDescriber(), LowerThanOperator::class, 'publicName[lt]', 'Lower than operator'];
+        yield [
+            new LowerThanOrEqualDescriber(),
+            LowerThanOrEqualOperator::class,
+            'publicName[lte]',
+            'Lower than or equal operator',
+        ];
+        yield [new NotBetweenDescriber(), NotBetweenOperator::class, 'publicName[nbtw]', 'Not between operator'];
+        yield [new NotContainDescriber(), NotContainOperator::class, 'publicName[nctn]', 'Not contain operator'];
+        yield [new NotEndWithDescriber(), NotEndWithOperator::class, 'publicName[nend]', 'Not end with operator'];
+        yield [new NotEqualOperatorDescriber(), NotEqualOperator::class, 'publicName[neq]', 'Not equal operator'];
+        yield [new NotInOperatorDescriber(), NotInOperator::class, 'publicName[nin]', 'Not in operator'];
+        yield [new NotStartWithDescriber(), NotStartWithOperator::class, 'publicName[nstw]', 'Not start with operator'];
+        yield [new StartWithDescriber(), StartWithOperator::class, 'publicName[stw]', 'Start with operator'];
+        yield [new InOperatorDescriber(), InOperator::class, 'publicName[in]', 'In operator'];
     }
 
     /**
-     * @dataProvider describerProvider
+     * @dataProvider provideDescriberCases
      */
-    public function testDescriber($instance, $expectedOperator, $expectedName, $expectedDescription): void
-    {
-        $this->assertSame($expectedOperator, $instance::operator());
-        $parameter = $instance->parameter(FilterDefinition::create(
-            'entityName',
-            'publicName',
-        ));
-        $this->assertSame($expectedName, $parameter->name);
-        $this->assertSame($expectedDescription, $parameter->description);
-        $this->assertSame('query', $parameter->in);
+    public function testDescriber(
+        BetweenDescriber|ContainDescriber|EndWithDescriber|EqualDescriber|GreaterThanDescriber|GreaterThanOrEqualDescriber|IsEmptyDescriber|IsNullDescriber|LowerThanDescriber|LowerThanOrEqualDescriber|NotBetweenDescriber|NotContainDescriber|NotEndWithDescriber|NotEqualOperatorDescriber|NotInOperatorDescriber|NotStartWithDescriber|StartWithDescriber|InOperatorDescriber $instance,
+        string $expectedOperator,
+        string $expectedName,
+        string $expectedDescription,
+    ): void {
+        self::assertSame($expectedOperator, $instance::operator());
+        $parameter = $instance->parameter(FilterDefinition::create('entityName', 'publicName'));
+        self::assertSame($expectedName, $parameter->name);
+        self::assertSame($expectedDescription, $parameter->description);
+        self::assertSame('query', $parameter->in);
     }
 }

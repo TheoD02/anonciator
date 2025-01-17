@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @internal
  */
 #[CoversClass(GetPaginatedConversationMessagesController::class)]
-class GetPaginatedConversationMessagesControllerTest extends AbstractApiWebTestCase
+final class GetPaginatedConversationMessagesControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

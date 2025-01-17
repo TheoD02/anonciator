@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @internal
  */
 #[CoversClass(PaginateResourceController::class)]
-class PaginateResourceControllerTest extends AbstractApiWebTestCase
+final class PaginateResourceControllerTest extends AbstractApiWebTestCase
 {
     public function testOk(): void
     {

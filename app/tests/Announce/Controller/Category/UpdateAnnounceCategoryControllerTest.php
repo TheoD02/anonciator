@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @internal
  */
 #[CoversClass(UpdateAnnounceCategoryController::class)]
-class UpdateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
+final class UpdateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string
     {

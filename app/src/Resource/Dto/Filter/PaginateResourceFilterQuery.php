@@ -21,6 +21,7 @@ class PaginateResourceFilterQuery implements FilterQueryDefinitionInterface
                     publicName: 'id',
                     operators: [EqualOperator::class, InOperator::class]
                 )
-            );
+            )
+        ;
     }
 }

@@ -16,7 +16,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  * @internal
  */
 #[CoversClass(GetOneResourceController::class)]
-class GetOneResourceControllerTest extends AbstractApiWebTestCase
+final class GetOneResourceControllerTest extends AbstractApiWebTestCase
 {
     use Factories;
     use ResetDatabase;

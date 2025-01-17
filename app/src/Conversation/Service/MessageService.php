@@ -47,7 +47,7 @@ class MessageService
 
         $announceCreator = $this->userService->getOneByEmail($announce->getCreatedBy());
 
-        if ($announceCreator === null) {
+        if (! $announceCreator instanceof User) {
             throw new NotFoundHttpException('Announce creator not found');
         }
 

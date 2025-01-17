@@ -15,13 +15,13 @@ use Zenstruck\Foundry\Test\Factories;
  * @internal
  */
 #[CoversClass(UserRepository::class)]
-class UserRepositoryTest extends TestCase
+final class UserRepositoryTest extends TestCase
 {
     use Factories;
 
     public function testGetEntityFqcn(): void
     {
         $repository = new UserRepository($this->createMock(ManagerRegistry::class));
-        $this->assertSame(User::class, $repository->getEntityFqcn());
+        self::assertSame(User::class, $repository->getEntityFqcn());
     }
 }

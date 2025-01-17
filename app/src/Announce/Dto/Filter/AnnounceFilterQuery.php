@@ -40,6 +40,7 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
                         BetweenOperator::class,
                     ]
                 )
-            );
+            )
+        ;
     }
 }

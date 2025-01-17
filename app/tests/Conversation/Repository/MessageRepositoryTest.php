@@ -17,7 +17,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  * @internal
  */
 #[CoversClass(MessageRepository::class)]
-class MessageRepositoryTest extends KernelTestCase
+final class MessageRepositoryTest extends KernelTestCase
 {
     use Factories;
     use ResetDatabase;

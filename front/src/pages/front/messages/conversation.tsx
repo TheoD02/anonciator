@@ -70,7 +70,11 @@ const Chat = ({ conversation }: ChatProps) => {
 
   const { mutate: deleteConversation } = useDelete();
 
-  if (!conversation) return <Loader />;
+  if (!conversation) return <Center mt={20}>
+    <Text>
+      No conversation selected
+    </Text>
+  </Center>;
 
   return (
     <Paper p="md" radius={0} sx={{ borderBottom: '1px solid #eee' }}>

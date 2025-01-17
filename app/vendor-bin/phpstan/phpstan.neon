@@ -20,7 +20,7 @@ parameters:
     paths:
         #- /.castor/src
         - ../../src
-        - ../../tests
+        #- ../../tests
     scanFiles:
         - /.castor/.castor.stub.php
     symfony:

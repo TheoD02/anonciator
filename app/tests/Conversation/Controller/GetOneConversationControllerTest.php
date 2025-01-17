@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @internal
  */
 #[CoversClass(GetOneConversationController::class)]
-class GetOneConversationControllerTest extends AbstractApiWebTestCase
+final class GetOneConversationControllerTest extends AbstractApiWebTestCase
 {
     public function testOk(): void
     {
