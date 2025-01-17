@@ -9,11 +9,13 @@ use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use App\Tests\Factory\ConversationFactory;
 use App\Tests\Factory\UserFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @internal
  */
+#[CoversClass(SendMessageController::class)]
 final class SendMessageControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

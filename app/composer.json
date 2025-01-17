@@ -110,7 +110,7 @@
     "rector-fix": "rector process --ansi --config vendor-bin/rector/rector.php --clear-cache",
     "class-leak-check": "class-leak check src --skip-suffix=\"Command\" --skip-suffix=\"Controller\" --skip-suffix=\"Kernel\"",
     "phpunit": "phpunit --colors=always",
-    "phpunit-coverage": "XDEBUG_MODE=debug phpunit --colors=always --coverage-html=coverage"
+    "phpunit-coverage": "XDEBUG_MODE=coverage phpunit --colors=always --coverage-html=coverage"
   },
   "conflict": {
     "symfony/symfony": "*"

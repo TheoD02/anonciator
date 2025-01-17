@@ -12,8 +12,10 @@ use App\Announce\Repository\AnnounceRepository;
 use App\Announce\Service\AnnounceService;
 use App\Shared\Api\Relation;
 use App\Shared\Exception\GenericDomainModelNotFoundException;
+use App\Shared\Trait\EntityCrudServiceTrait;
 use App\Tests\Factory\AnnounceCategoryFactory;
 use App\Tests\Factory\AnnounceFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -21,6 +23,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 /**
  * @internal
  */
+#[CoversClass(EntityCrudServiceTrait::class)]
 final class EntityCrudServiceTraitTest extends KernelTestCase
 {
     use Factories;

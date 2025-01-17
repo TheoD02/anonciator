@@ -6,10 +6,12 @@ namespace App\Tests\Announce\Controller\Category;
 
 use App\Announce\Controller\Category\CreateAnnounceCategoryController;
 use App\Tests\AbstractApiWebTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
+#[CoversClass(CreateAnnounceCategoryControllerTest::class)]
 final class CreateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

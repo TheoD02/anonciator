@@ -12,6 +12,7 @@ use App\Tests\Factory\UserFactory;
 use App\User\Service\UserService;
 use AutoMapper\AutoMapperInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Zenstruck\Foundry\Test\Factories;
 
+#[CoversClass(ConversationService::class)]
 class ConversationServiceTest extends TestCase
 {
     use Factories;

@@ -7,10 +7,12 @@ namespace App\Tests\Resource\Controller;
 use App\Resource\Controller\DeleteResourceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\ResourceFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
+#[CoversClass(DeleteResourceController::class)]
 final class DeleteResourceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

@@ -6,10 +6,12 @@ namespace App\Tests\Announce\Controller\Announce;
 
 use App\Announce\Controller\Announce\DeleteAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
+#[CoversClass(DeleteAnnounceController::class)]
 final class DeleteAnnounceControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

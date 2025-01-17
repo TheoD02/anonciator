@@ -7,10 +7,12 @@ namespace App\Tests\Announce\Controller\Category;
 use App\Announce\Controller\Category\DeleteAnnounceCategoryController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceCategoryFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
+#[CoversClass(DeleteAnnounceCategoryController::class)]
 final class DeleteAnnounceCategoryControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

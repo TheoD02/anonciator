@@ -7,10 +7,12 @@ namespace App\Tests\Announce\Controller\Category;
 use App\Announce\Controller\Category\GetOneAnnounceCategoryController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceCategoryFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
+#[CoversClass(GetOneAnnounceCategoryController::class)]
 final class GetOneAnnounceCategoryControllerTest extends AbstractApiWebTestCase
 {
     public function getAction(): string

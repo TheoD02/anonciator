@@ -7,6 +7,7 @@
     backupGlobals="false"
     colors="true"
     bootstrap="tests/bootstrap.php"
+    requireCoverageMetadata="true"
 >
     <php>
         <ini name="display_errors" value="1"/>
@@ -21,4 +22,17 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+        <exclude>
+            <directory>src/Shared/DataFixtures</directory>
+            <directory>src/Shared/Exception</directory>
+            <directory>src/**/Exception</directory>
+            <directory>src/**/Dto</directory>
+            <directory>src/**/Enum</directory>
+        </exclude>
+    </source>
 </phpunit>

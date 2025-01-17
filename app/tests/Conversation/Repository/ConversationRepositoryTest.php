@@ -2,13 +2,16 @@
 
 namespace App\Tests\Conversation\Repository;
 
+use App\Conversation\Repository\ConversationRepository;
 use App\Tests\Factory\AnnounceFactory;
 use App\Tests\Factory\ConversationFactory;
 use App\Tests\Factory\UserFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+#[CoversClass(ConversationRepository::class)]
 class ConversationRepositoryTest extends KernelTestCase
 {
     use ResetDatabase;
