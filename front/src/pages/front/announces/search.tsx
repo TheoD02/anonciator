@@ -4,6 +4,30 @@ import { Carousel } from '@mantine/carousel';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
+import { requestApi } from "../../../api";
+
+type ImagePreviewProps = {
+    id: number;
+    height: number;
+};
+
+export const ImagePreview = ({ id , height }: ImagePreviewProps) => {
+    const apiUrl = useApiUrl();
+    const url = `${apiUrl}/resources/${id}`;
+    const [imageObjectURL, setImageObjectURL] = useState<string | null>(null);
+    const fetchImage = async () => {
+        requestApi(url).then((res) => res.blob()).then((blob) => {
+            const objectURL = URL.createObjectURL(blob);
+            setImageObjectURL(objectURL);
+        });
+    }
+
+    useEffect(() => {
+        fetchImage();
+    }, [id]);
+
+    return <Image src={imageObjectURL} height={height} width={'100%'} />;
+}
 
 export const FrontAnnounceSearch = () => {
     const navigate = useNavigate();
@@ -26,7 +50,7 @@ export const FrontAnnounceSearch = () => {
 
     useEffect(() => {
         // Reset pagination if total items is less than current page * page size
-        if (data?.meta.totalItems && data.meta.totalItems < pagination.current * pagination.pageSize) {
+        if (data?.meta.totalItems && data.meta.totalItems < (pagination.current * pagination.pageSize - 1)) {
             setPagination({ ...pagination, current: 1 });
         }
     }, [data]);
@@ -111,7 +135,7 @@ export const FrontAnnounceSearch = () => {
 
                                                 return (
                                                     <Carousel.Slide key={k}>
-                                                        <Image src={`${apiUrl}/resources/${photoId}`} height={200} alt="Announce" />
+                                                        <ImagePreview id={photoId} height={200} />
                                                     </Carousel.Slide>
                                                 );
                                             })}

@@ -36,13 +36,14 @@ trait EntityCrudServiceTrait
     private ?AbstractEntityRepository $repository = null;
 
     #[Required]
-    public function setMapper(
-        AutoMapperInterface $mapper,
-        EntityManagerInterface $em,
+    public function setEntityCrudServiceDependencies(
+        AutoMapperInterface      $mapper,
+        EntityManagerInterface   $em,
         EventDispatcherInterface $dispatcher,
-        RelationResolver $relationResolver,
-        ?LoggerInterface $logger = null,
-    ): void {
+        RelationResolver         $relationResolver,
+        ?LoggerInterface         $logger = null,
+    ): void
+    {
         $this->mapper = $mapper;
         $this->em = $em;
         $this->dispatcher = $dispatcher;
@@ -85,6 +86,7 @@ trait EntityCrudServiceTrait
             'id' => $entity->getId(),
         ]);
 
+        // TODO: Dispatch event here
         // $this->dispatcher->dispatch(new $this->getEntityCreatedEventClass($entity));
 
         return $entity;
@@ -150,6 +152,7 @@ trait EntityCrudServiceTrait
             'id' => $entity->getId(),
         ]);
 
+        // TODO: Dispatch event here
         // $this->dispatcher->dispatch(new $this->getEntityUpdatedEventClass($entity));
 
         return $entity;
@@ -189,15 +192,19 @@ trait EntityCrudServiceTrait
             'entity' => $entity::class,
             'id' => $entity->getId(),
         ]);
+
+        // TODO: Dispatch event here
+        // $this->dispatcher->dispatch(new $this->getEntityDeletedEventClass($entity));
     }
 
     /**
      * @return Paginator<T>
      */
     public function paginateEntities(
-        ?FilterQueryInterface $filterQuery = null,
+        ?FilterQueryInterface  $filterQuery = null,
         ?PaginationFilterQuery $paginationFilterQuery = null,
-    ): object {
+    ): object
+    {
         return $this->getRepository()->paginate($filterQuery, $paginationFilterQuery ?? new PaginationFilterQuery());
     }
 }

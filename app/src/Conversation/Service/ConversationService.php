@@ -6,21 +6,30 @@ namespace App\Conversation\Service;
 
 use App\Announce\Entity\Announce;
 use App\Announce\Service\AnnounceService;
+use App\Conversation\Builder\ConversationBuilder;
 use App\Conversation\Entity\Conversation;
 use App\Conversation\Repository\ConversationRepository;
 use App\Shared\Trait\EntityCrudServiceTrait;
 use App\User\Entity\User;
 use App\User\Service\UserService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+/**
+ * @template T of Conversation
+ *
+ * @extends EntityCrudServiceTrait<T>
+ */
 class ConversationService
 {
     use EntityCrudServiceTrait;
 
     public function __construct(
-        private readonly AnnounceService $announceService,
-        private readonly UserService $userService,
+        private readonly AnnounceService        $announceService,
+        private readonly UserService            $userService,
         private readonly ConversationRepository $conversationRepository,
-    ) {
+    )
+    {
     }
 
     public function initConversationOrGetExisting(int $announceId, User $loggedUser): Conversation
@@ -28,33 +37,30 @@ class ConversationService
         /** @var Announce $announce */
         $announce = $this->announceService->getEntityById($announceId, fail: true);
         $announceCreatorIdentifier = $announce->getCreatedBy();
+
         /** @var ?User $announceCreator */
         $announceCreator = $this->userService->getOneByEmail($announceCreatorIdentifier);
         if ($announceCreator === null) {
-            throw new \RuntimeException('Announce creator does not exist');
+            throw new NotFoundHttpException('Announce creator does not exist');
         }
 
-        if ($announceCreator->getId() === $loggedUser->getId()) {
-            throw new \RuntimeException('Cannot create conversation to self');
+        if ($announceCreator->getEmail() === $loggedUser->getEmail()) {
+            throw new UnprocessableEntityHttpException('Cannot create conversation to self');
         }
 
-        $conversation = $this->conversationRepository->createQueryBuilder('c')
-            ->where('c.announce = :announceId')
-            ->andWhere('c.initializedBy = :userInitiatorId')
-            ->andWhere('c.receiver = :userReceiverId')
-            ->setParameter('announceId', $announceId)
-            ->setParameter('userInitiatorId', $loggedUser->getId())
-            ->setParameter('userReceiverId', $announceCreator->getId())
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $conversation = $this->conversationRepository->getConversationMatchingAnnounceAndUser(
+            announceId: $announceId,
+            userInitiatorId: $loggedUser->getId(),
+            userReceiverId: $announceCreator->getId()
+        );
 
         if ($conversation === null) {
-            $conversation = new Conversation();
-            $conversation->setName($announce->getTitle());
-            $conversation->setAnnounce($announce);
-            $conversation->setInitializedBy($loggedUser);
-            $conversation->setReceiver($announceCreator);
+            $conversation = ConversationBuilder::new()
+                ->withAnnounce($announce)
+                ->withInitializedBy($loggedUser)
+                ->withReceiver($announceCreator)
+                ->build();
+
             $this->em->persist($conversation);
             $this->em->flush();
         }

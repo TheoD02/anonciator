@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace App\User\Repository;
 
+use App\Shared\Doctrine\Repository\AbstractEntityRepository;
 use App\User\Entity\Role;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Role>
+ * @extends AbstractEntityRepository<Role>
  */
-class RoleRepository extends ServiceEntityRepository
+class RoleRepository extends AbstractEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-    ) {
-        parent::__construct($registry, Role::class);
+    public function getEntityFqcn(): string
+    {
+        return Role::class;
     }
 }

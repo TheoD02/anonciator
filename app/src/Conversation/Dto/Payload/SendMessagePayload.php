@@ -12,5 +12,6 @@ class SendMessagePayload implements PayloadInterface
 {
     #[Property(description: 'Message content')]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 1, max: 255)]
     public string $content;
 }

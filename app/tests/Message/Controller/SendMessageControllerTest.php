@@ -35,7 +35,7 @@ final class SendMessageControllerTest extends AbstractApiWebTestCase
             'email' => 'receiver@domain.tld',
         ]);
         $announce = AnnounceFactory::new([
-            'createdBy' => $sender->getEmail(),
+            'createdBy' => $sender->getUserIdentifier(),
         ])->create();
         $conversation = ConversationFactory::new()->create([
             'announce' => $announce,

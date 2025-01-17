@@ -27,7 +27,8 @@ abstract class AbstractEntityRepository extends ServiceEntityRepository
 
     public function __construct(
         ManagerRegistry $registry,
-    ) {
+    )
+    {
         parent::__construct($registry, $this->getEntityFqcn());
     }
 
@@ -37,15 +38,16 @@ abstract class AbstractEntityRepository extends ServiceEntityRepository
     abstract public function getEntityFqcn(): string;
 
     #[Required]
-    public function setPaginator(Paginator $paginator): void
+    public function setRepositoryDependencies(Paginator $paginator): void
     {
         $this->paginator = $paginator;
     }
 
     public function paginate(
         ORMQueryBuilderFilterQueryAwareInterface|FilterQueryDefinitionInterface|null $queryBuilderFilterQueryAware = null,
-        PaginationFilterQuery $paginationFilterQuery = new PaginationFilterQuery(),
-    ): \App\Shared\Api\Doctrine\Pagination\Paginator {
+        PaginationFilterQuery                                                        $paginationFilterQuery = new PaginationFilterQuery(),
+    ): \App\Shared\Api\Doctrine\Pagination\Paginator
+    {
         $qb = $this->createPaginationQueryBuilder();
 
         return $this->paginator->paginate($qb, $queryBuilderFilterQueryAware, $paginationFilterQuery);

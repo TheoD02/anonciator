@@ -7,6 +7,11 @@ namespace App\User\Service;
 use App\Shared\Trait\EntityCrudServiceTrait;
 use App\User\Entity\User;
 
+/**
+ * @template T of User
+ *
+ * @extends EntityCrudServiceTrait<T>
+ */
 class UserService
 {
     use EntityCrudServiceTrait;

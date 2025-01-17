@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Announce\Controller\Announce;
 
-use App\Announce\AnnounceStatus;
 use App\Announce\Controller\Announce\PartialUpdateAnnounceController;
+use App\Announce\Enum\AnnounceStatus;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;

@@ -80,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addGroup(GroupRole $group): static
     {
-        if (! $this->groups->contains($group)) {
+        if (!$this->groups->contains($group)) {
             $this->groups->add($group);
         }
 
@@ -97,6 +97,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = ['ROLE_USER'];
+
+        // TODO: Until Groups/Roles are implemented
+        if (str_contains($this->email, 'admin')) {
+            $roles[] = 'ROLE_ADMIN';
+        }
 
         foreach ($this->groups as $group) {
             foreach ($group->getRoles() as $role) {

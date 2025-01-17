@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Announce\Controller\Announce;
 
-use App\Announce\AnnounceStatus;
 use App\Announce\Controller\Announce\GetOneAnnounceController;
+use App\Announce\Enum\AnnounceStatus;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
 use App\Tests\Factory\UserFactory;
@@ -36,7 +36,7 @@ final class GetOneAnnounceControllerTest extends AbstractApiWebTestCase
             'price' => 100,
             'location' => '41.0987',
             'status' => AnnounceStatus::DRAFT,
-            'createdBy' => UserFactory::admin()->getEmail(),
+            'createdBy' => UserFactory::admin()->getUserIdentifier(),
         ]);
 
         // Act

@@ -20,21 +20,30 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
     public function definition(): FilterDefinitionBag
     {
         return new FilterDefinitionBag()
-            ->add(FilterDefinition::create('title', 'title', operators: [ContainOperator::class]))
+            ->add(
+                FilterDefinition::create(
+                    field: 'title',
+                    publicName: 'title',
+                    operators: [ContainOperator::class]
+                )
+            )
             ->add(FilterDefinition::create(
                 field: 'category',
                 publicName: 'categoryId',
                 operators: [EqualOperator::class],
             ))
             ->add(
-                FilterDefinition::create('price', 'price', operators: [
-                    GreaterThanOperator::class,
-                    LowerThanOperator::class,
-                    GreaterThanOrEqualOperator::class,
-                    LowerThanOrEqualOperator::class,
-                    BetweenOperator::class,
-                ])
-            )
-        ;
+                FilterDefinition::create(
+                    field: 'price',
+                    publicName: 'price',
+                    operators: [
+                        GreaterThanOperator::class,
+                        LowerThanOperator::class,
+                        GreaterThanOrEqualOperator::class,
+                        LowerThanOrEqualOperator::class,
+                        BetweenOperator::class,
+                    ]
+                )
+            );
     }
 }

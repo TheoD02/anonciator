@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Shared\Trait;
 
-use App\Announce\AnnounceStatus;
 use App\Announce\Dto\Payload\CreateAnnouncePayload;
 use App\Announce\Dto\Payload\UpdateAnnouncePayload;
 use App\Announce\Entity\Announce;
+use App\Announce\Enum\AnnounceStatus;
 use App\Announce\Repository\AnnounceRepository;
 use App\Announce\Service\AnnounceService;
 use App\Shared\Api\Relation;

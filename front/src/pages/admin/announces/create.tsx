@@ -11,6 +11,7 @@ import { IconTrash } from "@tabler/icons-react";
 import { z } from 'zod';
 import { zodResolver } from "@mantine/form";
 import { requestApi } from "../../../api";
+import { DropZoneImagePreview } from "../../../components/drop-zone-image-preview";
 
 const schemaValidation = z.object({
   title: z.string().min(3),
@@ -48,8 +49,6 @@ export const AnnounceCreate = () => {
     validate: zodResolver(schemaValidation),
   });
 
-  console.log(values, errors);
-
   const { selectProps: categorySelectProps } = useSelect({
     resource: "announces/categories",
     optionLabel: "name",
@@ -60,16 +59,6 @@ export const AnnounceCreate = () => {
   const [isUploadLoading, setIsUploadLoading] = useState(false);
 
   const apiUrl = useApiUrl();
-  const previews = <SimpleGrid cols={8}>
-    {files.map((file, index) => {
-      return <Card key={index} shadow="xs" style={{ display: "flex", margin: "5px", justifyContent: "space-between", alignItems: "center" }}>
-        <Image key={index} src={`${apiUrl}/resources/${file}`} style={{ width: '50%' }} />
-        <ActionIcon variant="default" onClick={() => handleRemove(index)}>
-          <IconTrash color="red" size={16} />
-        </ActionIcon>
-      </Card>;
-    })}
-  </SimpleGrid>
 
   const handleRemove = (index: number) => {
     if (!files[index]) {
@@ -84,6 +73,11 @@ export const AnnounceCreate = () => {
 
     setFiles(files.filter((_, i) => i !== index));
   }
+  const previews = <SimpleGrid cols={8}>
+    {files.map((file, index) => {
+      return <DropZoneImagePreview key={file} id={file} handleRemove={() => handleRemove(index)} />;
+    })}
+  </SimpleGrid>
 
   const handleOnDrop = (files: FileWithPath[]) => {
     try {

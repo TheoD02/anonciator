@@ -33,13 +33,20 @@ export const FrontAnnounceShow = () => {
     });
 
     const [queryConversationEnabled, setQueryConversationEnabled] = useState(false);
-    const { data: conversation } = useOne({
+    const { data: conversation, isError: hasInitiatedConversationError, error: initiateConversationError } = useOne({
         resource: "conversations/initiate",
         id: announce?.id,
         queryOptions: {
             enabled: queryConversationEnabled,
         },
     });
+    console.log(conversation, hasInitiatedConversationError, initiateConversationError);
+
+    useEffect(() => {
+        if (hasInitiatedConversationError) {
+            console.error(initiateConversationError);
+        }
+    }, [hasInitiatedConversationError]);
 
     useEffect(() => {
         if (conversation?.data.id) {
@@ -59,7 +66,7 @@ export const FrontAnnounceShow = () => {
                         {announce?.photoIds.length === 0 && (
                             <Image src="https://placehold.co/320" height={300} alt="Placeholder" />
                         )}
-                        {isPhotosLoading && (
+                        {isPhotosLoading && announce?.photoIds.length >= 1 && (
                             <Loader size="xl" />
                         )}
                         {!isPhotosLoading && announce?.photoIds.length >= 1 && (

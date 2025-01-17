@@ -6,7 +6,6 @@ use Castor\Attribute\AsListener;
 use Castor\Event\BeforeExecuteTaskEvent;
 use Castor\Event\ProcessStartEvent;
 use Symfony\Component\Process\ExecutableFinder;
-
 use function Castor\check;
 use function Castor\context;
 use function Castor\finder;
@@ -23,7 +22,7 @@ function check_docker_presence(): void
     check(
         'Check if the docker is installed',
         'Docker is required to run this project. Please install it.',
-        static fn (): bool => new ExecutableFinder()->find('docker') !== null,
+        static fn(): bool => new ExecutableFinder()->find('docker') !== null,
     );
 }
 
@@ -41,7 +40,7 @@ function prevent_running_certains_command_inside_docker(): void
 function log_process_start(ProcessStartEvent $event): void
 {
     $commands = $event->process->getCommandLine();
-    $commands = array_map(static fn (string $cmd) => trim($cmd, "'"), explode(' ', $commands));
+    $commands = array_map(static fn(string $cmd) => trim($cmd, "'"), explode(' ', $commands));
     $commands = implode(' ', $commands);
 
     $silents = ['echo $HOME', 'docker compose images', 'docker compose ps --services'];
@@ -68,8 +67,7 @@ function ensure_project_has_run_setup_before_any(): void
         ->name(['*.yml', '*.yaml', '*.json', '*.bru'])
         ->notName(['vendor', 'node_modules'])
         ->contains(['{{PREFIX_CONTAINER}}', '{{PREFIX_URL}}', 'PROJECT_NAME'])
-        ->count()
-    ;
+        ->count();
 
     if ($files > 0) {
         io()->error(['The project has not been set up yet.', 'Please run the `castor setup` command first.']);
@@ -90,7 +88,7 @@ function prevent_running_wrong_context_for_deploy(): void
 
     $deployContextNames = [symfony_context()->name, frontend_context()->name];
     if ($taskName === 'deploy' || str_contains($taskName, 'deploy:')) {
-        if (! in_array($contextName, $deployContextNames, true)) {
+        if (!in_array($contextName, $deployContextNames, true)) {
             io()->error([
                 'You are trying to deploy the project using the wrong context.',
                 'Please use the ' . implode(' or ', $deployContextNames) . ' context.',
@@ -101,7 +99,7 @@ function prevent_running_wrong_context_for_deploy(): void
 
         $data = context()->data;
 
-        if (! isset($data['registry'], $data['image'])) {
+        if (!isset($data['registry'], $data['image'])) {
             io()->error('The data key "registry" and "image" are missing in the context.');
             exit(1);
         }
@@ -153,12 +151,12 @@ function autorun_install_when_missing_deps(): void
 
     $missingDeps = [];
 
-    if (fs()->exists("{$backendFolder}/composer.json") && ! fs()->exists("{$backendFolder}/vendor")) {
-        $missingDeps['Composer dependencies'] = static fn () => symfony_install(force: true);
+    if (fs()->exists("{$backendFolder}/composer.json") && !fs()->exists("{$backendFolder}/vendor")) {
+        $missingDeps['Composer dependencies'] = static fn() => symfony_install(force: true);
     }
 
-    if (fs()->exists("{$frontendFolder}/package.json") && ! fs()->exists("{$frontendFolder}/node_modules")) {
-        $missingDeps['Node dependencies'] = static fn () => ui_install(force: true);
+    if (fs()->exists("{$frontendFolder}/package.json") && !fs()->exists("{$frontendFolder}/node_modules")) {
+        $missingDeps['Node dependencies'] = static fn() => ui_install(force: true);
     }
 
     if ($missingDeps) {
@@ -188,9 +186,9 @@ function check_outdated_deps(): void
     $outdatedFingerprints = [];
 
     if (fs()->exists("{$backendFolder}/composer.json") && fingerprint_exists(
-        'composer-install',
-        fgp()->composer()
-    ) === false) {
+            'composer-install',
+            fgp()->composer()
+        ) === false) {
         $outdatedFingerprints['Composer dependencies'] = null;
     }
 

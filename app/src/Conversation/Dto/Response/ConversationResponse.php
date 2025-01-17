@@ -22,12 +22,12 @@ class ConversationResponse
     public string $name;
 
     #[Property(description: 'Usernames of the user that initiated the conversation')]
-    #[MapFrom(Conversation::class, transformer: 'source.getInitializedBy().getUsername()')]
+    #[MapFrom(Conversation::class, transformer: 'source.getInitializedBy().getEmail()')]
     #[Groups([GlobalApiGroups::GET_ONE, GlobalApiGroups::GET_PAGINATED])]
     public string $initializedBy;
 
     #[Property(description: 'Usernames of the user that received the conversation')]
-    #[MapFrom(Conversation::class, transformer: 'source.getReceiver().getUsername()')]
+    #[MapFrom(Conversation::class, transformer: 'source.getReceiver().getEmail()')]
     #[Groups([GlobalApiGroups::GET_ONE, GlobalApiGroups::GET_PAGINATED])]
     public string $receivedBy;
 }

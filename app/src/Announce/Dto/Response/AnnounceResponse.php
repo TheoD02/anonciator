@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Announce\Dto\Response;
 
-use App\Announce\AnnounceStatus;
 use App\Announce\Entity\Announce;
+use App\Announce\Enum\AnnounceStatus;
 use App\Resource\Entity\Resource;
 use App\Shared\Api\GlobalApiGroups;
 use App\Shared\Api\Visibility;
@@ -109,6 +109,6 @@ class AnnounceResponse
 
     public static function mapPhotoIds(mixed $value, Announce $source, array $context): array
     {
-        return $source->getPhotos()->map(static fn (Resource $photo): ?int => $photo->getId())->toArray();
+        return $source->getPhotos()->map(static fn(Resource $photo): ?int => $photo->getId())->toArray();
     }
 }

@@ -1,0 +1,15 @@
+meta {
+  name: Get One
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/api/conversations/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}

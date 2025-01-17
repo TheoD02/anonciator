@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Announce\Entity;
 
-use App\Announce\AnnounceStatus;
+use App\Announce\Enum\AnnounceStatus;
 use App\Announce\Repository\AnnounceRepository;
 use App\Resource\Entity\Resource;
 use App\Shared\Api\Visibility;
@@ -163,7 +163,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (! $this->photos->contains($photo)) {
+        if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
         }
 

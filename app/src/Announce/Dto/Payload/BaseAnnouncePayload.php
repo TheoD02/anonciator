@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Announce\Dto\Payload;
 
-use App\Announce\AnnounceStatus;
+use App\Announce\Enum\AnnounceStatus;
 use App\Shared\Api\MapRelation;
 use App\Shared\Api\Relation;
 use App\Shared\PayloadInterface;

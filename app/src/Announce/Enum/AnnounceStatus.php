@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Announce;
+namespace App\Announce\Enum;
 
 enum AnnounceStatus: string
 {

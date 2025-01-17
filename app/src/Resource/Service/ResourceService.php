@@ -10,6 +10,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @template T of Resource
+ *
+ * @extends EntityCrudServiceTrait<T>
+ */
 class ResourceService
 {
     use EntityCrudServiceTrait {
@@ -19,7 +24,8 @@ class ResourceService
     public function __construct(
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
-    ) {
+    )
+    {
     }
 
     /**
@@ -30,7 +36,7 @@ class ResourceService
         $resources = [];
 
         foreach ($files as $file) {
-            $resources[] = $this->createEntity($file, false);
+            $resources[] = $this->createResource($file, false);
         }
 
         $this->em->flush();
@@ -38,7 +44,7 @@ class ResourceService
         return $resources;
     }
 
-    public function createEntity(UploadedFile $file, bool $flush = true): Resource
+    public function createResource(UploadedFile $file, bool $flush = true): Resource
     {
         $resource = new Resource();
 

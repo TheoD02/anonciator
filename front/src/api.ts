@@ -42,6 +42,10 @@ export const requestApi = async (url: string, options?: RequestInit) => {
 
 export const apiDataProvider: DataProvider = (url: string) => ({
   getList: async ({ resource, pagination, sorters, filters, meta }: GetListParams) => {
+    if (pagination === undefined) {
+      pagination = {};
+    }
+    
     if (!pagination?.current) {
       pagination.current = 1;
     }
@@ -78,7 +82,13 @@ export const apiDataProvider: DataProvider = (url: string) => ({
   },
 
   getOne: async ({ resource, id, meta }: GetOneParams) => {
-    const data = await (await requestApi(`${url}/${resource}/${id}`)).json();
+    const response = await requestApi(`${url}/${resource}/${id}`);
+
+    if (response.status >= 400 && response.status < 500) {
+      throw new Error("Error occurred while fetching the record");
+    }
+
+    const data = await response.json();
 
     return {
       data: data.data,
