@@ -28,12 +28,11 @@ class InitiateConversationController extends AbstractApiController
         statusCode: Response::HTTP_OK,
     )]
     public function __invoke(
-        int                  $announceId,
-        ConversationService  $conversationService,
+        int $announceId,
+        ConversationService $conversationService,
         #[CurrentUser] ?User $user = null,
-    ): Response
-    {
-        if (!$user instanceof User) {
+    ): Response {
+        if (! $user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 

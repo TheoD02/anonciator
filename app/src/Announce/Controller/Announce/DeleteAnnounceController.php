@@ -18,7 +18,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_DELETE])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce deleted', groups: [GlobalApiGroups::DELETE])]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce deleted', groups: [
+        GlobalApiGroups::DELETE,
+    ])]
     public function __invoke(AnnounceService $announceService, int $id): Response
     {
         $announceService->deleteEntityFromId($id);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Conversation\Controller;
 
-use App\Conversation\Dto\Filter\PaginateMessageFilter;
 use App\Conversation\Dto\Response\MessageResponse;
 use App\Conversation\Service\MessageService;
 use App\Shared\Api\AbstractApiController;
@@ -27,12 +26,12 @@ class GetPaginatedConversationMessagesController extends AbstractApiController
         groups: [GlobalApiGroups::GET_PAGINATED],
         statusCode: Response::HTTP_OK
     )]
-    public function __invoke(int $id, MessageService $service, #[MapQueryString] PaginationFilterQuery $paginationFilterQuery): Response
-    {
-        $conversation = $service->getMessagesForConversation(
-            $id,
-            $paginationFilterQuery
-        );
+    public function __invoke(
+        int $id,
+        MessageService $service,
+        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
+    ): Response {
+        $conversation = $service->getMessagesForConversation($id, $paginationFilterQuery);
 
         return $this->successResponse(
             data: $conversation,

@@ -36,7 +36,7 @@ class Announce
     #[Visibility(external: false)]
     private string $price = '0.00';
 
-    #[ORM\ManyToOne()]
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private AnnounceCategory $category;
 

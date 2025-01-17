@@ -8,6 +8,7 @@ use App\Conversation\Entity\Message;
 use App\Shared\Api\PaginationFilterQuery;
 use App\Shared\Doctrine\Repository\AbstractEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends AbstractEntityRepository<Message>
@@ -19,12 +20,13 @@ class MessageRepository extends AbstractEntityRepository
         return Message::class;
     }
 
-    public function getMessagesForConversation(int $id, PaginationFilterQuery $paginationFilterQuery)
+    public function getMessagesForConversation(int $id, PaginationFilterQuery $paginationFilterQuery): Paginator
     {
         $qb = parent::createPaginationQueryBuilder();
 
         $qb->andWhere('e.conversation = :conversationId')
-            ->setParameter('conversationId', $id);
+            ->setParameter('conversationId', $id)
+        ;
 
         return $this->paginator->paginate($qb, paginationFilterQuery: $paginationFilterQuery);
     }

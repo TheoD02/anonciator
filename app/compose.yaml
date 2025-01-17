@@ -13,11 +13,10 @@ services:
             MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}/.well-known/mercure}
             MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
         volumes:
-            - caddy_data:/datan
+            - caddy_data:/data
             - caddy_config:/config
         networks:
             - database
-            - rabbitmq
 
     # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
     ###> symfony/mercure-bundle ###
@@ -25,20 +24,12 @@ services:
 
     ###> doctrine/doctrine-bundle ###
     database:
-        image: postgres:${POSTGRES_VERSION:-16}-alpine
+        image: mariadb:10.5.27
         environment:
-            POSTGRES_DB: ${POSTGRES_DB:-app}
-            # You should definitely change the password in production
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
-            POSTGRES_USER: ${POSTGRES_USER:-root}
-        healthcheck:
-            test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-root}" ]
-            timeout: 5s
-            retries: 5
-            start_period: 60s
+            MYSQL_DATABASE: app
+            MYSQL_ROOT_PASSWORD: root
         volumes:
-            # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-            - postgres_data:/var/lib/postgresql/data:rw
+            - mariadb_data:/var/lib/mysql
         networks:
             - database
     ###< doctrine/doctrine-bundle ###
@@ -53,8 +44,6 @@ volumes:
     ###> symfony/mercure-bundle ###
     ###< symfony/mercure-bundle ###
 
-    postgres_data:
-    rabbitmq_data:
-
     ###> doctrine/doctrine-bundle ###
-###< doctrine/doctrine-bundle ###
+    mariadb_data:
+    ###< doctrine/doctrine-bundle ###

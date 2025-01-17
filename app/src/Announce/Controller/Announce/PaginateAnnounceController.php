@@ -28,13 +28,16 @@ class PaginateAnnounceController extends AbstractApiController
         paginated: true
     )]
     public function __invoke(
-        AnnounceService                         $announceService,
-        #[MapQueryString] AnnounceFilterQuery   $query,
+        AnnounceService $announceService,
+        #[MapQueryString] AnnounceFilterQuery $query,
         #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
-    ): Response
-    {
+    ): Response {
         $announces = $announceService->paginateEntities($query, $paginationFilterQuery);
 
-        return $this->successResponse($announces, target: AnnounceResponse::class, groups: [GlobalApiGroups::GET_PAGINATED]);
+        return $this->successResponse(
+            $announces,
+            target: AnnounceResponse::class,
+            groups: [GlobalApiGroups::GET_PAGINATED]
+        );
     }
 }

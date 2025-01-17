@@ -13,6 +13,8 @@ if (file_exists(dirname(__DIR__) . '/config/bootstrap.php')) {
     (new Dotenv())->bootEnv(dirname(__DIR__) . '/.env');
 }
 
+umask(0o000);
+
 if (is_dir(dirname(__DIR__) . '/var/cache/test')) {
     $filesystem = new Filesystem();
     $filesystem->remove(dirname(__DIR__) . '/var/cache/test');

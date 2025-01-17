@@ -29,7 +29,9 @@ export const requestApi = async (url: string, options?: RequestInit) => {
 
   if (response.status === 401) {
     const json = await response.json();
-    if (json.message === "Invalid JWT Token") {
+    console.error(json);
+    if (json.message === "Invalid JWT Token" || json.message === "Invalid credentials." || json.message === "Expired JWT Token") {
+      localStorage.removeItem(TOKEN_KEY);
       // Redirect to login page
       window.location.href = "/login";
     }

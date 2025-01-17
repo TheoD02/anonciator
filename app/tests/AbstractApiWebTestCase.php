@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
+
 use function Symfony\Component\String\u;
 
 /** @phpstan-ignore-next-line shipmonk.invalidClassSuffix (OK for abstract class) */
@@ -26,6 +27,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     use ResetDatabase;
 
     private static KernelBrowser $client;
+
     protected ?User $user = null;
 
     public static function getRequest(): Request
@@ -42,37 +44,22 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             'HTTP_ACCEPT' => 'application/json',
             'CONTENT_TYPE' => 'application/json',
         ]);
-        $this->user = UserFactory::new()
-            ->create([
-                'username' => 'test',
-                'email' => 'test@domain.tld',
-                'password' => '$2y$13$3A7A.efkudG6f96vsIVy.ujVKyrcGuN41FZWeyi/BbB5G2VNNCjwi',
-            ])->_real();
-
-        self::$client->loginUser($this->user);
-        
-        self::_resetDatabaseBeforeEachTest();
-    }
-
-    public function authenticate(): void
-    {
-
     }
 
     /**
-     * @param array<string, int|string> $parameters
-     * @param array<mixed>|null $json
+     * @param array<string, int|string>  $parameters
+     * @param array<mixed>|null          $json
      * @param array<string, string>|null $headers
-     * @param array<string, mixed>|null $query
+     * @param array<string, mixed>|null  $query
      */
     public function request(
         string $method,
-        array  $parameters = [],
+        array $parameters = [],
         ?array $json = null,
         ?array $headers = null,
         ?array $query = null,
-    ): Crawler
-    {
+    ): Crawler {
+        $this->initToken();
         $uri = $this->buildUrl($parameters);
         if ($query !== null) {
             $uri .= '?' . http_build_query($query);
@@ -87,12 +74,11 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             [
                 'HTTP_ACCEPT' => 'application/json',
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('admin:admin'),
             ],
         );
 
         if ($json !== null) {
-            if (!\in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
+            if (! \in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
                 throw new \InvalidArgumentException('JSON data can only be sent with POST, PUT or PATCH');
             }
 
@@ -111,6 +97,62 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         return self::$client->request(method: $method, uri: $uri, server: $headers);
     }
 
+    private function initToken(): void
+    {
+        if (! $this->user instanceof User) {
+            $this->user = UserFactory::admin();
+        }
+
+        $jwtTokenPath = 'var/cache/test/.jwt_token';
+        if (file_exists($jwtTokenPath)) {
+            $token = file_get_contents($jwtTokenPath);
+            self::$client->setServerParameter('HTTP_AUTHORIZATION', \sprintf('Bearer %s', $token));
+
+            return;
+        }
+
+        self::$client->jsonRequest(
+            'POST',
+            '/api/login_check',
+            [
+                'username' => $this->user->getEmail(),
+                'password' => 'admin',
+            ]
+        );
+
+        $data = json_decode(self::$client->getResponse()->getContent(), true);
+
+        self::$client->setServerParameter('HTTP_AUTHORIZATION', \sprintf('Bearer %s', $data['token']));
+
+        file_put_contents($jwtTokenPath, $data['token']);
+    }
+
+    /**
+     * @return Response
+     */
+    public static function getResponse(bool $json = true): Response|array
+    {
+        if ($json) {
+            try {
+                /** @var array<mixed> */
+                return json_decode(
+                    self::$client->getResponse()->getContent() ?: '',
+                    true,
+                    512,
+                    \JSON_THROW_ON_ERROR
+                );
+            } catch (\JsonException $e) {
+                throw new \InvalidArgumentException(
+                    'Invalid JSON data received from the response',
+                    $e->getCode(),
+                    previous: $e
+                );
+            }
+        }
+
+        return self::$client->getResponse();
+    }
+
     /**
      * @param array<string, int|string> $parameters
      */
@@ -119,7 +161,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         $url = $this->getUrl($parameters);
 
         foreach ($parameters as $key => $value) {
-            $url = str_replace("{{$key}}", (string)$value, $url);
+            $url = str_replace("{{$key}}", (string) $value, $url);
         }
 
         return $url;
@@ -149,7 +191,12 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             throw new \InvalidArgumentException('Missing parameters: ' . implode(', ', $missing));
         }
 
-        return $router->generate($action, $parameters, UrlGeneratorInterface::RELATIVE_PATH);
+        return u($router->generate($action, $parameters, UrlGeneratorInterface::RELATIVE_PATH))
+            ->ensureStart('/')
+            ->ensureStart('/api')
+            ->trimEnd('/')
+            ->toString()
+        ;
     }
 
     /**
@@ -174,11 +221,6 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     }
 
     abstract public function expectedUrl(): string;
-
-    protected function setUp(): void
-    {
-        parent::setUp(); // TODO: Change the autogenerated stub
-    }
 
     protected function assertJsonResponseFile(): void
     {
@@ -208,6 +250,20 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             return;
         }
 
+        $replacers = [
+            '/"id":\s*"[0-9a-f]{24}"/' => '"id": "auto-generated-id"',
+            '/"createdAt":\s*"[0-9T:+-]+"/' => '"createdAt": "auto-generated-date"',
+            '/"updatedAt":\s*"[0-9T:+-]+"/' => '"updatedAt": "auto-generated-date"',
+            '/"lastUpdatedAt":\s*"[0-9T:+-]+"/' => '"updatedAt": "auto-generated-date"',
+            '/"deletedAt":\s*"[0-9T:+-]+"/' => '"deletedAt": "auto-generated-date"',
+        ];
+
+        $responseContent = preg_replace(array_keys($replacers), array_values($replacers), $responseContent);
+
+        if (! \is_string($responseContent)) {
+            throw new \RuntimeException('Invalid JSON data received from the response');
+        }
+
         if ($isFileExists === false) {
             $fs->dumpFile($filepath, self::prettifyJson($responseContent));
         }
@@ -216,32 +272,6 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         $fileData = self::prettifyJson($fileContent);
 
         self::assertSame($fileData, self::prettifyJson($responseContent));
-    }
-
-    /**
-     * @return Response
-     */
-    public static function getResponse(bool $json = true): Response|array
-    {
-        if ($json) {
-            try {
-                /** @var array<mixed> */
-                return json_decode(
-                    self::$client->getResponse()->getContent() ?: '',
-                    true,
-                    512,
-                    \JSON_THROW_ON_ERROR
-                );
-            } catch (\JsonException $e) {
-                throw new \InvalidArgumentException(
-                    'Invalid JSON data received from the response',
-                    $e->getCode(),
-                    previous: $e
-                );
-            }
-        }
-
-        return self::$client->getResponse();
     }
 
     private function getFilePath(string $suffix = ''): string
@@ -266,7 +296,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     protected static function prettifyJson(string $content): string
     {
         $jsonFlags = \JSON_PRETTY_PRINT;
-        if (!isset($_SERVER['ESCAPE_JSON']) || $_SERVER['ESCAPE_JSON'] !== true) {
+        if (! isset($_SERVER['ESCAPE_JSON']) || $_SERVER['ESCAPE_JSON'] !== true) {
             $jsonFlags |= \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
         }
 
@@ -295,8 +325,8 @@ abstract class AbstractApiWebTestCase extends WebTestCase
     {
         $filepath = $this->getFilePath('Payload');
 
-        if (!file_exists($filepath)) {
-            if (!file_exists(\dirname($filepath))) {
+        if (! file_exists($filepath)) {
+            if (! file_exists(\dirname($filepath))) {
                 mkdir(\dirname($filepath), 0o777, true);
             }
 

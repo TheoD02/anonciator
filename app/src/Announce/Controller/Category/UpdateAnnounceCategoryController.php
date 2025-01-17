@@ -28,11 +28,10 @@ class UpdateAnnounceCategoryController extends AbstractApiController
         statusCode: 200
     )]
     public function __invoke(
-        int                                                $id,
+        int $id,
         #[MapRequestPayload] UpdateAnnounceCategoryPayload $payload,
-        AnnounceCategoryService                            $service,
-    ): Response
-    {
+        AnnounceCategoryService $service,
+    ): Response {
         $category = $service->updateEntityFromPayload($id, $payload);
 
         return $this->successResponse(

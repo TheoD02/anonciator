@@ -32,19 +32,6 @@ services:
             - "traefik.http.routers.php-anonciator.rule=Host(`anonciator.api.localhost`)"
             - "traefik.http.routers.php-anonciator.tls=true"
             - "traefik.http.services.php-anonciator.loadbalancer.server.port=80"
-            - "traefik.http.routers.php-anonciator.middlewares=php-anonciator-cors"
-
-            # CORS and Forward Headers Middleware
-            - "traefik.http.middlewares.php-anonciator-cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
-            - "traefik.http.middlewares.php-anonciator-cors.headers.accesscontrolallowheaders=*"
-            - "traefik.http.middlewares.php-anonciator-cors.headers.accesscontrolalloworiginlist=*"
-            #      - "traefik.http.middlewares.php-anonciator-cors.headers.accesscontrolmaxage=100"
-            #      - "traefik.http.middlewares.php-anonciator-cors.headers.addvaryheader=true"
-
-            # Forward Headers from Traefik to Caddy
-        #      - "traefik.http.middlewares.php-anonciator-cors.headers.customrequestheaders.X-Forwarded-Proto=https"
-        #      - "traefik.http.middlewares.php-anonciator-cors.headers.customrequestheaders.X-Forwarded-Host={{PLACEHOLDER}}..bruno.localhost"
-        #      - "traefik.http.middlewares.php-anonciator-cors.headers.customrequestheaders.X-Real-IP={client_ip}"
         networks:
             - traefik
 
@@ -55,20 +42,6 @@ services:
     database:
         container_name: anonciator-database
     ###< doctrine/doctrine-bundle ###
-
-    pgbouncer: # permit multiple connections to the database
-        image: edoburu/pgbouncer:latest
-        container_name: anonciator-pgbouncer
-        environment:
-            DATABASE_URL: postgres://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-root}@database/${POSTGRES_DB:-app}
-        volumes:
-            - ./.docker/pgbouncer:/etc/pgbouncer
-        ports:
-            - "6435:6432"
-        depends_on:
-            - database
-        networks:
-            - database
 
 networks:
     traefik:

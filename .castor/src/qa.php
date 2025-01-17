@@ -13,19 +13,11 @@ function all(bool $fix = false): void
 {
     io()->title('Running all the QA tasks');
 
-    io()->section('Running the Rectors task');
-    rector($fix);
-
-    io()->section('Running the ECS task');
-    ecs($fix);
-
-    io()->section('Running the PHPStan task');
-    phpstan();
-    // phparkitect();
-
-    io()->section('Running the PHPMD task');
-    phpmd();
-    // class_leak_check();
+    composer(['run'])
+        ->addIf(! $fix, 'qa:all')
+        ->addIf($fix, 'qa:all-fix')
+        ->run()
+    ;
 
     io()->section('Running the PHPUnit task');
     phpunit();

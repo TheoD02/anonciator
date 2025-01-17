@@ -37,13 +37,12 @@ trait EntityCrudServiceTrait
 
     #[Required]
     public function setMapper(
-        AutoMapperInterface      $mapper,
-        EntityManagerInterface   $em,
+        AutoMapperInterface $mapper,
+        EntityManagerInterface $em,
         EventDispatcherInterface $dispatcher,
-        RelationResolver         $relationResolver,
-        ?LoggerInterface         $logger = null,
-    ): void
-    {
+        RelationResolver $relationResolver,
+        ?LoggerInterface $logger = null,
+    ): void {
         $this->mapper = $mapper;
         $this->em = $em;
         $this->dispatcher = $dispatcher;
@@ -196,10 +195,9 @@ trait EntityCrudServiceTrait
      * @return Paginator<T>
      */
     public function paginateEntities(
-        ?FilterQueryInterface  $filterQuery = null,
+        ?FilterQueryInterface $filterQuery = null,
         ?PaginationFilterQuery $paginationFilterQuery = null,
-    ): object
-    {
+    ): object {
         return $this->getRepository()->paginate($filterQuery, $paginationFilterQuery ?? new PaginationFilterQuery());
     }
 }

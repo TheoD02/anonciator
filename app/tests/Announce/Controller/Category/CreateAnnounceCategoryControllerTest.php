@@ -25,7 +25,6 @@ final class CreateAnnounceCategoryControllerTest extends AbstractApiWebTestCase
     public function testOk(): void
     {
         // Act
-        $this->authenticate();
         $this->request('POST', json: [
             'name' => 'Category name',
             'description' => 'Category description',

@@ -29,10 +29,9 @@ class PaginateResourceController extends AbstractApiController
     )]
     public function __invoke(
         #[MapQueryString] PaginateResourceFilterQuery $filterQuery,
-        #[MapQueryString] PaginationFilterQuery       $paginationFilterQuery,
-        ResourceService                               $resourceService,
-    ): Response
-    {
+        #[MapQueryString] PaginationFilterQuery $paginationFilterQuery,
+        ResourceService $resourceService,
+    ): Response {
         $resources = $resourceService->paginateEntities($filterQuery, paginationFilterQuery: $paginationFilterQuery);
 
         return $this->successResponse(

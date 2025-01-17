@@ -20,13 +20,14 @@ use Symfony\Component\Routing\Attribute\Route;
 class PartialUpdateAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_PATCH])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce patched', groups: [GlobalApiGroups::PATCH])]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce patched', groups: [
+        GlobalApiGroups::PATCH,
+    ])]
     public function __invoke(
         #[MapRequestPayload] PartialUpdateAnnouncePayload $payload,
-        AnnounceService                                   $announceService,
-        int                                               $id,
-    ): Response
-    {
+        AnnounceService $announceService,
+        int $id,
+    ): Response {
         $announce = $announceService->partialUpdateEntityFromPayload($id, $payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [GlobalApiGroups::PATCH]);

@@ -31,14 +31,13 @@ class SendMessageController extends AbstractApiController
         statusCode: Response::HTTP_CREATED
     )]
     public function __invoke(
-        int                                     $id,
+        int $id,
         #[MapRequestPayload] SendMessagePayload $payload,
-        MessageService                          $messageService,
-        SerializerInterface                     $serializer,
-        #[CurrentUser] ?User                    $user = null,
-    ): Response
-    {
-        if (!$user instanceof User) {
+        MessageService $messageService,
+        SerializerInterface $serializer,
+        #[CurrentUser] ?User $user = null,
+    ): Response {
+        if (! $user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 

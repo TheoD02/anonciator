@@ -29,15 +29,13 @@ final class SendMessageControllerTest extends AbstractApiWebTestCase
     public function testOk(): void
     {
         // Arrange
-        $this->authenticate();
-
-        $sender = $this->user;
+        $sender = UserFactory::admin();
         $receiver = UserFactory::new()->create([
             'username' => 'receiver',
             'email' => 'receiver@domain.tld',
         ]);
         $announce = AnnounceFactory::new([
-            'createdBy' => $this->user->getEmail(),
+            'createdBy' => $sender->getEmail(),
         ])->create();
         $conversation = ConversationFactory::new()->create([
             'announce' => $announce,

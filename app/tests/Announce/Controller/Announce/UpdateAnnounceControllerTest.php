@@ -43,7 +43,6 @@ final class UpdateAnnounceControllerTest extends AbstractApiWebTestCase
         ])->_real();
 
         // Act
-        $this->authenticate();
         $this->request('PUT', parameters: [
             'id' => 1,
         ], json: [

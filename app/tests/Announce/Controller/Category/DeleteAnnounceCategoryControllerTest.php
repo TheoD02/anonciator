@@ -29,7 +29,6 @@ final class DeleteAnnounceCategoryControllerTest extends AbstractApiWebTestCase
         AnnounceCategoryFactory::new()->create();
 
         // Act
-        $this->authenticate();
         $this->request('DELETE', parameters: [
             'id' => 1,
         ]);

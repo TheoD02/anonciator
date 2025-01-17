@@ -34,6 +34,7 @@ class AnnounceFilterQuery implements FilterQueryDefinitionInterface
                     LowerThanOrEqualOperator::class,
                     BetweenOperator::class,
                 ])
-            );
+            )
+        ;
     }
 }

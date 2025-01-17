@@ -29,7 +29,6 @@ final class DeleteResourceControllerTest extends AbstractApiWebTestCase
         $resource = ResourceFactory::new()->create();
 
         // Act
-        $this->authenticate();
         $this->request('DELETE', parameters: [
             'id' => $resource->getId(),
         ]);

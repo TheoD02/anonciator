@@ -15,10 +15,12 @@ use function utils\ensure_directory_exists;
 #[AsTask(name: 'database:reset', description: 'Reset the database', aliases: ['db:reset'])]
 function resetDatabase(): void
 {
-    $output = run(
-        command: "docker compose exec -it database sh -c \"psql -d app -c '\\l'\"",
-        context: context()->withQuiet(),
-    )->getOutput();
+    $output = console([
+        'dbal:run-sql', "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'app';"]
+    )
+        ->run(context()->withQuiet())
+        ->getOutput()
+    ;
 
     if (str_contains($output, 'app')) {
         io()->info('Database "app" already exists.');
@@ -28,8 +30,8 @@ function resetDatabase(): void
         }
     }
 
+    console(commands: ['doctrine:database:drop', '--force', '--if-exists'])->run();
     console(commands: ['doctrine:database:create', '--if-not-exists'])->run();
-    console(commands: ['doctrine:schema:drop', '--full-database', '--force'])->run();
     console(commands: ['doctrine:migrations:migrate', '--no-interaction', '--allow-no-migration'])->run();
     console(commands: ['doctrine:fixtures:load', '--no-interaction', '--append'])->run();
 }

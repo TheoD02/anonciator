@@ -21,10 +21,9 @@ class MessageService
 
     public function __construct(
         private readonly ConversationService $conversationService,
-        private readonly AnnounceService     $announceService,
-        private readonly UserService         $userService,
-    )
-    {
+        private readonly AnnounceService $announceService,
+        private readonly UserService $userService,
+    ) {
     }
 
     public function createEntityFromPayload(int $id, SendMessagePayload $payload, User $user): Message
@@ -54,8 +53,8 @@ class MessageService
     public function getMessagesForConversation(int $id, PaginationFilterQuery $paginationFilterQuery)
     {
         return $this->getRepository()
-            ->getMessagesForConversation($id, $paginationFilterQuery);
-
+            ->getMessagesForConversation($id, $paginationFilterQuery)
+        ;
     }
 
     protected function getEntityClass(): string

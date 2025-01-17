@@ -16,6 +16,12 @@ if [ -f /app/.env ]; then
         ATTEMPTS_LEFT_TO_REACH_DATABASE=0
         break
       fi
+
+      if echo "$DATABASE_ERROR" | sed -n 's/database "\(.*\)" does not exist/\1/p'; then
+        echo "Database does not exist. Creating it..."
+        php bin/console doctrine:database:create --if-not-exists
+      fi
+
       sleep 1
       ATTEMPTS_LEFT_TO_REACH_DATABASE=$((ATTEMPTS_LEFT_TO_REACH_DATABASE - 1))
       echo "Still waiting for database to be ready... Or maybe the database is not reachable. $ATTEMPTS_LEFT_TO_REACH_DATABASE attempts left."

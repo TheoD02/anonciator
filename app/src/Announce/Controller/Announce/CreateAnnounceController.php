@@ -20,12 +20,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateAnnounceController extends AbstractApiController
 {
     #[Route('', methods: [Request::METHOD_POST])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce created', groups: [GlobalApiGroups::POST])]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce created', groups: [
+        GlobalApiGroups::POST,
+    ])]
     public function __invoke(
         #[MapRequestPayload] CreateAnnouncePayload $payload,
-        AnnounceService                            $announceService,
-    ): Response
-    {
+        AnnounceService $announceService,
+    ): Response {
         $announce = $announceService->createEntityFromPayload($payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [GlobalApiGroups::POST]);

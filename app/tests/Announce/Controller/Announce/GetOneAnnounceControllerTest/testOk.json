@@ -1,14 +1,16 @@
 {
-    "data": {
-        "id": 1,
-        "title": "Title",
-        "description": "Description",
-        "price": "100.00",
-        "categoryId": 1,
-        "location": "41.09870000",
-        "status": "draft",
-        "photoIds": []
-    },
-    "meta": null,
-    "success": true
+  "data": {
+    "id": 1,
+    "title": "Title",
+    "description": "Description",
+    "price": "100",
+    "categoryId": 1,
+    "location": "41.0987",
+    "status": "draft",
+    "photoIds": [],
+    "createdAt": "auto-generated-date",
+    "createdBy": "admin@domain.tld"
+  },
+  "meta": null,
+  "success": true
 }

@@ -31,7 +31,6 @@ final class GetOneAnnounceCategoryControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
-        $this->authenticate();
         $this->request('GET', parameters: [
             'id' => 1,
         ]);

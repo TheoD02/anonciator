@@ -47,7 +47,6 @@ final class PaginateAnnounceControllerTest extends AbstractApiWebTestCase
         ])->create();
 
         // Act
-        $this->authenticate();
         $this->request('GET');
 
         // Assert

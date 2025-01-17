@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Conversation\Controller;
 
-use App\Conversation\Dto\Filter\PaginateMessageFilter;
 use App\Conversation\Dto\Response\ConversationResponse;
 use App\Conversation\Service\ConversationService;
 use App\Shared\Api\AbstractApiController;

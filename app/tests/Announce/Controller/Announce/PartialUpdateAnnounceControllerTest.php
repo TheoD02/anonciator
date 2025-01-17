@@ -38,7 +38,6 @@ final class PartialUpdateAnnounceControllerTest extends AbstractApiWebTestCase
         ]);
 
         // Act
-        $this->authenticate();
         $this->request('PATCH', parameters: [
             'id' => 1,
         ], json: [

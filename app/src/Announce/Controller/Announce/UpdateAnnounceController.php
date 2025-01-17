@@ -20,13 +20,14 @@ use Symfony\Component\Routing\Attribute\Route;
 class UpdateAnnounceController extends AbstractApiController
 {
     #[Route('/{id}', methods: [Request::METHOD_PUT])]
-    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce updated', groups: [GlobalApiGroups::PUT])]
+    #[SuccessResponse(dataFqcn: AnnounceResponse::class, description: 'Announce updated', groups: [
+        GlobalApiGroups::PUT,
+    ])]
     public function __invoke(
         #[MapRequestPayload] UpdateAnnouncePayload $payload,
-        AnnounceService                            $announceService,
-        int                                        $id,
-    ): Response
-    {
+        AnnounceService $announceService,
+        int $id,
+    ): Response {
         $announce = $announceService->updateEntityFromPayload($id, $payload);
 
         return $this->successResponse($announce, target: AnnounceResponse::class, groups: [GlobalApiGroups::PUT]);

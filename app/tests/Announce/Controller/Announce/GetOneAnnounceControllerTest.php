@@ -8,6 +8,7 @@ use App\Announce\AnnounceStatus;
 use App\Announce\Controller\Announce\GetOneAnnounceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\AnnounceFactory;
+use App\Tests\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -35,10 +36,10 @@ final class GetOneAnnounceControllerTest extends AbstractApiWebTestCase
             'price' => 100,
             'location' => '41.0987',
             'status' => AnnounceStatus::DRAFT,
+            'createdBy' => UserFactory::admin()->getEmail(),
         ]);
 
         // Act
-        $this->authenticate();
         $this->request('GET', parameters: [
             'id' => 1,
         ]);
