@@ -1,17 +1,18 @@
-import { Badge, Button, Card, Center, Divider, Flex, Grid, Group, Image, Loader, LoadingOverlay, Pagination, Select, Text, TextInput, Title, Box, RangeSlider } from "@mantine/core";
+import { Badge, Button, Card, Center, Divider, Flex, Grid, Group, Image, Loader, LoadingOverlay, Pagination, Select, Text, TextInput, Title, Box, RangeSlider, Stack, Paper } from "@mantine/core";
 import { BaseKey, useApiUrl, useList, useMany } from "@refinedev/core";
 import { Carousel } from '@mantine/carousel';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { requestApi } from "../../../api";
+import { IconMoodEmpty } from "@tabler/icons-react";
 
 type ImagePreviewProps = {
     id: number;
     height: number;
 };
 
-export const ImagePreview = ({ id , height }: ImagePreviewProps) => {
+export const ImagePreview = ({ id, height }: ImagePreviewProps) => {
     const apiUrl = useApiUrl();
     const url = `${apiUrl}/resources/${id}`;
     const [imageObjectURL, setImageObjectURL] = useState<string | null>(null);
@@ -110,8 +111,17 @@ export const FrontAnnounceSearch = () => {
                 />
             </Box>
 
-            <div style={{ flex: 1 }}>
+            <Paper style={{ flex: 1 }} px={5} radius="md">
                 <Grid my={10}>
+                    {data?.data.length === 0 && (
+                        <Grid.Col span={12}>
+                            <Center>
+                                <Stack>
+                                    <Text align="center">No announces found</Text>
+                                </Stack>
+                            </Center>
+                        </Grid.Col>
+                    )}
                     {data?.data.map((announce) => (
                         <Grid.Col span={4} key={announce.id}>
                             <Card shadow="sm" p="lg" radius="md" withBorder>
@@ -181,7 +191,7 @@ export const FrontAnnounceSearch = () => {
                         onChange={(page) => setPagination({ ...pagination, current: page })}
                     />
                 </Center>
-            </div>
+            </Paper>
         </Flex>
     </div>;
 };
