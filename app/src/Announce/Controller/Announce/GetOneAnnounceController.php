@@ -30,7 +30,7 @@ class GetOneAnnounceController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(AnnounceService $announceService, int $id): Response
     {
-        $announce = $announceService->getEntityById($id);
+        $announce = $announceService->getEntityById($id, fail: true);
 
         return $this->successResponse(
             data: $announce,

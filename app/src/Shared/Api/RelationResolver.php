@@ -16,7 +16,8 @@ class RelationResolver
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-    ) {
+    )
+    {
     }
 
     /**
@@ -32,12 +33,10 @@ class RelationResolver
     {
         /** @var \ReflectionClass<TSource> $reflection */
         $reflection = new \ReflectionClass($source);
-
-        $properties = $this->getPropertiesWithRelationObject($reflection);
         $accessor = PropertyAccess::createPropertyAccessor();
 
-        foreach ($properties as $property) {
-            if ($property->isInitialized($source) === false) {
+        foreach ($this->getPropertiesWithRelationObject($reflection) as $property) {
+            if (!$property->isInitialized($source)) {
                 continue;
             }
 
@@ -47,245 +46,241 @@ class RelationResolver
                 continue;
             }
 
-            $mapRelation = $property->getAttributes(MapRelation::class)[0] ?? null;
-
-            if ($mapRelation === null) {
-                throw new \RuntimeException(\sprintf(
-                    'Property "%s::%s" is not annotated with MapRelation attribute',
-                    $source::class,
-                    $property->getName()
-                ));
-            }
-
-            /** @var MapRelation $mapRelationInstance */
-            $mapRelationInstance = $mapRelation->newInstance();
-
-            $targetProperty = $mapRelationInstance->toProperty;
-            $many = $mapRelationInstance->many;
-
+            $mapRelation = $this->getMapRelation($property, $source);
+            $targetProperty = $mapRelation->toProperty;
             $targetPropertyReflection = new \ReflectionProperty($target, $targetProperty);
-            $targetPropertyType = $targetPropertyReflection->getType();
-            if ($targetPropertyType instanceof \ReflectionNamedType === false) {
-                throw new \RuntimeException(\sprintf(
-                    'Property "%s::%s" is not a named type. Type "%s" is not supported yet.',
-                    $source::class,
-                    $targetProperty,
-                    $targetPropertyType !== null ? $targetPropertyType::class : 'null',
-                ));
-            }
 
-            $isCollection = $targetPropertyType->getName() === Collection::class;
-            /** @var object|null $collectionInstance */
-            $collectionInstance = $isCollection ? $targetPropertyReflection->getValue($target) : null;
+            $collection = $this->getCollectionInstance($targetPropertyReflection, $target);
 
-            if ($isCollection && ! $collectionInstance instanceof Collection) {
-                throw new \RuntimeException(\sprintf(
-                    'Property "%s::%s" is a collection but the collection instance is not a collection. Type "%s" is not supported yet.',
-                    $source::class,
-                    $targetProperty,
-                    $collectionInstance !== null ? $collectionInstance::class : 'null',
-                ));
-            }
-
-            /** @var ?Collection<array-key, object> $collectionInstance */
             if ($relation->set === []) {
-                $collectionInstance?->clear();
-
-                if ($mapRelationInstance->allowEmpty === true) {
-                    return $target;
-                }
-
-                if ($targetPropertyReflection->getType()?->allowsNull() === false) {
-                    $violations = new ConstraintViolationList([
-                        new ConstraintViolation(
-                            'Property is not nullable and no value was set',
-                            null,
-                            [],
-                            $target,
-                            $targetProperty,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null,
-                        ),
-                    ]);
-
-                    throw HttpException::fromStatusCode(
-                        422,
-                        implode(
-                            "\n",
-                            array_map(static fn ($e): string|\Stringable => $e->getMessage(), iterator_to_array(
-                                $violations
-                            ))
-                        ),
-                        new ValidationFailedException($target, $violations)
-                    );
-                }
-
-                return $target;
-            }
-
-            $targetType = $this->em->getClassMetadata($target::class)->getAssociationTargetClass($targetProperty);
-
-            if ($many === false && \count($relation->set ?? []) > 1) {
-                // Ensure that we are not trying to set more than one value to a non-collection property
-                throw new \RuntimeException(\sprintf(
-                    'Not possible to define more than one values in "set" field for property "%s::%s". Please input only one id or if is a collection, change the "many" attribute to true.',
-                    $source::class,
-                    $property->getName(),
-                ), );
-            }
-
-            if ($many === true && $collectionInstance === null) {
-                throw new \RuntimeException(\sprintf(
-                    'Attribute "many" is true but can\'t resolve collection instance for property "%s::%s". Please check that property is typed with %s.',
-                    $source::class,
-                    $property->getName(),
-                    Collection::class,
-                ), );
-            }
-
-            if ($relation->set) {
-                $collectionInstance?->clear();
-
-                $databaseIds = $this->em->getRepository($targetType)
-                    ->createQueryBuilder('t')
-                    ->select('t.id')
-                    ->where('t.id IN (:ids)')
-                    ->setParameter('ids', $relation->set)
-                    ->getQuery()
-                    ->getScalarResult()
-                ;
-                $databaseIds = array_column($databaseIds, 'id');
-                if (\count($databaseIds) !== \count($relation->set)) {
-                    $missingIds = array_diff($relation->set, $databaseIds);
-                    $violations = new ConstraintViolationList([
-                        new ConstraintViolation(
-                            'Some ids does not exist',
-                            null,
-                            [
-                                'ids' => $missingIds,
-                            ],
-                            $target,
-                            $targetProperty,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null,
-                        ),
-                    ]);
-
-                    throw HttpException::fromStatusCode(
-                        422,
-                        implode(
-                            "\n",
-                            array_map(static fn ($e): string|\Stringable => $e->getMessage(), iterator_to_array(
-                                $violations
-                            ))
-                        ),
-                        new ValidationFailedException($target, $violations)
-                    );
-                }
-
-                foreach ($relation->set as $id) {
-                    $reference = $this->em->getReference($targetType, $id);
-                    if ($reference === null) {
-                        throw new \RuntimeException(\sprintf('%s with id "%s" does not exist', $targetType, $id));
-                    }
-
-                    if ($collectionInstance === null) {
-                        $accessor->setValue($target, $property->getName(), $reference);
-                        continue;
-                    }
-
-                    $collectionInstance->add($reference);
-                }
-
+                $this->handleEmptySet($collection, $mapRelation, $targetPropertyReflection, $target, $targetProperty);
                 continue;
             }
 
-            if ($collectionInstance === null || $many === false) {
-                // Ensure that we are not trying to add or remove values to a non-collection property
-                throw new \RuntimeException(
-                    'Not possible to "add" or "remove" values to non-collection property. Please use "set" operation.',
+            $targetType = $this->em->getClassMetadata($target::class)
+                ->getAssociationTargetClass($targetProperty);
+
+            $this->validateRelation($relation, $mapRelation, $property, $source, $collection);
+
+            if ($relation->set) {
+                $this->handleSetOperation(
+                    $relation,
+                    $collection,
+                    $targetType,
+                    $target,
+                    $targetProperty,
+                    $property,
+                    $accessor
                 );
+                continue;
             }
 
-            $duplicateIds = array_intersect($relation->add ?? [], $relation->remove ?? []);
-            if ($duplicateIds !== []) {
-                // Ensure that we are not trying to add or remove duplicate values (because we don't know which has priority)
-                throw new \RuntimeException(\sprintf(
-                    'Duplicate ids "%s" are not allowed',
-                    implode(', ', $duplicateIds)
-                ));
-            }
-
-            // We have all information to set the values in case of "add" and "remove"
-            $existingIds = $collectionInstance
-                ->map(fn (object $object): int|string => $this->getDoctrineId($object))
-                ->toArray()
-            ;
-            $idsToAdd = array_diff($relation->add ?? [], $existingIds);
-            $idsToRemove = array_intersect($relation->remove ?? [], $existingIds);
-
-            foreach ($idsToAdd as $idToAdd) {
-                $reference = $this->em->getReference($targetType, $idToAdd);
-                if ($reference === null) {
-                    throw new \RuntimeException(\sprintf('%s with id "%s" does not exist', $targetType, $idToAdd));
-                }
-
-                $collectionInstance->add($reference);
-            }
-
-            foreach ($idsToRemove as $idToRemove) {
-                $reference = $this->em->getReference($targetType, $idToRemove);
-                if ($reference === null) {
-                    throw new \RuntimeException(\sprintf('%s with id "%s" does not exist', $targetType, $idToRemove));
-                }
-
-                $collectionInstance->removeElement($reference);
-            }
+            $this->handleAddRemoveOperations($relation, $collection, $targetType);
         }
 
         return $target;
     }
 
-    /**
-     * @template T of object
-     *
-     * @param \ReflectionClass<T> $reflection
-     *
-     * @return iterable<\ReflectionProperty>
-     */
     private function getPropertiesWithRelationObject(\ReflectionClass $reflection): iterable
     {
-        foreach ($reflection->getProperties() as $reflectionProperty) {
-            $type = $reflectionProperty->getType();
-            if ($type === null) {
+        foreach ($reflection->getProperties() as $property) {
+            $type = $property->getType();
+            if (!$type instanceof \ReflectionNamedType) {
                 continue;
             }
 
-            if ($type instanceof \ReflectionNamedType === false) {
-                continue;
+            if (in_array($type->getName(), [OneRelation::class, Relation::class], true)) {
+                yield $property;
             }
+        }
+    }
 
-            if ($type->getName() === OneRelation::class || $type->getName() === Relation::class) {
-                yield $reflectionProperty;
+    private function getMapRelation(\ReflectionProperty $property, object $source): MapRelation
+    {
+        $mapRelation = $property->getAttributes(MapRelation::class)[0] ?? null;
+        if ($mapRelation === null) {
+            throw new \RuntimeException(sprintf(
+                'Property "%s::%s" is not annotated with MapRelation attribute',
+                $source::class,
+                $property->getName()
+            ));
+        }
+
+        return $mapRelation->newInstance();
+    }
+
+    private function getCollectionInstance(
+        \ReflectionProperty $targetPropertyReflection,
+        object              $target
+    ): ?Collection
+    {
+        $targetPropertyType = $targetPropertyReflection->getType();
+        if (!$targetPropertyType instanceof \ReflectionNamedType) {
+            throw new \RuntimeException('Property type must be a named type');
+        }
+
+        $isCollection = $targetPropertyType->getName() === Collection::class;
+        $collection = $isCollection ? $targetPropertyReflection->getValue($target) : null;
+
+        if ($isCollection && !$collection instanceof Collection) {
+            throw new \RuntimeException('Collection property must be instance of Collection');
+        }
+
+        return $collection;
+    }
+
+    private function handleEmptySet(
+        ?Collection         $collection,
+        MapRelation         $mapRelation,
+        \ReflectionProperty $targetPropertyReflection,
+        object              $target,
+        string              $targetProperty
+    ): void
+    {
+        $collection?->clear();
+
+        if ($mapRelation->allowEmpty === true) {
+            return;
+        }
+
+        if ($targetPropertyReflection->getType()?->allowsNull() === false) {
+            $this->throwValidationError(
+                'Property is not nullable and no value was set',
+                $target,
+                $targetProperty
+            );
+        }
+    }
+
+    private function throwValidationError(
+        string $message,
+        object $target,
+        string $property,
+        array  $parameters = []
+    ): void
+    {
+        $violations = new ConstraintViolationList([
+            new ConstraintViolation(
+                $message,
+                null,
+                $parameters,
+                $target,
+                $property,
+                null
+            ),
+        ]);
+
+        throw HttpException::fromStatusCode(
+            422,
+            implode("\n", array_map(
+                static fn($e): string|\Stringable => $e->getMessage(),
+                iterator_to_array($violations)
+            )),
+            new ValidationFailedException($target, $violations)
+        );
+    }
+
+    private function validateRelation(
+        Relation            $relation,
+        MapRelation         $mapRelation,
+        \ReflectionProperty $property,
+        object              $source,
+        ?Collection         $collection
+    ): void
+    {
+        if (!$mapRelation->many && count($relation->set ?? []) > 1) {
+            throw new \RuntimeException(
+                "Cannot set multiple values for non-collection property {$property->getName()}"
+            );
+        }
+
+        if ($mapRelation->many && $collection === null) {
+            throw new \RuntimeException(
+                "Collection property {$property->getName()} must be initialized"
+            );
+        }
+    }
+
+    private function handleSetOperation(
+        Relation            $relation,
+        ?Collection         $collection,
+        string              $targetType,
+        object              $target,
+        string              $targetProperty,
+        \ReflectionProperty $property,
+                            $accessor
+    ): void
+    {
+        $collection?->clear();
+        $this->validateEntityIds($relation->set, $targetType, $target, $targetProperty);
+
+        foreach ($relation->set as $id) {
+            $reference = $this->em->getReference($targetType, $id);
+
+            if ($collection === null) {
+                $accessor->setValue($target, $property->getName(), $reference);
+            } else {
+                $collection->add($reference);
             }
+        }
+    }
+
+    private function validateEntityIds(
+        array  $ids,
+        string $targetType,
+        object $target,
+        string $targetProperty
+    ): void
+    {
+        $databaseIds = $this->em->getRepository($targetType)
+            ->createQueryBuilder('t')
+            ->select('t.id')
+            ->where('t.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getScalarResult();
+
+        $databaseIds = array_column($databaseIds, 'id');
+        if (count($databaseIds) !== count($ids)) {
+            $missingIds = array_diff($ids, $databaseIds);
+            $this->throwValidationError(
+                'Some ids do not exist',
+                $target,
+                $targetProperty,
+                ['ids' => $missingIds]
+            );
+        }
+    }
+
+    private function handleAddRemoveOperations(
+        Relation    $relation,
+        ?Collection $collection,
+        string      $targetType
+    ): void
+    {
+        $existingIds = $collection
+            ?->map(fn(object $object): int|string => $this->getDoctrineId($object))
+            ->toArray();
+
+        $idsToAdd = array_diff($relation->add ?? [], $existingIds);
+        $idsToRemove = array_intersect($relation->remove ?? [], $existingIds);
+
+        foreach ($idsToAdd as $id) {
+            $collection?->add($this->em->getReference($targetType, $id));
+        }
+
+        foreach ($idsToRemove as $id) {
+            $collection?->removeElement($this->em->getReference($targetType, $id));
         }
     }
 
     private function getDoctrineId(object $object): int|string
     {
         $id = $this->em->getClassMetadata($object::class)->getIdentifierValues($object);
-
         $idValue = $id[0] ?? $id['id'];
-        if (! \is_string($idValue) && ! \is_int($idValue)) {
-            throw new \RuntimeException(
-                'Doctrine id is not a string or a int value. Doctrine id must be a string or a int value.'
-            );
+
+        if (!is_string($idValue) && !is_int($idValue)) {
+            throw new \RuntimeException('Doctrine id must be a string or integer value');
         }
 
         return $idValue;
