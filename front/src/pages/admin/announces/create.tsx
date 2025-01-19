@@ -1,32 +1,22 @@
 import { Create, useForm, useSelect } from "@refinedev/mantine";
-import { useApiUrl, useTranslate } from "@refinedev/core";
-import { TextInput, NumberInput, Select, MultiSelect, Image, Text, Card, ActionIcon, Flex, SimpleGrid } from "@mantine/core";
-import {
-  Dropzone,
-  IMAGE_MIME_TYPE,
-  type FileWithPath,
-} from "@mantine/dropzone";
-import { useEffect, useState } from "react";
-import { IconTrash } from "@tabler/icons-react";
+import { useTranslate } from "@refinedev/core";
+import { TextInput, NumberInput, Select, Text } from "@mantine/core";
 import { z } from 'zod';
 import { zodResolver } from "@mantine/form";
-import { requestApi } from "../../../api";
-import { DropZoneImagePreview } from "../../../components/drop-zone-image-preview";
 import { Upload } from "../../../components/upload";
 
 const schemaValidation = z.object({
   title: z.string().min(3),
   description: z.string().min(10),
   price: z.number(),
-  // Skip category for now (Front use Single value, and backend use array, need to improve this)
-  //category: z.object({
-  //  set: z.number(),
-  //}),
+  category: z.object({
+   set: z.number().positive('Please select a category'),
+  }),
   location: z.number(),
   status: z.string(),
-  //photos: z.array(z.object({
-  //  set: z.array(z.number()),
-  //})).min(0),
+  photos: z.object({
+    set: z.array(z.number().positive()).nonempty('Please upload at least one photo'),
+  }),
 });
 
 export const AnnounceCreate = () => {
@@ -43,9 +33,10 @@ export const AnnounceCreate = () => {
       title: "Cooul",
       description: "Woaw",
       price: 10.000,
-      category: { set: [1] },
+      category: { set: 0 },
       location: 10.000,
       status: "draft",
+      photos: { set: [] },
     },
     validate: zodResolver(schemaValidation),
   });
@@ -74,8 +65,7 @@ export const AnnounceCreate = () => {
         label={translate("announces.fields.price")}
         {...getInputProps("price")}
       />
-      <MultiSelect // We should use Select here but need to transform single value to array (or handle that in backend)
-        maxSelectedValues={1}
+      <Select
         mt="sm"
         label={translate("announces.fields.categoryId")}
         {...getInputProps("category.set")}
@@ -99,6 +89,7 @@ export const AnnounceCreate = () => {
       <Upload
         onChange={(files) => setFieldValue("photos", { set: files })}
         value={values.photos?.set}
+        error={(errors["photos.set"] || '') as string}
       />
     </Create>
   );

@@ -13,9 +13,10 @@ type UploadProps = {
   onChange?: (fileIds: number[]) => void;
   value?: number[];
   multiple?: boolean;
+  error?: string;
 };
 
-export const Upload = ({ onChange, value = [], multiple = true }: UploadProps) => {
+export const Upload = ({ onChange, value = [], multiple = true, error }: UploadProps) => {
   const [files, setFiles] = useState<number[]>(value);
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const apiUrl = useApiUrl();
@@ -86,6 +87,11 @@ export const Upload = ({ onChange, value = [], multiple = true }: UploadProps) =
       >
         <Text align="center">Drop images here</Text>
       </Dropzone>
+      {error && (
+        <Text color="red" size="sm" mt={4}>
+          {error}
+        </Text>
+      )}
       {previews}
     </>
   );
