@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { zodResolver } from "@mantine/form";
 import { requestApi } from "../../../api";
 import { DropZoneImagePreview } from "../../../components/drop-zone-image-preview";
+import { Upload } from "../../../components/upload";
 
 const schemaValidation = z.object({
   title: z.string().min(3),
@@ -55,58 +56,6 @@ export const AnnounceCreate = () => {
     optionValue: "id",
     defaultValue: [],
   });
-  const [files, setFiles] = useState<number[]>([]);
-  const [isUploadLoading, setIsUploadLoading] = useState(false);
-
-  const apiUrl = useApiUrl();
-
-  const handleRemove = (index: number) => {
-    if (!files[index]) {
-      console.error(files, index);
-      console.error("File not found");
-      return;
-    }
-
-    requestApi(`${apiUrl}/resources/${files[index]}`, {
-      method: "DELETE",
-    });
-
-    setFiles(files.filter((_, i) => i !== index));
-  }
-  const previews = <SimpleGrid cols={8}>
-    {files.map((file, index) => {
-      return <DropZoneImagePreview key={file} id={file} handleRemove={() => handleRemove(index)} />;
-    })}
-  </SimpleGrid>
-
-  const handleOnDrop = (files: FileWithPath[]) => {
-    try {
-      setIsUploadLoading(true);
-
-      files.map(async (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const res = await requestApi(`${apiUrl}/resources`, {
-          method: "POST",
-          body: formData,
-        });
-        const json = await res.json();
-
-        setFiles(
-          (prev) => [...prev, json.data.id]
-        );
-      });
-
-      setIsUploadLoading(false);
-    } catch (error) {
-      setIsUploadLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    setFieldValue("photos", { set: files });
-  }, [files]);
 
   return (
     <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
@@ -147,14 +96,10 @@ export const AnnounceCreate = () => {
         {...getInputProps("status")}
       />
       <Text mt="sm">Photos</Text>
-      <Dropzone
-        accept={IMAGE_MIME_TYPE}
-        onDrop={handleOnDrop}
-        loading={isUploadLoading}
-      >
-        <Text align="center">Drop images here</Text>
-      </Dropzone>
-      {previews}
+      <Upload
+        onChange={(files) => setFieldValue("photos", { set: files })}
+        value={values.photos?.set}
+      />
     </Create>
   );
 };
