@@ -22,7 +22,8 @@ class Conversation
     #[ORM\Column(length: 200)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne()]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Announce $announce = null;
 
     #[ORM\ManyToOne]
@@ -107,7 +108,7 @@ class Conversation
 
     public function addMessage(Message $message): static
     {
-        if (! $this->messages->contains($message)) {
+        if (!$this->messages->contains($message)) {
             $this->messages->add($message);
             $message->setConversation($this);
         }

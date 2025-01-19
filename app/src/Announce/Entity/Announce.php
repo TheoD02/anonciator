@@ -36,7 +36,7 @@ class Announce
     #[Visibility(external: false)]
     private string $price = '0.00';
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private AnnounceCategory $category;
 
@@ -163,7 +163,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (! $this->photos->contains($photo)) {
+        if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
         }
 
