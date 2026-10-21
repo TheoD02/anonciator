@@ -39,7 +39,7 @@ jobs:
         run: php bin/console lint:container
 
       - name: PHPStan
-        run: vendor-bin/phpstan/vendor/bin/phpstan analyse --ansi --configuration vendor-bin/phpstan/phpstan.neon --memory-limit=1G --error-format=github
+        run: vendor/bin/phpstan analyse --ansi --configuration vendor-bin/phpstan/phpstan.neon --memory-limit=1G --error-format=github
 
   tests:
     name: Run Tests
