@@ -27,7 +27,7 @@ final class GetOneResourceControllerTest extends AbstractApiWebTestCase
         $filename = 'abc1.txt';
         $filepath = "{$kernelProjectDir}/public/uploads/{$filename}";
         $fileContent = 'abc1';
-        (new Filesystem())->dumpFile($filepath, $fileContent);
+        new Filesystem()->dumpFile($filepath, $fileContent);
 
         ResourceFactory::new()->create([
             'bucket' => 'files',
