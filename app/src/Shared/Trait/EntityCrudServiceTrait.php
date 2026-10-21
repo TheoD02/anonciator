@@ -111,7 +111,6 @@ trait EntityCrudServiceTrait
      */
     public function getEntityById(int $id, bool $fail = false): ?object
     {
-        /** @var T|null $entity */
         $entity = $this->getRepository()->find($id);
 
         if ($entity === null && $fail) {

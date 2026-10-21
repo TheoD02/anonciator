@@ -17,7 +17,7 @@ class OnJwtTokenCreatedEventListener
         $user = $event->getUser();
 
         $data['id'] = $user->getId();
-        $data['username'] = $user->getUsername();
+        $data['username'] = $user->getUserIdentifier();
 
         $event->setData($data);
     }

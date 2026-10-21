@@ -19,7 +19,7 @@ class IsEmptyOperator implements OperatorInterface
 
     public function apply(QueryBuilder $qb, FilterDefinition $definition, string|array $value): void
     {
-        $shouldBeEmpty = $value === 'true' || $value === '1' || $value === '';
+        $shouldBeEmpty = \in_array($value, ['true', '1', ''], true);
 
         $alias = $this->getAlias($qb, $definition);
 

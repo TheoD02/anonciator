@@ -32,7 +32,7 @@ class GetOneResourceController extends AbstractApiController
     #[ErrorResponse(statusCode: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Internal server error')]
     public function __invoke(int $id, KernelInterface $kernel, ResourceService $resourceService): Response
     {
-        /** @var resource $resource */
+        /** @var Resource $resource */
         $resource = $resourceService->getEntityById($id, fail: true);
 
         $file = "{$kernel->getProjectDir()}/public{$resource->getPath()}";
