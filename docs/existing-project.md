@@ -39,7 +39,7 @@ Start the project!
 Browse `https://localhost`, your Docker configuration is ready!
 
 > [!NOTE]
-> If you want to use the worker mode of FrankenPHP, make sure you required the `runtime/frankenphp-symfony` package.
+> Symfony 7.4+ runs the FrankenPHP worker mode natively: no extra runtime package is needed.
 
 > [!NOTE]
 > The worker mode of FrankenPHP is enabled by default in prod. To disabled it, add the env var FRANKENPHP_CONFIG as

@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1.4
 
 # Versions
-FROM dunglas/frankenphp:1.13.2-php8.4.27-bookworm AS frankenphp_upstream
+FROM dunglas/frankenphp:1.13.2-php8.5.12-bookworm AS frankenphp_upstream
 
 ARG SERVER_NAME=":80"
 ENV SERVER_NAME=${SERVER_NAME}
@@ -125,8 +125,7 @@ USER root
 
 ENV APP_ENV=prod
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
-ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
-ENV MAX_REQUESTS=200
+ENV FRANKENPHP_LOOP_MAX=200
 
 # Cleanup
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
