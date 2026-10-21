@@ -22,3 +22,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+when@test:
+    services:
+        mercure.hub.default:
+            class: Symfony\Component\Mercure\MockHub
+            arguments:
+                $url: '%env(MERCURE_URL)%'
+                $jwtProvider: !service
+                    class: Symfony\Component\Mercure\Jwt\StaticTokenProvider
+                    arguments: ['test-token']
+                $publisher: 'spl_object_hash'
+                $publicUrl: '%env(MERCURE_PUBLIC_URL)%'

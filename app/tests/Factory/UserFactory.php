@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Factory;
 
 use App\User\Entity\User;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<User>
+ * @extends PersistentObjectFactory<User>
  */
-final class UserFactory extends PersistentProxyObjectFactory
+final class UserFactory extends PersistentObjectFactory
 {
     public static function class(): string
     {
@@ -23,7 +23,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'username' => 'Admin Username',
             'email' => 'admin@domain.tld',
             'password' => '$2y$13$eAqv1hbaVJiLUgaC6p23nuuebHz9IqbNwoLoxh8Pu1lQJZJmm46Oe',
-        ])->_real();
+        ]);
     }
 
     protected function defaults(): array

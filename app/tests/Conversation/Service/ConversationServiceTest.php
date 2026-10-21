@@ -21,7 +21,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Zenstruck\Foundry\Test\Factories;
+
+use function Zenstruck\Foundry\set;
 
 /**
  * @internal
@@ -29,8 +30,6 @@ use Zenstruck\Foundry\Test\Factories;
 #[CoversClass(ConversationService::class)]
 final class ConversationServiceTest extends TestCase
 {
-    use Factories;
-
     private UserService&MockObject $userServiceMock;
 
     private AnnounceService&MockObject $announceServiceMock;
@@ -44,13 +43,9 @@ final class ConversationServiceTest extends TestCase
     public function testInitConversationWithoutExistingConversation(): void
     {
         // Arrange
-        $userAnnounceCreator = UserFactory::new()->create()->_set('id', 1);
-        $loggedUser = UserFactory::new()->create()->_set('id', 2);
-        $announce = AnnounceFactory::new()
-            ->withCreator($userAnnounceCreator->_real())
-            ->create()
-            ->_set('id', 1)
-        ;
+        $userAnnounceCreator = set(UserFactory::new()->create(), 'id', 1);
+        $loggedUser = set(UserFactory::new()->create(), 'id', 2);
+        $announce = set(AnnounceFactory::new()->withCreator($userAnnounceCreator)->create(), 'id', 1);
 
         $this->announceServiceMock
             ->expects($this->once())
@@ -88,7 +83,7 @@ final class ConversationServiceTest extends TestCase
         // Act
         $conversation = $this->conversationService->initConversationOrGetExisting(
             announceId: $announce->getId(),
-            loggedUser: $loggedUser->_real()
+            loggedUser: $loggedUser
         );
 
         // Assert
@@ -98,8 +93,8 @@ final class ConversationServiceTest extends TestCase
     public function testInitConversationWhenAnnounceCreatorDoesNotExist(): void
     {
         // Arrange
-        $loggedUser = UserFactory::new()->create()->_set('id', 2);
-        $announce = AnnounceFactory::new()->create()->_set('id', 1);
+        $loggedUser = set(UserFactory::new()->create(), 'id', 2);
+        $announce = set(AnnounceFactory::new()->create(), 'id', 1);
 
         $this->announceServiceMock
             ->expects($this->once())
@@ -117,24 +112,20 @@ final class ConversationServiceTest extends TestCase
 
         // Assert
         $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('Announce creator does not exist');
+        $this->expectExceptionMessageIsOrContains('Announce creator does not exist');
 
         // Act
         $this->conversationService->initConversationOrGetExisting(
             announceId: $announce->getId(),
-            loggedUser: $loggedUser->_real()
+            loggedUser: $loggedUser
         );
     }
 
     public function testInitConversationWhenLoggedUserIsAnnounceCreator(): void
     {
         // Arrange
-        $userAnnounceCreator = UserFactory::new()->create()->_set('id', 1);
-        $announce = AnnounceFactory::new()
-            ->withCreator($userAnnounceCreator->_real())
-            ->create()
-            ->_set('id', 1)
-        ;
+        $userAnnounceCreator = set(UserFactory::new()->create(), 'id', 1);
+        $announce = set(AnnounceFactory::new()->withCreator($userAnnounceCreator)->create(), 'id', 1);
 
         $this->announceServiceMock
             ->expects($this->once())
@@ -151,29 +142,25 @@ final class ConversationServiceTest extends TestCase
         ;
 
         $this->expectException(UnprocessableEntityHttpException::class);
-        $this->expectExceptionMessage('Cannot create conversation to self');
+        $this->expectExceptionMessageIsOrContains('Cannot create conversation to self');
 
         // Act
         $this->conversationService->initConversationOrGetExisting(
             announceId: $announce->getId(),
-            loggedUser: $userAnnounceCreator->_real()
+            loggedUser: $userAnnounceCreator
         );
     }
 
     public function testInitConversationWithExistingConversation(): void
     {
         // Arrange
-        $userAnnounceCreator = UserFactory::new()->create()->_set('id', 1);
-        $loggedUser = UserFactory::new()->create()->_set('id', 2);
-        $announce = AnnounceFactory::new()
-            ->withCreator($userAnnounceCreator->_real())
-            ->create()
-            ->_set('id', 1)
-        ;
+        $userAnnounceCreator = set(UserFactory::new()->create(), 'id', 1);
+        $loggedUser = set(UserFactory::new()->create(), 'id', 2);
+        $announce = set(AnnounceFactory::new()->withCreator($userAnnounceCreator)->create(), 'id', 1);
         $existingConversation = ConversationBuilder::new()
             ->withAnnounce($announce)
-            ->withInitializedBy($loggedUser->_real())
-            ->withReceiver($userAnnounceCreator->_real())
+            ->withInitializedBy($loggedUser)
+            ->withReceiver($userAnnounceCreator)
             ->build()
         ;
 
@@ -213,7 +200,7 @@ final class ConversationServiceTest extends TestCase
         // Act
         $conversation = $this->conversationService->initConversationOrGetExisting(
             announceId: $announce->getId(),
-            loggedUser: $loggedUser->_real()
+            loggedUser: $loggedUser
         );
 
         // Assert
@@ -235,11 +222,11 @@ final class ConversationServiceTest extends TestCase
         $this->emMock = $this->createMock(EntityManagerInterface::class);
         $this->conversationService
             ->setEntityCrudServiceDependencies(
-                mapper: $this->createMock(AutoMapperInterface::class),
+                mapper: $this->createStub(AutoMapperInterface::class),
                 em: $this->emMock,
-                dispatcher: $this->createMock(EventDispatcherInterface::class),
-                relationResolver: $this->createMock(RelationResolver::class),
-                logger: $this->createMock(LoggerInterface::class),
+                dispatcher: $this->createStub(EventDispatcherInterface::class),
+                relationResolver: $this->createStub(RelationResolver::class),
+                logger: $this->createStub(LoggerInterface::class),
             )
         ;
 

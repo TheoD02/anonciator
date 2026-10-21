@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Factory;
 
 use App\Conversation\Entity\Conversation;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Conversation>
+ * @extends PersistentObjectFactory<Conversation>
  */
-final class ConversationFactory extends PersistentProxyObjectFactory
+final class ConversationFactory extends PersistentObjectFactory
 {
     public static function class(): string
     {

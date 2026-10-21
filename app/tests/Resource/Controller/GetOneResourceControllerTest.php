@@ -9,18 +9,15 @@ use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\ResourceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Zenstruck\Foundry\Attribute\ResetDatabase;
 
 /**
  * @internal
  */
 #[CoversClass(GetOneResourceController::class)]
+#[ResetDatabase]
 final class GetOneResourceControllerTest extends AbstractApiWebTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testOk(): void
     {
         // Arrange

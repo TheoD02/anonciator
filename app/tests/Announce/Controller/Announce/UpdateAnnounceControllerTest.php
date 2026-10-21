@@ -40,7 +40,7 @@ final class UpdateAnnounceControllerTest extends AbstractApiWebTestCase
             'category' => $category,
             'location' => '41.0987',
             'status' => AnnounceStatus::DRAFT,
-        ])->_real();
+        ]);
 
         // Act
         $this->request('PUT', parameters: [

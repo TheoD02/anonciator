@@ -16,7 +16,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Zenstruck\Foundry\Test\Factories;
 
 /**
  * @internal
@@ -24,8 +23,6 @@ use Zenstruck\Foundry\Test\Factories;
 #[CoversClass(UserService::class)]
 final class UserServiceTest extends TestCase
 {
-    use Factories;
-
     private UserService $userService;
 
     private UserRepository&MockObject $userRepositoryMock;
@@ -78,11 +75,11 @@ final class UserServiceTest extends TestCase
         $this->userService = new UserService();
         $this->userService
             ->setEntityCrudServiceDependencies(
-                mapper: $this->createMock(AutoMapperInterface::class),
+                mapper: $this->createStub(AutoMapperInterface::class),
                 em: $emMock,
-                dispatcher: $this->createMock(EventDispatcherInterface::class),
-                relationResolver: $this->createMock(RelationResolver::class),
-                logger: $this->createMock(LoggerInterface::class),
+                dispatcher: $this->createStub(EventDispatcherInterface::class),
+                relationResolver: $this->createStub(RelationResolver::class),
+                logger: $this->createStub(LoggerInterface::class),
             )
         ;
     }

@@ -7,12 +7,12 @@ namespace App\Tests\Factory;
 use App\Announce\Entity\Announce;
 use App\Announce\Enum\AnnounceStatus;
 use App\User\Entity\User;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Announce>
+ * @extends PersistentObjectFactory<Announce>
  */
-final class AnnounceFactory extends PersistentProxyObjectFactory
+final class AnnounceFactory extends PersistentObjectFactory
 {
     public static function class(): string
     {

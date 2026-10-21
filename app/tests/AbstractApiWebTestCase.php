@@ -16,17 +16,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Zenstruck\Foundry\Attribute\ResetDatabase;
 
 use function Symfony\Component\String\u;
 
 /** @phpstan-ignore-next-line shipmonk.invalidClassSuffix (OK for abstract class) */
+#[ResetDatabase]
 abstract class AbstractApiWebTestCase extends WebTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     protected static KernelBrowser $client;
 
     protected ?User $user = null;
@@ -36,9 +33,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
         return self::$client->getRequest();
     }
 
-    /**
-     * @before
-     */
+    #[Before]
     public function setupClient(): void
     {
         self::$client = static::createClient([], [
@@ -175,9 +170,7 @@ abstract class AbstractApiWebTestCase extends WebTestCase
             $uri .= '?' . http_build_query($query);
         }
 
-        if ($headers === null) {
-            $headers = [];
-        }
+        $headers ??= [];
 
         $headers = array_merge(
             $headers,

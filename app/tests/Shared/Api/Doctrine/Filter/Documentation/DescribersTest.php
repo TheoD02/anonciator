@@ -43,6 +43,7 @@ use App\Shared\Api\Doctrine\Filter\Operator\NotInOperator;
 use App\Shared\Api\Doctrine\Filter\Operator\NotStartWithOperator;
 use App\Shared\Api\Doctrine\Filter\Operator\StartWithOperator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -69,6 +70,20 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(StartWithDescriber::class)]
 final class DescribersTest extends TestCase
 {
+    #[DataProvider('provideDescriberCases')]
+    public function testDescriber(
+        BetweenDescriber|ContainDescriber|EndWithDescriber|EqualDescriber|GreaterThanDescriber|GreaterThanOrEqualDescriber|IsEmptyDescriber|IsNullDescriber|LowerThanDescriber|LowerThanOrEqualDescriber|NotBetweenDescriber|NotContainDescriber|NotEndWithDescriber|NotEqualOperatorDescriber|NotInOperatorDescriber|NotStartWithDescriber|StartWithDescriber|InOperatorDescriber $instance,
+        string $expectedOperator,
+        string $expectedName,
+        string $expectedDescription,
+    ): void {
+        self::assertSame($expectedOperator, $instance::operator());
+        $parameter = $instance->parameter(FilterDefinition::create('entityName', 'publicName'));
+        self::assertSame($expectedName, $parameter->name);
+        self::assertSame($expectedDescription, $parameter->description);
+        self::assertSame('query', $parameter->in);
+    }
+
     public static function provideDescriberCases(): iterable
     {
         yield [new BetweenDescriber(), BetweenOperator::class, 'publicName[btw]', 'Between operator'];
@@ -99,21 +114,5 @@ final class DescribersTest extends TestCase
         yield [new NotStartWithDescriber(), NotStartWithOperator::class, 'publicName[nstw]', 'Not start with operator'];
         yield [new StartWithDescriber(), StartWithOperator::class, 'publicName[stw]', 'Start with operator'];
         yield [new InOperatorDescriber(), InOperator::class, 'publicName[in]', 'In operator'];
-    }
-
-    /**
-     * @dataProvider provideDescriberCases
-     */
-    public function testDescriber(
-        BetweenDescriber|ContainDescriber|EndWithDescriber|EqualDescriber|GreaterThanDescriber|GreaterThanOrEqualDescriber|IsEmptyDescriber|IsNullDescriber|LowerThanDescriber|LowerThanOrEqualDescriber|NotBetweenDescriber|NotContainDescriber|NotEndWithDescriber|NotEqualOperatorDescriber|NotInOperatorDescriber|NotStartWithDescriber|StartWithDescriber|InOperatorDescriber $instance,
-        string $expectedOperator,
-        string $expectedName,
-        string $expectedDescription,
-    ): void {
-        self::assertSame($expectedOperator, $instance::operator());
-        $parameter = $instance->parameter(FilterDefinition::create('entityName', 'publicName'));
-        self::assertSame($expectedName, $parameter->name);
-        self::assertSame($expectedDescription, $parameter->description);
-        self::assertSame('query', $parameter->in);
     }
 }

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Factory;
 
 use App\Conversation\Entity\Message;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Message>
+ * @extends PersistentObjectFactory<Message>
  */
-final class MessageFactory extends PersistentProxyObjectFactory
+final class MessageFactory extends PersistentObjectFactory
 {
     public static function class(): string
     {

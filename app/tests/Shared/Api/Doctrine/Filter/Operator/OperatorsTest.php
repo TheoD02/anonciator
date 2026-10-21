@@ -56,7 +56,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(StartWithOperator::class)]
 final class OperatorsTest extends TestCase
 {
-    #[DataProvider('provideOperators')]
+    #[DataProvider('provideOperatorsCases')]
     public function testOperators(
         string $fqcn,
         string $operator,
@@ -69,7 +69,7 @@ final class OperatorsTest extends TestCase
 
         self::assertSame($operator, $instance::operator());
 
-        $qb = new QueryBuilder($this->createMock(EntityManagerInterface::class));
+        $qb = new QueryBuilder($this->createStub(EntityManagerInterface::class));
         $qb
             ->select('*')
             ->from(User::class, 'e')
@@ -90,7 +90,7 @@ final class OperatorsTest extends TestCase
         }
     }
 
-    public function provideOperators(): iterable
+    public static function provideOperatorsCases(): iterable
     {
         yield [
             'fqcn' => BetweenOperator::class,

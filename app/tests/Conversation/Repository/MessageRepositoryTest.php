@@ -10,18 +10,15 @@ use App\Tests\Factory\ConversationFactory;
 use App\Tests\Factory\MessageFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Zenstruck\Foundry\Attribute\ResetDatabase;
 
 /**
  * @internal
  */
 #[CoversClass(MessageRepository::class)]
+#[ResetDatabase]
 final class MessageRepositoryTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testGetMessagesForConversation(): void
     {
         // Arrange
