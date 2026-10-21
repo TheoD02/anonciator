@@ -7,6 +7,7 @@ use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use PhpCsFixer\Fixer\Operator\AssignNullCoalescingToCoalesceEqualFixer;
 use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocToCommentFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitDataProviderStaticFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitTestCaseStaticMethodCallsFixer;
@@ -55,6 +56,10 @@ return ECSConfig::configure()
         PhpUnitDataProviderStaticFixer::class,
         AddDoesNotPerformAssertionToNonAssertingTestRector::class,
         GeneralPhpdocAnnotationRemoveFixer::class,
+        PhpdocTypesFixer::class => [
+            "{$appPathPrefix}/src/Resource/*",
+            "{$appPathPrefix}/src/Announce/Entity/Announce.php",
+        ],
     ])
     ->withConfiguredRule(
         LineLengthFixer::class,

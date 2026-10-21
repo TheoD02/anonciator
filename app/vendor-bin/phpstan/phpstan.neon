@@ -21,8 +21,6 @@ parameters:
         #- /.castor/src
         - ../../src
         #- ../../tests
-    scanFiles:
-        - /.castor/.castor.stub.php
     symfony:
         #containerPhpPath: %currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.php
         # Not working with 7.2 :(
@@ -143,12 +141,6 @@ parameters:
             identifier: shipmonk.deadMethod
         -
             message: "#^Unused .*?::__construct$#"
-    type_perfect:
-        no_mixed_property: true
-        no_mixed_caller: true
-        null_over_false: true
-        narrow_param: false
-        narrow_return: true
     sfpPsrLog:
         enableMessageStaticStringRule: true
         enableContextRequireExceptionKeyRule: true
@@ -278,7 +270,9 @@ parameters:
         uselessPrivatePropertyDefaultValue:
             enabled: true
     shipmonkDeadCode:
-        trackCallsOnMixed: false
+        usageExcluders:
+            usageOverMixed:
+                enabled: true
 #    voku:
 #        checkForAssignments: true
 #        checkYodaConditions: false

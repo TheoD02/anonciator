@@ -1,5 +1,5 @@
 {
   "require-dev": {
-    "tomasvotruba/class-leak": "^1.1"
+    "tomasvotruba/class-leak": "^2.3"
   }
 }

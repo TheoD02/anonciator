@@ -5,8 +5,8 @@ declare(strict_types=1);
 use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitDataProviderStaticFixer;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
-use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
@@ -24,7 +24,6 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Symfony\Set\SymfonySetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 
 $projectRoot = isset($_SERVER['CI']) ? $_SERVER['GITHUB_WORKSPACE'] : '';
 $appPathPrefix = "{$projectRoot}/app";
@@ -42,7 +41,7 @@ return RectorConfig::configure()
     ->withCache('/var/tmp/rector')
     ->withPaths($paths)
     ->withRootFiles()
-    ->withPhpSets(php83: true)
+    ->withPhpSets(php84: true)
 //    ->withSymfonyContainerXml($appPathPrefix . '/var/cache/dev/App_KernelDevDebugContainer.xml')
     ->withAttributesSets(
         symfony: true,
@@ -59,7 +58,6 @@ return RectorConfig::configure()
         naming: true,
         instanceOf: true,
         earlyReturn: true,
-        strictBooleans: true,
         carbon: true,
         rectorPreset: true,
         phpunitCodeQuality: true,
@@ -67,6 +65,7 @@ return RectorConfig::configure()
         symfonyCodeQuality: true,
         symfonyConfigs: true,
     )
+    ->withComposerBased(doctrine: true, phpunit: true, symfony: true)
     ->withImportNames(
         importShortClasses: false,
         removeUnusedImports: true,
@@ -74,23 +73,17 @@ return RectorConfig::configure()
     ->withSets([
         SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
         SymfonySetList::SYMFONY_CODE_QUALITY,
-        DoctrineSetList::DOCTRINE_ORM_214,
         DoctrineSetList::DOCTRINE_CODE_QUALITY,
-        DoctrineSetList::DOCTRINE_COMMON_20,
-        DoctrineSetList::DOCTRINE_DBAL_40,
-        PHPUnitSetList::PHPUNIT_110,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
         LevelSetList::UP_TO_PHP_84,
-        SymfonySetList::SYMFONY_71,
     ])
     ->withRules([
-        AddVoidReturnTypeWhereNoReturnRector::class,
         PreferPHPUnitSelfCallRector::class,
     ])
     ->withSkip([
         PreferPHPUnitThisCallRector::class,
-        EncapsedStringsToSprintfRector::class,
+        AddSeeTestAnnotationRector::class,
         RenamePropertyToMatchTypeRector::class,
         NullCoalescingOperatorRector::class,
         RenameParamToMatchTypeRector::class,
