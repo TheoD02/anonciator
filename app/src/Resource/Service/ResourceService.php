@@ -28,7 +28,7 @@ class ResourceService
     }
 
     /**
-     * @return array<resource>
+     * @return array<Resource>
      */
     public function createManyResources(UploadedFile ...$files): array
     {
@@ -63,7 +63,7 @@ class ResourceService
 
     public function deleteEntityFromId(int $id): void
     {
-        /** @var resource $resource */
+        /** @var Resource $resource */
         $resource = $this->getEntityById($id, fail: true);
 
         new Filesystem()->remove("{$this->projectDir}/public{$resource->getPath()}");

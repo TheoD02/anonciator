@@ -112,10 +112,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $roles;
     }
 
-    public function eraseCredentials(): void
-    {
-    }
-
     public function getUserIdentifier(): string
     {
         return $this->email;

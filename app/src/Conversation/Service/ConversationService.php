@@ -25,11 +25,10 @@ class ConversationService
     use EntityCrudServiceTrait;
 
     public function __construct(
-        private readonly AnnounceService        $announceService,
-        private readonly UserService            $userService,
+        private readonly AnnounceService $announceService,
+        private readonly UserService $userService,
         private readonly ConversationRepository $conversationRepository,
-    )
-    {
+    ) {
     }
 
     public function initConversationOrGetExisting(int $announceId, User $loggedUser): Conversation
@@ -38,9 +37,8 @@ class ConversationService
         $announce = $this->announceService->getEntityById($announceId, fail: true);
         $announceCreatorIdentifier = $announce->getCreatedBy();
 
-        /** @var ?User $announceCreator */
         $announceCreator = $this->userService->getOneByEmail($announceCreatorIdentifier);
-        if ($announceCreator === null) {
+        if (! $announceCreator instanceof User) {
             throw new NotFoundHttpException('Announce creator does not exist');
         }
 
@@ -54,12 +52,13 @@ class ConversationService
             userReceiverId: $announceCreator->getId()
         );
 
-        if (!$conversation instanceof Conversation) {
+        if (! $conversation instanceof Conversation) {
             $conversation = ConversationBuilder::new()
                 ->withAnnounce($announce)
                 ->withInitializedBy($loggedUser)
                 ->withReceiver($announceCreator)
-                ->build();
+                ->build()
+            ;
 
             $this->em->persist($conversation);
             $this->em->flush();

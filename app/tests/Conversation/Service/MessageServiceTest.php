@@ -20,7 +20,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Zenstruck\Foundry\Test\Factories;
+
+use function Zenstruck\Foundry\set;
 
 /**
  * @internal
@@ -28,9 +29,14 @@ use Zenstruck\Foundry\Test\Factories;
 #[CoversClass(MessageService::class)]
 final class MessageServiceTest extends TestCase
 {
-    use Factories;
+    /**
+     * @var MockObject&ConversationService
+     */
     public MockObject $conversationServiceMock;
 
+    /**
+     * @var MockObject&UserService
+     */
     public MockObject $userServiceMock;
 
     public $messageService;
@@ -45,14 +51,12 @@ final class MessageServiceTest extends TestCase
         $announce = AnnounceFactory::new()->create([
             'createdBy' => $announceCreator->getUserIdentifier(),
         ]);
-        $conversation = ConversationFactory::new()
+        $conversation = set(ConversationFactory::new()
             ->create([
                 'announce' => $announce,
                 'initializedBy' => $loggedUser,
                 'receiver' => $announceCreator,
-            ])
-            ->_set('id', 1)
-        ;
+            ]), 'id', 1);
 
         $this->conversationServiceMock
             ->expects($this->once())
@@ -94,14 +98,12 @@ final class MessageServiceTest extends TestCase
         $announce = AnnounceFactory::new()->create([
             'createdBy' => $announceCreator->getUserIdentifier(),
         ]);
-        $conversation = ConversationFactory::new()
+        $conversation = set(ConversationFactory::new()
             ->create([
                 'announce' => $announce,
                 'initializedBy' => $loggedUser,
                 'receiver' => $announceCreator,
-            ])
-            ->_set('id', 1)
-        ;
+            ]), 'id', 1);
 
         $this->conversationServiceMock
             ->expects($this->once())
@@ -124,7 +126,7 @@ final class MessageServiceTest extends TestCase
         $message = $this->messageService->createMessageFromPayload(
             conversationId: $conversation->getId(),
             payload: $messagePayload,
-            loggedUser: $announceCreator->_real(),
+            loggedUser: $announceCreator,
         );
 
         // Assert
@@ -136,22 +138,21 @@ final class MessageServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->conversationServiceMock = $this->createMock(ConversationService::class);
-        $announceServiceMock = $this->createMock(AnnounceService::class);
         $this->userServiceMock = $this->createMock(UserService::class);
 
         $this->messageService = new MessageService(
             conversationService: $this->conversationServiceMock,
-            announceService: $announceServiceMock,
+            announceService: $this->createStub(AnnounceService::class),
             userService: $this->userServiceMock,
         );
 
         $this->messageService
             ->setEntityCrudServiceDependencies(
-                mapper: $this->createMock(AutoMapperInterface::class),
-                em: $this->createMock(EntityManagerInterface::class),
-                dispatcher: $this->createMock(EventDispatcherInterface::class),
-                relationResolver: $this->createMock(RelationResolver::class),
-                logger: $this->createMock(LoggerInterface::class),
+                mapper: $this->createStub(AutoMapperInterface::class),
+                em: $this->createStub(EntityManagerInterface::class),
+                dispatcher: $this->createStub(EventDispatcherInterface::class),
+                relationResolver: $this->createStub(RelationResolver::class),
+                logger: $this->createStub(LoggerInterface::class),
             )
         ;
 

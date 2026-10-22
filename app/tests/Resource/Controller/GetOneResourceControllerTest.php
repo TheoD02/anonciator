@@ -8,19 +8,17 @@ use App\Resource\Controller\GetOneResourceController;
 use App\Tests\AbstractApiWebTestCase;
 use App\Tests\Factory\ResourceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Zenstruck\Foundry\Attribute\ResetDatabase;
 
 /**
  * @internal
  */
 #[CoversClass(GetOneResourceController::class)]
+#[ResetDatabase]
 final class GetOneResourceControllerTest extends AbstractApiWebTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testOk(): void
     {
         // Arrange
@@ -29,7 +27,7 @@ final class GetOneResourceControllerTest extends AbstractApiWebTestCase
         $filename = 'abc1.txt';
         $filepath = "{$kernelProjectDir}/public/uploads/{$filename}";
         $fileContent = 'abc1';
-        file_put_contents($filepath, $fileContent);
+        new Filesystem()->dumpFile($filepath, $fileContent);
 
         ResourceFactory::new()->create([
             'bucket' => 'files',

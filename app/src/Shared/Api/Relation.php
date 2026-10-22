@@ -7,14 +7,14 @@ namespace App\Shared\Api;
 class Relation
 {
     /**
-     * @param array<int|string>|int|string $set
+     * @param array<int|string>|int|string $this
      * @param array<int|string>|int|string $add
      * @param array<int|string>|int|string $remove
      */
     public function __construct(
         public array|int|string $set = [] {
             get {
-                if (is_array($this->set)) {
+                if (\is_array($this->set)) {
                     return $this->set;
                 }
 
@@ -23,7 +23,7 @@ class Relation
         },
         public array|int|string $add = [] {
             get {
-                if (is_array($this->add)) {
+                if (\is_array($this->add)) {
                     return $this->add;
                 }
 
@@ -32,15 +32,14 @@ class Relation
         },
         public array|int|string $remove = [] {
             get {
-                if (is_array($this->remove)) {
+                if (\is_array($this->remove)) {
                     return $this->remove;
                 }
 
                 return $this->remove === '' ? [] : [$this->remove];
             }
-        }
+        },
     )
     {
-
     }
 }

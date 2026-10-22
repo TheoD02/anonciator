@@ -23,6 +23,10 @@
         </testsuite>
     </testsuites>
 
+    <extensions>
+        <bootstrap class="Zenstruck\Foundry\PHPUnit\FoundryExtension"/>
+    </extensions>
+
     <source>
         <include>
             <directory>src</directory>

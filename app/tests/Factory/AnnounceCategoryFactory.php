@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace App\Tests\Factory;
 
 use App\Announce\Entity\AnnounceCategory;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<AnnounceCategory>
+ * @extends PersistentObjectFactory<AnnounceCategory>
  */
-final class AnnounceCategoryFactory extends PersistentProxyObjectFactory
+final class AnnounceCategoryFactory extends PersistentObjectFactory
 {
     public static function class(): string
     {
         return AnnounceCategory::class;
     }
 
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'name' => self::faker()->unique()->randomElement(

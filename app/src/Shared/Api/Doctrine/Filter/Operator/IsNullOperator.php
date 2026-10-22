@@ -19,7 +19,7 @@ class IsNullOperator implements OperatorInterface
 
     public function apply(QueryBuilder $qb, FilterDefinition $definition, string|array $value): void
     {
-        $shouldBeNull = $value === 'true' || $value === '1' || $value === '';
+        $shouldBeNull = \in_array($value, ['true', '1', ''], true);
 
         $alias = $this->getAlias($qb, $definition);
 

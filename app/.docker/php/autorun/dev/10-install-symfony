@@ -43,7 +43,7 @@ rm -Rf /tmp/symfony
 cd /app
 
 echo "📦 Installing dependencies (FrankenPHP)"
-composer require "php:>=8.4" runtime/frankenphp-symfony
+composer require "php:>=8.4"
 
 echo "📦 Installing setup default configuration"
 composer config allow-plugins.bamarni/composer-bin-plugin true

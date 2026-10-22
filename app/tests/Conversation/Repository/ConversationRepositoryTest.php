@@ -10,18 +10,15 @@ use App\Tests\Factory\ConversationFactory;
 use App\Tests\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Zenstruck\Foundry\Attribute\ResetDatabase;
 
 /**
  * @internal
  */
 #[CoversClass(ConversationRepository::class)]
+#[ResetDatabase]
 final class ConversationRepositoryTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testGetConversationMatchingAnnounceAndUserWhenAnythingExists(): void
     {
         // Act

@@ -17,18 +17,15 @@ use App\Tests\Factory\AnnounceCategoryFactory;
 use App\Tests\Factory\AnnounceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Zenstruck\Foundry\Attribute\ResetDatabase;
 
 /**
  * @internal
  */
 #[CoversClass(EntityCrudServiceTrait::class)]
+#[ResetDatabase]
 final class EntityCrudServiceTraitTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public AnnounceService $instance;
 
     public function testCreateEntityFromPayload(): void
@@ -54,7 +51,7 @@ final class EntityCrudServiceTraitTest extends KernelTestCase
     public function testCreateEntityWithFlush(): void
     {
         // Arrange
-        $entity = AnnounceFactory::new()->create()->_real();
+        $entity = AnnounceFactory::new()->create();
 
         // Act
         $result = $this->instance->createEntity($entity, flush: true);
@@ -92,7 +89,7 @@ final class EntityCrudServiceTraitTest extends KernelTestCase
         $announce->setTitle('Updated title');
 
         // Act
-        $result = $this->instance->updateEntity($announce->_real(), flush: true);
+        $result = $this->instance->updateEntity($announce, flush: true);
 
         // Assert
         AnnounceFactory::repository()->assert()->exists($result->getId());
@@ -164,7 +161,7 @@ final class EntityCrudServiceTraitTest extends KernelTestCase
         $announce = AnnounceFactory::new()->create();
 
         // Act
-        $this->instance->deleteEntity($announce->_real());
+        $this->instance->deleteEntity($announce);
 
         // Assert
         AnnounceFactory::repository()->assert()->empty();

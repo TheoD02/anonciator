@@ -47,7 +47,7 @@ class Announce
     private AnnounceStatus $status = AnnounceStatus::DRAFT;
 
     /**
-     * @var Collection<int, resource>
+     * @var Collection<int, Resource>
      */
     #[ORM\ManyToMany(targetEntity: Resource::class)]
     #[ORM\JoinTable(
@@ -154,7 +154,7 @@ class Announce
     }
 
     /**
-     * @return Collection<int, resource>
+     * @return Collection<int, Resource>
      */
     public function getPhotos(): Collection
     {
@@ -163,7 +163,7 @@ class Announce
 
     public function addPhoto(Resource $photo): static
     {
-        if (!$this->photos->contains($photo)) {
+        if (! $this->photos->contains($photo)) {
             $this->photos->add($photo);
         }
 

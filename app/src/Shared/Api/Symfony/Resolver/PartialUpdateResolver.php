@@ -16,8 +16,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\JsonEncoder\DecoderInterface;
+use Symfony\Component\JsonStreamer\JsonStreamReader;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Exception\PartialDenormalizationException;
 use Symfony\Component\Serializer\Exception\UnexpectedPropertyException;
 use Symfony\Component\Serializer\Exception\UnsupportedFormatException;
@@ -26,6 +27,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -50,7 +52,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
         'collect_denormalization_errors' => true,
     ];
 
-    private DecoderInterface $jsonDecoder;
+    private JsonStreamReader $jsonStreamReader;
 
     public function __construct(
         private readonly SerializerInterface&DenormalizerInterface $serializer,
@@ -70,9 +72,9 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
     }
 
     #[Required]
-    public function setJsonDecoder(DecoderInterface $jsonDecoder): void
+    public function setJsonStreamReader(JsonStreamReader $jsonStreamReader): void
     {
-        $this->jsonDecoder = $jsonDecoder;
+        $this->jsonStreamReader = $jsonStreamReader;
     }
 
     #[\Override]
@@ -111,8 +113,8 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
                 } catch (PartialDenormalizationException $e) {
                     $trans = $this->translator instanceof TranslatorInterface ? $this->translator->trans(
                         ...
-                    ) : static fn ($m, $p): string => strtr($m, $p);
-                    foreach ($e->getErrors() as $error) {
+                    ) : strtr(...);
+                    foreach ($e->getNotNormalizableValueErrors() as $error) {
                         $parameters = [];
                         $template = 'This value was of an unexpected type.';
                         if ($expectedTypes = $error->getExpectedTypes()) {
@@ -166,9 +168,12 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
                         $validationFailedCode,
                         implode(
                             "\n",
-                            array_map(static fn ($e): string|\Stringable => $e->getMessage(), iterator_to_array(
-                                $violations
-                            ))
+                            array_map(
+                                static fn (ConstraintViolationInterface $e): string|\Stringable => $e->getMessage(),
+                                iterator_to_array(
+                                    $violations
+                                )
+                            )
                         ),
                         new ValidationFailedException($payload, $violations)
                     );
@@ -179,19 +184,23 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
                 } catch (PartialDenormalizationException $e) {
                     throw HttpException::fromStatusCode(
                         $validationFailedCode,
-                        implode("\n", array_map(static fn ($e): string => $e->getMessage(), $e->getErrors())),
+                        implode(
+                            "\n",
+                            array_map(
+                                static fn (NotNormalizableValueException $e): string => $e->getMessage(),
+                                $e->getNotNormalizableValueErrors()
+                            )
+                        ),
                         $e
                     );
                 }
             }
 
-            if ($payload === null) {
-                $payload = match (true) {
-                    $argument->metadata->hasDefaultValue() => $argument->metadata->getDefaultValue(),
-                    $argument->metadata->isNullable() => null,
-                    default => throw HttpException::fromStatusCode($validationFailedCode),
-                };
-            }
+            $payload ??= match (true) {
+                $argument->metadata->hasDefaultValue() => $argument->metadata->getDefaultValue(),
+                $argument->metadata->isNullable() => null,
+                default => throw HttpException::fromStatusCode($validationFailedCode),
+            };
 
             $arguments[$i] = $payload;
         }
@@ -256,7 +265,7 @@ class PartialUpdateResolver extends RequestPayloadValueResolver
         try {
             $encoderType = Type::object($type);
 
-            return $this->jsonDecoder->decode(
+            return $this->jsonStreamReader->read(
                 $data,
                 $encoderType,
                 $attribute->serializationContext + self::CONTEXT_DESERIALIZE
